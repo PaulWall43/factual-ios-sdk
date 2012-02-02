@@ -1,0 +1,578 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		2559158C13F39D7300EF5CDC /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AACBBE490F95108600F1A2B1 /* Foundation.framework */; };
+		2559159213F39D7300EF5CDC /* FactualSDK.m in Sources */ = {isa = PBXBuildFile; fileRef = 2559159113F39D7300EF5CDC /* FactualSDK.m */; };
+		2559159613F39E2200EF5CDC /* FactualQuery.h in Headers */ = {isa = PBXBuildFile; fileRef = 25EF20FA12B2430F006D19BA /* FactualQuery.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		2559159713F39E2200EF5CDC /* FactualAPIRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = 25EF138212AF0ECD006D19BA /* FactualAPIRequest.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		2559159813F39E2200EF5CDC /* FactualAPI.h in Headers */ = {isa = PBXBuildFile; fileRef = 25EF134612AF0BE5006D19BA /* FactualAPI.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		2559159913F39E2200EF5CDC /* FactualQueryResult.h in Headers */ = {isa = PBXBuildFile; fileRef = 25EF134F12AF0BE5006D19BA /* FactualQueryResult.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		2559159A13F39E2200EF5CDC /* FactualRow.h in Headers */ = {isa = PBXBuildFile; fileRef = 25EF135712AF0BE5006D19BA /* FactualRow.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		2559159B13F39E2200EF5CDC /* FactualUpdateResult.h in Headers */ = {isa = PBXBuildFile; fileRef = 25EF135B12AF0BE5006D19BA /* FactualUpdateResult.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		2559159C13F39E2200EF5CDC /* FactualSchemaResult.h in Headers */ = {isa = PBXBuildFile; fileRef = 25EF147612AF1C5A006D19BA /* FactualSchemaResult.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		2559159D13F39E2200EF5CDC /* FactualFieldMetadata.h in Headers */ = {isa = PBXBuildFile; fileRef = 25EF147E12AF1C86006D19BA /* FactualFieldMetadata.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		2559160213F3B39A00EF5CDC /* CJSONDataSerializer.m in Sources */ = {isa = PBXBuildFile; fileRef = 25EF13A512AF1151006D19BA /* CJSONDataSerializer.m */; };
+		2559160313F3B39A00EF5CDC /* CJSONDeserializer.m in Sources */ = {isa = PBXBuildFile; fileRef = 25EF13A712AF1151006D19BA /* CJSONDeserializer.m */; };
+		2559160413F3B39A00EF5CDC /* CJSONScanner.m in Sources */ = {isa = PBXBuildFile; fileRef = 25EF13A912AF1151006D19BA /* CJSONScanner.m */; };
+		2559160513F3B39A00EF5CDC /* CJSONSerializer.m in Sources */ = {isa = PBXBuildFile; fileRef = 25EF13AB12AF1151006D19BA /* CJSONSerializer.m */; };
+		2559160613F3B39A00EF5CDC /* CSerializedJSONData.m in Sources */ = {isa = PBXBuildFile; fileRef = 25EF13AD12AF1151006D19BA /* CSerializedJSONData.m */; };
+		2559160713F3B39A00EF5CDC /* CDataScanner_Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 25EF13B912AF1167006D19BA /* CDataScanner_Extensions.m */; };
+		2559160813F3B39A00EF5CDC /* NSCharacterSet_Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 25EF13BB12AF1167006D19BA /* NSCharacterSet_Extensions.m */; };
+		2559160913F3B39A00EF5CDC /* NSDictionary_JSONExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 25EF13BD12AF1167006D19BA /* NSDictionary_JSONExtensions.m */; };
+		2559160A13F3B39A00EF5CDC /* NSScanner_Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 25EF13BF12AF1167006D19BA /* NSScanner_Extensions.m */; };
+		2559160B13F3B39A00EF5CDC /* CDataScanner.m in Sources */ = {isa = PBXBuildFile; fileRef = 25EF139F12AF111B006D19BA /* CDataScanner.m */; };
+		2559160C13F3B39A00EF5CDC /* FactualQueryImpl.m in Sources */ = {isa = PBXBuildFile; fileRef = 25EF20FB12B2430F006D19BA /* FactualQueryImpl.m */; };
+		2559160D13F3B39A00EF5CDC /* FactualAPIRequestImpl.m in Sources */ = {isa = PBXBuildFile; fileRef = 25EF138812AF0EE5006D19BA /* FactualAPIRequestImpl.m */; };
+		2559160E13F3B39A00EF5CDC /* FactualAPIRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 25EF138312AF0ECD006D19BA /* FactualAPIRequest.m */; };
+		2559160F13F3B39A00EF5CDC /* FactualAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = 25EF134712AF0BE5006D19BA /* FactualAPI.m */; };
+		2559161013F3B39A00EF5CDC /* FactualAPIHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 25EF134912AF0BE5006D19BA /* FactualAPIHelper.m */; };
+		2559161113F3B39A00EF5CDC /* FactualQueryResult.m in Sources */ = {isa = PBXBuildFile; fileRef = 25EF135012AF0BE5006D19BA /* FactualQueryResult.m */; };
+		2559161213F3B39A00EF5CDC /* FactualQueryResultImpl.m in Sources */ = {isa = PBXBuildFile; fileRef = 25EF135212AF0BE5006D19BA /* FactualQueryResultImpl.m */; };
+		2559161313F3B39A00EF5CDC /* FactualRow.m in Sources */ = {isa = PBXBuildFile; fileRef = 25EF135812AF0BE5006D19BA /* FactualRow.m */; };
+		2559161413F3B39A00EF5CDC /* FactualRowImpl.m in Sources */ = {isa = PBXBuildFile; fileRef = 25EF135A12AF0BE5006D19BA /* FactualRowImpl.m */; };
+		2559161513F3B39A00EF5CDC /* FactualUpdateResult.m in Sources */ = {isa = PBXBuildFile; fileRef = 25EF135C12AF0BE5006D19BA /* FactualUpdateResult.m */; };
+		2559161613F3B39A00EF5CDC /* FactualSchemaResult.m in Sources */ = {isa = PBXBuildFile; fileRef = 25EF147712AF1C5A006D19BA /* FactualSchemaResult.m */; };
+		2559161713F3B39A00EF5CDC /* FactualSchemaResultImpl.m in Sources */ = {isa = PBXBuildFile; fileRef = 25EF147B12AF1C70006D19BA /* FactualSchemaResultImpl.m */; };
+		2559161813F3B39A00EF5CDC /* FactualFieldMetadata.m in Sources */ = {isa = PBXBuildFile; fileRef = 25EF147F12AF1C86006D19BA /* FactualFieldMetadata.m */; };
+		2559161913F3B39A00EF5CDC /* FactualFieldMetadataImpl.m in Sources */ = {isa = PBXBuildFile; fileRef = 25EF14F912AF5DA5006D19BA /* FactualFieldMetadataImpl.m */; };
+		258F596D13F4866700A0C0CA /* NSMutableURLRequest+Parameters.h in Headers */ = {isa = PBXBuildFile; fileRef = 258F594113F4866700A0C0CA /* NSMutableURLRequest+Parameters.h */; };
+		258F596E13F4866700A0C0CA /* NSMutableURLRequest+Parameters.m in Sources */ = {isa = PBXBuildFile; fileRef = 258F594213F4866700A0C0CA /* NSMutableURLRequest+Parameters.m */; };
+		258F597113F4866700A0C0CA /* NSString+URLEncoding.h in Headers */ = {isa = PBXBuildFile; fileRef = 258F594513F4866700A0C0CA /* NSString+URLEncoding.h */; };
+		258F597213F4866700A0C0CA /* NSString+URLEncoding.m in Sources */ = {isa = PBXBuildFile; fileRef = 258F594613F4866700A0C0CA /* NSString+URLEncoding.m */; };
+		258F597513F4866700A0C0CA /* NSURL+Base.h in Headers */ = {isa = PBXBuildFile; fileRef = 258F594913F4866700A0C0CA /* NSURL+Base.h */; };
+		258F597613F4866700A0C0CA /* NSURL+Base.m in Sources */ = {isa = PBXBuildFile; fileRef = 258F594A13F4866700A0C0CA /* NSURL+Base.m */; };
+		258F597913F4866700A0C0CA /* OAConsumer.h in Headers */ = {isa = PBXBuildFile; fileRef = 258F594D13F4866700A0C0CA /* OAConsumer.h */; };
+		258F597A13F4866700A0C0CA /* OAConsumer.m in Sources */ = {isa = PBXBuildFile; fileRef = 258F594E13F4866700A0C0CA /* OAConsumer.m */; };
+		258F597D13F4866700A0C0CA /* OADataFetcher.h in Headers */ = {isa = PBXBuildFile; fileRef = 258F595113F4866700A0C0CA /* OADataFetcher.h */; };
+		258F597E13F4866700A0C0CA /* OADataFetcher.m in Sources */ = {isa = PBXBuildFile; fileRef = 258F595213F4866700A0C0CA /* OADataFetcher.m */; };
+		258F598113F4866700A0C0CA /* OAHMAC_SHA1SignatureProvider.h in Headers */ = {isa = PBXBuildFile; fileRef = 258F595513F4866700A0C0CA /* OAHMAC_SHA1SignatureProvider.h */; };
+		258F598213F4866700A0C0CA /* OAHMAC_SHA1SignatureProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 258F595613F4866700A0C0CA /* OAHMAC_SHA1SignatureProvider.m */; };
+		258F598513F4866700A0C0CA /* OAMutableURLRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = 258F595913F4866700A0C0CA /* OAMutableURLRequest.h */; };
+		258F598613F4866700A0C0CA /* OAMutableURLRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 258F595A13F4866700A0C0CA /* OAMutableURLRequest.m */; };
+		258F598913F4866700A0C0CA /* OAPlaintextSignatureProvider.h in Headers */ = {isa = PBXBuildFile; fileRef = 258F595D13F4866700A0C0CA /* OAPlaintextSignatureProvider.h */; };
+		258F598A13F4866700A0C0CA /* OAPlaintextSignatureProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 258F595E13F4866700A0C0CA /* OAPlaintextSignatureProvider.m */; };
+		258F598D13F4866700A0C0CA /* OARequestParameter.h in Headers */ = {isa = PBXBuildFile; fileRef = 258F596113F4866700A0C0CA /* OARequestParameter.h */; };
+		258F598E13F4866700A0C0CA /* OARequestParameter.m in Sources */ = {isa = PBXBuildFile; fileRef = 258F596213F4866700A0C0CA /* OARequestParameter.m */; };
+		258F599113F4866700A0C0CA /* OAServiceTicket.h in Headers */ = {isa = PBXBuildFile; fileRef = 258F596513F4866700A0C0CA /* OAServiceTicket.h */; };
+		258F599213F4866700A0C0CA /* OAServiceTicket.m in Sources */ = {isa = PBXBuildFile; fileRef = 258F596613F4866700A0C0CA /* OAServiceTicket.m */; };
+		258F599313F4866700A0C0CA /* OASignatureProviding.h in Headers */ = {isa = PBXBuildFile; fileRef = 258F596713F4866700A0C0CA /* OASignatureProviding.h */; };
+		258F599413F4866700A0C0CA /* OAToken.h in Headers */ = {isa = PBXBuildFile; fileRef = 258F596813F4866700A0C0CA /* OAToken.h */; };
+		258F599513F4866700A0C0CA /* OAToken.m in Sources */ = {isa = PBXBuildFile; fileRef = 258F596913F4866700A0C0CA /* OAToken.m */; };
+		258F599813F4866700A0C0CA /* OAuthConsumer.h in Headers */ = {isa = PBXBuildFile; fileRef = 258F596C13F4866700A0C0CA /* OAuthConsumer.h */; };
+		258F599B13F4A42B00A0C0CA /* Base64Transcoder.c in Sources */ = {isa = PBXBuildFile; fileRef = 258F599913F4A42B00A0C0CA /* Base64Transcoder.c */; };
+		258F599C13F4A42B00A0C0CA /* Base64Transcoder.h in Headers */ = {isa = PBXBuildFile; fileRef = 258F599A13F4A42B00A0C0CA /* Base64Transcoder.h */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		254C17C812C16A540079EA0B /* FactualQueryImpl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FactualQueryImpl.h; sourceTree = "<group>"; };
+		2559158B13F39D7300EF5CDC /* libFactualSDK.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libFactualSDK.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		2559158F13F39D7300EF5CDC /* FactualSDK-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "FactualSDK-Prefix.pch"; sourceTree = "<group>"; };
+		2559159013F39D7300EF5CDC /* FactualSDK.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FactualSDK.h; sourceTree = "<group>"; };
+		2559159113F39D7300EF5CDC /* FactualSDK.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FactualSDK.m; sourceTree = "<group>"; };
+		258F594113F4866700A0C0CA /* NSMutableURLRequest+Parameters.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSMutableURLRequest+Parameters.h"; path = "OAuthConsumer/NSMutableURLRequest+Parameters.h"; sourceTree = "<group>"; };
+		258F594213F4866700A0C0CA /* NSMutableURLRequest+Parameters.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSMutableURLRequest+Parameters.m"; path = "OAuthConsumer/NSMutableURLRequest+Parameters.m"; sourceTree = "<group>"; };
+		258F594513F4866700A0C0CA /* NSString+URLEncoding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSString+URLEncoding.h"; path = "OAuthConsumer/NSString+URLEncoding.h"; sourceTree = "<group>"; };
+		258F594613F4866700A0C0CA /* NSString+URLEncoding.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSString+URLEncoding.m"; path = "OAuthConsumer/NSString+URLEncoding.m"; sourceTree = "<group>"; };
+		258F594913F4866700A0C0CA /* NSURL+Base.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSURL+Base.h"; path = "OAuthConsumer/NSURL+Base.h"; sourceTree = "<group>"; };
+		258F594A13F4866700A0C0CA /* NSURL+Base.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSURL+Base.m"; path = "OAuthConsumer/NSURL+Base.m"; sourceTree = "<group>"; };
+		258F594D13F4866700A0C0CA /* OAConsumer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OAConsumer.h; path = OAuthConsumer/OAConsumer.h; sourceTree = "<group>"; };
+		258F594E13F4866700A0C0CA /* OAConsumer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OAConsumer.m; path = OAuthConsumer/OAConsumer.m; sourceTree = "<group>"; };
+		258F595113F4866700A0C0CA /* OADataFetcher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OADataFetcher.h; path = OAuthConsumer/OADataFetcher.h; sourceTree = "<group>"; };
+		258F595213F4866700A0C0CA /* OADataFetcher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OADataFetcher.m; path = OAuthConsumer/OADataFetcher.m; sourceTree = "<group>"; };
+		258F595513F4866700A0C0CA /* OAHMAC_SHA1SignatureProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OAHMAC_SHA1SignatureProvider.h; path = OAuthConsumer/OAHMAC_SHA1SignatureProvider.h; sourceTree = "<group>"; };
+		258F595613F4866700A0C0CA /* OAHMAC_SHA1SignatureProvider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OAHMAC_SHA1SignatureProvider.m; path = OAuthConsumer/OAHMAC_SHA1SignatureProvider.m; sourceTree = "<group>"; };
+		258F595913F4866700A0C0CA /* OAMutableURLRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OAMutableURLRequest.h; path = OAuthConsumer/OAMutableURLRequest.h; sourceTree = "<group>"; };
+		258F595A13F4866700A0C0CA /* OAMutableURLRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OAMutableURLRequest.m; path = OAuthConsumer/OAMutableURLRequest.m; sourceTree = "<group>"; };
+		258F595D13F4866700A0C0CA /* OAPlaintextSignatureProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OAPlaintextSignatureProvider.h; path = OAuthConsumer/OAPlaintextSignatureProvider.h; sourceTree = "<group>"; };
+		258F595E13F4866700A0C0CA /* OAPlaintextSignatureProvider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OAPlaintextSignatureProvider.m; path = OAuthConsumer/OAPlaintextSignatureProvider.m; sourceTree = "<group>"; };
+		258F596113F4866700A0C0CA /* OARequestParameter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OARequestParameter.h; path = OAuthConsumer/OARequestParameter.h; sourceTree = "<group>"; };
+		258F596213F4866700A0C0CA /* OARequestParameter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OARequestParameter.m; path = OAuthConsumer/OARequestParameter.m; sourceTree = "<group>"; };
+		258F596513F4866700A0C0CA /* OAServiceTicket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OAServiceTicket.h; path = OAuthConsumer/OAServiceTicket.h; sourceTree = "<group>"; };
+		258F596613F4866700A0C0CA /* OAServiceTicket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OAServiceTicket.m; path = OAuthConsumer/OAServiceTicket.m; sourceTree = "<group>"; };
+		258F596713F4866700A0C0CA /* OASignatureProviding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OASignatureProviding.h; path = OAuthConsumer/OASignatureProviding.h; sourceTree = "<group>"; };
+		258F596813F4866700A0C0CA /* OAToken.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OAToken.h; path = OAuthConsumer/OAToken.h; sourceTree = "<group>"; };
+		258F596913F4866700A0C0CA /* OAToken.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OAToken.m; path = OAuthConsumer/OAToken.m; sourceTree = "<group>"; };
+		258F596C13F4866700A0C0CA /* OAuthConsumer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OAuthConsumer.h; path = OAuthConsumer/OAuthConsumer.h; sourceTree = "<group>"; };
+		258F599913F4A42B00A0C0CA /* Base64Transcoder.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = Base64Transcoder.c; path = OAuthConsumer/Crypto/Base64Transcoder.c; sourceTree = "<group>"; };
+		258F599A13F4A42B00A0C0CA /* Base64Transcoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Base64Transcoder.h; path = OAuthConsumer/Crypto/Base64Transcoder.h; sourceTree = "<group>"; };
+		25EF134612AF0BE5006D19BA /* FactualAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FactualAPI.h; sourceTree = "<group>"; };
+		25EF134712AF0BE5006D19BA /* FactualAPI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FactualAPI.m; sourceTree = "<group>"; };
+		25EF134812AF0BE5006D19BA /* FactualAPIHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FactualAPIHelper.h; sourceTree = "<group>"; };
+		25EF134912AF0BE5006D19BA /* FactualAPIHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FactualAPIHelper.m; sourceTree = "<group>"; };
+		25EF134A12AF0BE5006D19BA /* FactualAPIPrivate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FactualAPIPrivate.h; sourceTree = "<group>"; };
+		25EF134F12AF0BE5006D19BA /* FactualQueryResult.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FactualQueryResult.h; sourceTree = "<group>"; };
+		25EF135012AF0BE5006D19BA /* FactualQueryResult.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FactualQueryResult.m; sourceTree = "<group>"; };
+		25EF135112AF0BE5006D19BA /* FactualQueryResultImpl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FactualQueryResultImpl.h; sourceTree = "<group>"; };
+		25EF135212AF0BE5006D19BA /* FactualQueryResultImpl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FactualQueryResultImpl.m; sourceTree = "<group>"; };
+		25EF135712AF0BE5006D19BA /* FactualRow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FactualRow.h; sourceTree = "<group>"; };
+		25EF135812AF0BE5006D19BA /* FactualRow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FactualRow.m; sourceTree = "<group>"; };
+		25EF135912AF0BE5006D19BA /* FactualRowImpl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FactualRowImpl.h; sourceTree = "<group>"; };
+		25EF135A12AF0BE5006D19BA /* FactualRowImpl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FactualRowImpl.m; sourceTree = "<group>"; };
+		25EF135B12AF0BE5006D19BA /* FactualUpdateResult.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FactualUpdateResult.h; sourceTree = "<group>"; };
+		25EF135C12AF0BE5006D19BA /* FactualUpdateResult.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FactualUpdateResult.m; sourceTree = "<group>"; };
+		25EF138212AF0ECD006D19BA /* FactualAPIRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FactualAPIRequest.h; sourceTree = "<group>"; };
+		25EF138312AF0ECD006D19BA /* FactualAPIRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FactualAPIRequest.m; sourceTree = "<group>"; };
+		25EF138712AF0EE5006D19BA /* FactualAPIRequestImpl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FactualAPIRequestImpl.h; sourceTree = "<group>"; };
+		25EF138812AF0EE5006D19BA /* FactualAPIRequestImpl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FactualAPIRequestImpl.m; sourceTree = "<group>"; };
+		25EF139E12AF111B006D19BA /* CDataScanner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CDataScanner.h; path = ThirdParty/CDataScanner.h; sourceTree = "<group>"; };
+		25EF139F12AF111B006D19BA /* CDataScanner.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CDataScanner.m; path = ThirdParty/CDataScanner.m; sourceTree = "<group>"; };
+		25EF13A412AF1151006D19BA /* CJSONDataSerializer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CJSONDataSerializer.h; path = ThirdParty/JSON/CJSONDataSerializer.h; sourceTree = "<group>"; };
+		25EF13A512AF1151006D19BA /* CJSONDataSerializer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CJSONDataSerializer.m; path = ThirdParty/JSON/CJSONDataSerializer.m; sourceTree = "<group>"; };
+		25EF13A612AF1151006D19BA /* CJSONDeserializer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CJSONDeserializer.h; path = ThirdParty/JSON/CJSONDeserializer.h; sourceTree = "<group>"; };
+		25EF13A712AF1151006D19BA /* CJSONDeserializer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CJSONDeserializer.m; path = ThirdParty/JSON/CJSONDeserializer.m; sourceTree = "<group>"; };
+		25EF13A812AF1151006D19BA /* CJSONScanner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CJSONScanner.h; path = ThirdParty/JSON/CJSONScanner.h; sourceTree = "<group>"; };
+		25EF13A912AF1151006D19BA /* CJSONScanner.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CJSONScanner.m; path = ThirdParty/JSON/CJSONScanner.m; sourceTree = "<group>"; };
+		25EF13AA12AF1151006D19BA /* CJSONSerializer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CJSONSerializer.h; path = ThirdParty/JSON/CJSONSerializer.h; sourceTree = "<group>"; };
+		25EF13AB12AF1151006D19BA /* CJSONSerializer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CJSONSerializer.m; path = ThirdParty/JSON/CJSONSerializer.m; sourceTree = "<group>"; };
+		25EF13AC12AF1151006D19BA /* CSerializedJSONData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CSerializedJSONData.h; path = ThirdParty/JSON/CSerializedJSONData.h; sourceTree = "<group>"; };
+		25EF13AD12AF1151006D19BA /* CSerializedJSONData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CSerializedJSONData.m; path = ThirdParty/JSON/CSerializedJSONData.m; sourceTree = "<group>"; };
+		25EF13B812AF1167006D19BA /* CDataScanner_Extensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CDataScanner_Extensions.h; path = ThirdParty/Extensions/CDataScanner_Extensions.h; sourceTree = "<group>"; };
+		25EF13B912AF1167006D19BA /* CDataScanner_Extensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CDataScanner_Extensions.m; path = ThirdParty/Extensions/CDataScanner_Extensions.m; sourceTree = "<group>"; };
+		25EF13BA12AF1167006D19BA /* NSCharacterSet_Extensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NSCharacterSet_Extensions.h; path = ThirdParty/Extensions/NSCharacterSet_Extensions.h; sourceTree = "<group>"; };
+		25EF13BB12AF1167006D19BA /* NSCharacterSet_Extensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NSCharacterSet_Extensions.m; path = ThirdParty/Extensions/NSCharacterSet_Extensions.m; sourceTree = "<group>"; };
+		25EF13BC12AF1167006D19BA /* NSDictionary_JSONExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NSDictionary_JSONExtensions.h; path = ThirdParty/Extensions/NSDictionary_JSONExtensions.h; sourceTree = "<group>"; };
+		25EF13BD12AF1167006D19BA /* NSDictionary_JSONExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NSDictionary_JSONExtensions.m; path = ThirdParty/Extensions/NSDictionary_JSONExtensions.m; sourceTree = "<group>"; };
+		25EF13BE12AF1167006D19BA /* NSScanner_Extensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NSScanner_Extensions.h; path = ThirdParty/Extensions/NSScanner_Extensions.h; sourceTree = "<group>"; };
+		25EF13BF12AF1167006D19BA /* NSScanner_Extensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NSScanner_Extensions.m; path = ThirdParty/Extensions/NSScanner_Extensions.m; sourceTree = "<group>"; };
+		25EF147612AF1C5A006D19BA /* FactualSchemaResult.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FactualSchemaResult.h; sourceTree = "<group>"; };
+		25EF147712AF1C5A006D19BA /* FactualSchemaResult.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FactualSchemaResult.m; sourceTree = "<group>"; };
+		25EF147A12AF1C70006D19BA /* FactualSchemaResultImpl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FactualSchemaResultImpl.h; sourceTree = "<group>"; };
+		25EF147B12AF1C70006D19BA /* FactualSchemaResultImpl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FactualSchemaResultImpl.m; sourceTree = "<group>"; };
+		25EF147E12AF1C86006D19BA /* FactualFieldMetadata.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FactualFieldMetadata.h; sourceTree = "<group>"; };
+		25EF147F12AF1C86006D19BA /* FactualFieldMetadata.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FactualFieldMetadata.m; sourceTree = "<group>"; };
+		25EF14F812AF5DA5006D19BA /* FactualFieldMetadataImpl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FactualFieldMetadataImpl.h; sourceTree = "<group>"; };
+		25EF14F912AF5DA5006D19BA /* FactualFieldMetadataImpl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FactualFieldMetadataImpl.m; sourceTree = "<group>"; };
+		25EF20FA12B2430F006D19BA /* FactualQuery.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FactualQuery.h; sourceTree = "<group>"; };
+		25EF20FB12B2430F006D19BA /* FactualQueryImpl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FactualQueryImpl.m; sourceTree = "<group>"; };
+		AA747D9E0F9514B9006C5449 /* FactualSDK_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FactualSDK_Prefix.pch; sourceTree = SOURCE_ROOT; };
+		AACBBE490F95108600F1A2B1 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		2559158813F39D7300EF5CDC /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2559158C13F39D7300EF5CDC /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		034768DFFF38A50411DB9C8B /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				2559158B13F39D7300EF5CDC /* libFactualSDK.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		0867D691FE84028FC02AAC07 /* FactualSDK */ = {
+			isa = PBXGroup;
+			children = (
+				258F594013F4861D00A0C0CA /* OAuthConsumer */,
+				25EF139D12AF1102006D19BA /* TouchJSON */,
+				08FB77AEFE84172EC02AAC07 /* Classes */,
+				32C88DFF0371C24200C91783 /* Other Sources */,
+				2559158D13F39D7300EF5CDC /* FactualSDK */,
+				0867D69AFE84028FC02AAC07 /* Frameworks */,
+				034768DFFF38A50411DB9C8B /* Products */,
+			);
+			name = FactualSDK;
+			sourceTree = "<group>";
+		};
+		0867D69AFE84028FC02AAC07 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				AACBBE490F95108600F1A2B1 /* Foundation.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		08FB77AEFE84172EC02AAC07 /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				25EF20FA12B2430F006D19BA /* FactualQuery.h */,
+				254C17C812C16A540079EA0B /* FactualQueryImpl.h */,
+				25EF20FB12B2430F006D19BA /* FactualQueryImpl.m */,
+				25EF138712AF0EE5006D19BA /* FactualAPIRequestImpl.h */,
+				25EF138812AF0EE5006D19BA /* FactualAPIRequestImpl.m */,
+				25EF134A12AF0BE5006D19BA /* FactualAPIPrivate.h */,
+				25EF138212AF0ECD006D19BA /* FactualAPIRequest.h */,
+				25EF138312AF0ECD006D19BA /* FactualAPIRequest.m */,
+				25EF134612AF0BE5006D19BA /* FactualAPI.h */,
+				25EF134712AF0BE5006D19BA /* FactualAPI.m */,
+				25EF134812AF0BE5006D19BA /* FactualAPIHelper.h */,
+				25EF134912AF0BE5006D19BA /* FactualAPIHelper.m */,
+				25EF134F12AF0BE5006D19BA /* FactualQueryResult.h */,
+				25EF135012AF0BE5006D19BA /* FactualQueryResult.m */,
+				25EF135112AF0BE5006D19BA /* FactualQueryResultImpl.h */,
+				25EF135212AF0BE5006D19BA /* FactualQueryResultImpl.m */,
+				25EF135712AF0BE5006D19BA /* FactualRow.h */,
+				25EF135812AF0BE5006D19BA /* FactualRow.m */,
+				25EF135912AF0BE5006D19BA /* FactualRowImpl.h */,
+				25EF135A12AF0BE5006D19BA /* FactualRowImpl.m */,
+				25EF135B12AF0BE5006D19BA /* FactualUpdateResult.h */,
+				25EF135C12AF0BE5006D19BA /* FactualUpdateResult.m */,
+				25EF147612AF1C5A006D19BA /* FactualSchemaResult.h */,
+				25EF147712AF1C5A006D19BA /* FactualSchemaResult.m */,
+				25EF147A12AF1C70006D19BA /* FactualSchemaResultImpl.h */,
+				25EF147B12AF1C70006D19BA /* FactualSchemaResultImpl.m */,
+				25EF147E12AF1C86006D19BA /* FactualFieldMetadata.h */,
+				25EF147F12AF1C86006D19BA /* FactualFieldMetadata.m */,
+				25EF14F812AF5DA5006D19BA /* FactualFieldMetadataImpl.h */,
+				25EF14F912AF5DA5006D19BA /* FactualFieldMetadataImpl.m */,
+			);
+			name = Classes;
+			sourceTree = "<group>";
+		};
+		2559158D13F39D7300EF5CDC /* FactualSDK */ = {
+			isa = PBXGroup;
+			children = (
+				2559159013F39D7300EF5CDC /* FactualSDK.h */,
+				2559159113F39D7300EF5CDC /* FactualSDK.m */,
+				2559158E13F39D7300EF5CDC /* Supporting Files */,
+			);
+			path = FactualSDK;
+			sourceTree = "<group>";
+		};
+		2559158E13F39D7300EF5CDC /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				2559158F13F39D7300EF5CDC /* FactualSDK-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		258F594013F4861D00A0C0CA /* OAuthConsumer */ = {
+			isa = PBXGroup;
+			children = (
+				258F599913F4A42B00A0C0CA /* Base64Transcoder.c */,
+				258F599A13F4A42B00A0C0CA /* Base64Transcoder.h */,
+				258F594113F4866700A0C0CA /* NSMutableURLRequest+Parameters.h */,
+				258F594213F4866700A0C0CA /* NSMutableURLRequest+Parameters.m */,
+				258F594513F4866700A0C0CA /* NSString+URLEncoding.h */,
+				258F594613F4866700A0C0CA /* NSString+URLEncoding.m */,
+				258F594913F4866700A0C0CA /* NSURL+Base.h */,
+				258F594A13F4866700A0C0CA /* NSURL+Base.m */,
+				258F594D13F4866700A0C0CA /* OAConsumer.h */,
+				258F594E13F4866700A0C0CA /* OAConsumer.m */,
+				258F595113F4866700A0C0CA /* OADataFetcher.h */,
+				258F595213F4866700A0C0CA /* OADataFetcher.m */,
+				258F595513F4866700A0C0CA /* OAHMAC_SHA1SignatureProvider.h */,
+				258F595613F4866700A0C0CA /* OAHMAC_SHA1SignatureProvider.m */,
+				258F595913F4866700A0C0CA /* OAMutableURLRequest.h */,
+				258F595A13F4866700A0C0CA /* OAMutableURLRequest.m */,
+				258F595D13F4866700A0C0CA /* OAPlaintextSignatureProvider.h */,
+				258F595E13F4866700A0C0CA /* OAPlaintextSignatureProvider.m */,
+				258F596113F4866700A0C0CA /* OARequestParameter.h */,
+				258F596213F4866700A0C0CA /* OARequestParameter.m */,
+				258F596513F4866700A0C0CA /* OAServiceTicket.h */,
+				258F596613F4866700A0C0CA /* OAServiceTicket.m */,
+				258F596713F4866700A0C0CA /* OASignatureProviding.h */,
+				258F596813F4866700A0C0CA /* OAToken.h */,
+				258F596913F4866700A0C0CA /* OAToken.m */,
+				258F596C13F4866700A0C0CA /* OAuthConsumer.h */,
+			);
+			name = OAuthConsumer;
+			sourceTree = "<group>";
+		};
+		25EF139D12AF1102006D19BA /* TouchJSON */ = {
+			isa = PBXGroup;
+			children = (
+				25EF13A312AF1134006D19BA /* JSON */,
+				25EF13A212AF1126006D19BA /* Extensions */,
+				25EF139E12AF111B006D19BA /* CDataScanner.h */,
+				25EF139F12AF111B006D19BA /* CDataScanner.m */,
+			);
+			name = TouchJSON;
+			sourceTree = "<group>";
+		};
+		25EF13A212AF1126006D19BA /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				25EF13B812AF1167006D19BA /* CDataScanner_Extensions.h */,
+				25EF13B912AF1167006D19BA /* CDataScanner_Extensions.m */,
+				25EF13BA12AF1167006D19BA /* NSCharacterSet_Extensions.h */,
+				25EF13BB12AF1167006D19BA /* NSCharacterSet_Extensions.m */,
+				25EF13BC12AF1167006D19BA /* NSDictionary_JSONExtensions.h */,
+				25EF13BD12AF1167006D19BA /* NSDictionary_JSONExtensions.m */,
+				25EF13BE12AF1167006D19BA /* NSScanner_Extensions.h */,
+				25EF13BF12AF1167006D19BA /* NSScanner_Extensions.m */,
+			);
+			name = Extensions;
+			sourceTree = "<group>";
+		};
+		25EF13A312AF1134006D19BA /* JSON */ = {
+			isa = PBXGroup;
+			children = (
+				25EF13A412AF1151006D19BA /* CJSONDataSerializer.h */,
+				25EF13A512AF1151006D19BA /* CJSONDataSerializer.m */,
+				25EF13A612AF1151006D19BA /* CJSONDeserializer.h */,
+				25EF13A712AF1151006D19BA /* CJSONDeserializer.m */,
+				25EF13A812AF1151006D19BA /* CJSONScanner.h */,
+				25EF13A912AF1151006D19BA /* CJSONScanner.m */,
+				25EF13AA12AF1151006D19BA /* CJSONSerializer.h */,
+				25EF13AB12AF1151006D19BA /* CJSONSerializer.m */,
+				25EF13AC12AF1151006D19BA /* CSerializedJSONData.h */,
+				25EF13AD12AF1151006D19BA /* CSerializedJSONData.m */,
+			);
+			name = JSON;
+			sourceTree = "<group>";
+		};
+		32C88DFF0371C24200C91783 /* Other Sources */ = {
+			isa = PBXGroup;
+			children = (
+				AA747D9E0F9514B9006C5449 /* FactualSDK_Prefix.pch */,
+			);
+			name = "Other Sources";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		2559158913F39D7300EF5CDC /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2559159613F39E2200EF5CDC /* FactualQuery.h in Headers */,
+				2559159713F39E2200EF5CDC /* FactualAPIRequest.h in Headers */,
+				2559159813F39E2200EF5CDC /* FactualAPI.h in Headers */,
+				2559159913F39E2200EF5CDC /* FactualQueryResult.h in Headers */,
+				2559159A13F39E2200EF5CDC /* FactualRow.h in Headers */,
+				2559159B13F39E2200EF5CDC /* FactualUpdateResult.h in Headers */,
+				2559159C13F39E2200EF5CDC /* FactualSchemaResult.h in Headers */,
+				2559159D13F39E2200EF5CDC /* FactualFieldMetadata.h in Headers */,
+				258F596D13F4866700A0C0CA /* NSMutableURLRequest+Parameters.h in Headers */,
+				258F597113F4866700A0C0CA /* NSString+URLEncoding.h in Headers */,
+				258F597513F4866700A0C0CA /* NSURL+Base.h in Headers */,
+				258F597913F4866700A0C0CA /* OAConsumer.h in Headers */,
+				258F597D13F4866700A0C0CA /* OADataFetcher.h in Headers */,
+				258F598113F4866700A0C0CA /* OAHMAC_SHA1SignatureProvider.h in Headers */,
+				258F598513F4866700A0C0CA /* OAMutableURLRequest.h in Headers */,
+				258F598913F4866700A0C0CA /* OAPlaintextSignatureProvider.h in Headers */,
+				258F598D13F4866700A0C0CA /* OARequestParameter.h in Headers */,
+				258F599113F4866700A0C0CA /* OAServiceTicket.h in Headers */,
+				258F599313F4866700A0C0CA /* OASignatureProviding.h in Headers */,
+				258F599413F4866700A0C0CA /* OAToken.h in Headers */,
+				258F599813F4866700A0C0CA /* OAuthConsumer.h in Headers */,
+				258F599C13F4A42B00A0C0CA /* Base64Transcoder.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		2559158A13F39D7300EF5CDC /* FactualSDK */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2559159313F39D7300EF5CDC /* Build configuration list for PBXNativeTarget "FactualSDK" */;
+			buildPhases = (
+				2559158713F39D7300EF5CDC /* Sources */,
+				2559158813F39D7300EF5CDC /* Frameworks */,
+				2559158913F39D7300EF5CDC /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = FactualSDK;
+			productName = FactualSDK;
+			productReference = 2559158B13F39D7300EF5CDC /* libFactualSDK.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		0867D690FE84028FC02AAC07 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0420;
+				ORGANIZATIONNAME = "Facutal Inc";
+			};
+			buildConfigurationList = 1DEB922208733DC00010E9CD /* Build configuration list for PBXProject "FactualSDK" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 1;
+			knownRegions = (
+				English,
+				Japanese,
+				French,
+				German,
+			);
+			mainGroup = 0867D691FE84028FC02AAC07 /* FactualSDK */;
+			productRefGroup = 034768DFFF38A50411DB9C8B /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				2559158A13F39D7300EF5CDC /* FactualSDK */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		2559158713F39D7300EF5CDC /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2559160213F3B39A00EF5CDC /* CJSONDataSerializer.m in Sources */,
+				2559160313F3B39A00EF5CDC /* CJSONDeserializer.m in Sources */,
+				2559160413F3B39A00EF5CDC /* CJSONScanner.m in Sources */,
+				2559160513F3B39A00EF5CDC /* CJSONSerializer.m in Sources */,
+				2559160613F3B39A00EF5CDC /* CSerializedJSONData.m in Sources */,
+				2559160713F3B39A00EF5CDC /* CDataScanner_Extensions.m in Sources */,
+				2559160813F3B39A00EF5CDC /* NSCharacterSet_Extensions.m in Sources */,
+				2559160913F3B39A00EF5CDC /* NSDictionary_JSONExtensions.m in Sources */,
+				2559160A13F3B39A00EF5CDC /* NSScanner_Extensions.m in Sources */,
+				2559160B13F3B39A00EF5CDC /* CDataScanner.m in Sources */,
+				2559160C13F3B39A00EF5CDC /* FactualQueryImpl.m in Sources */,
+				2559160D13F3B39A00EF5CDC /* FactualAPIRequestImpl.m in Sources */,
+				2559160E13F3B39A00EF5CDC /* FactualAPIRequest.m in Sources */,
+				2559160F13F3B39A00EF5CDC /* FactualAPI.m in Sources */,
+				2559161013F3B39A00EF5CDC /* FactualAPIHelper.m in Sources */,
+				2559161113F3B39A00EF5CDC /* FactualQueryResult.m in Sources */,
+				2559161213F3B39A00EF5CDC /* FactualQueryResultImpl.m in Sources */,
+				2559161313F3B39A00EF5CDC /* FactualRow.m in Sources */,
+				2559161413F3B39A00EF5CDC /* FactualRowImpl.m in Sources */,
+				2559161513F3B39A00EF5CDC /* FactualUpdateResult.m in Sources */,
+				2559161613F3B39A00EF5CDC /* FactualSchemaResult.m in Sources */,
+				2559161713F3B39A00EF5CDC /* FactualSchemaResultImpl.m in Sources */,
+				2559161813F3B39A00EF5CDC /* FactualFieldMetadata.m in Sources */,
+				2559161913F3B39A00EF5CDC /* FactualFieldMetadataImpl.m in Sources */,
+				2559159213F39D7300EF5CDC /* FactualSDK.m in Sources */,
+				258F596E13F4866700A0C0CA /* NSMutableURLRequest+Parameters.m in Sources */,
+				258F597213F4866700A0C0CA /* NSString+URLEncoding.m in Sources */,
+				258F597613F4866700A0C0CA /* NSURL+Base.m in Sources */,
+				258F597A13F4866700A0C0CA /* OAConsumer.m in Sources */,
+				258F597E13F4866700A0C0CA /* OADataFetcher.m in Sources */,
+				258F598213F4866700A0C0CA /* OAHMAC_SHA1SignatureProvider.m in Sources */,
+				258F598613F4866700A0C0CA /* OAMutableURLRequest.m in Sources */,
+				258F598A13F4866700A0C0CA /* OAPlaintextSignatureProvider.m in Sources */,
+				258F598E13F4866700A0C0CA /* OARequestParameter.m in Sources */,
+				258F599213F4866700A0C0CA /* OAServiceTicket.m in Sources */,
+				258F599513F4866700A0C0CA /* OAToken.m in Sources */,
+				258F599B13F4A42B00A0C0CA /* Base64Transcoder.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		1DEB922308733DC00010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
+				OTHER_LDFLAGS = (
+					"-all_load",
+					"-ObjC",
+				);
+				PRODUCT_NAME = FactualSDK;
+				SDKROOT = iphoneos;
+				WRAPPER_EXTENSION = framework;
+			};
+			name = Debug;
+		};
+		1DEB922408733DC00010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
+				OTHER_LDFLAGS = (
+					"-all_load",
+					"-ObjC",
+				);
+				PRODUCT_NAME = FactualSDK;
+				SDKROOT = iphoneos;
+				WRAPPER_EXTENSION = framework;
+			};
+			name = Release;
+		};
+		2559159413F39D7300EF5CDC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				DSTROOT = /tmp/FactualSDK.dst;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "FactualSDK/FactualSDK-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
+				OTHER_LDFLAGS = "-ObjC";
+				PRIVATE_HEADERS_FOLDER_PATH = "../$(TARGET_NAME)/private";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PUBLIC_HEADERS_FOLDER_PATH = "../$(TARGET_NAME)";
+				"PUBLIC_HEADERS_FOLDER_PATH[sdk=*]" = "../$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		2559159513F39D7300EF5CDC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				DSTROOT = /tmp/FactualSDK.dst;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "FactualSDK/FactualSDK-Prefix.pch";
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
+				OTHER_LDFLAGS = "-ObjC";
+				PRIVATE_HEADERS_FOLDER_PATH = "../$(TARGET_NAME)/private";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PUBLIC_HEADERS_FOLDER_PATH = "../$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		1DEB922208733DC00010E9CD /* Build configuration list for PBXProject "FactualSDK" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB922308733DC00010E9CD /* Debug */,
+				1DEB922408733DC00010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		2559159313F39D7300EF5CDC /* Build configuration list for PBXNativeTarget "FactualSDK" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2559159413F39D7300EF5CDC /* Debug */,
+				2559159513F39D7300EF5CDC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 0867D690FE84028FC02AAC07 /* Project object */;
+}
