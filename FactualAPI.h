@@ -13,10 +13,7 @@
 
 #import <Foundation/Foundation.h>
 #import "FactualAPIRequest.h"
-#import "FactualUpdateResult.h"
 #import "FactualQueryResult.h"
-#import "FactualSchemaResult.h"
-#import "FactualFieldMetadata.h"
 #import "FactualQuery.h"
 
 

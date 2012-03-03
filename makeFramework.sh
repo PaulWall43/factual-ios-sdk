@@ -71,9 +71,9 @@ cp ./FactualAPI.h $FRAMEWORK_DIR/Headers/
 cp ./FactualAPIRequest.h $FRAMEWORK_DIR/Headers/
 cp ./FactualQueryResult.h $FRAMEWORK_DIR/Headers/
 cp ./FactualRow.h $FRAMEWORK_DIR/Headers/
-cp ./FactualUpdateResult.h $FRAMEWORK_DIR/Headers/
-cp ./FactualSchemaResult.h $FRAMEWORK_DIR/Headers/
-cp ./FactualFieldMetadata.h $FRAMEWORK_DIR/Headers/
+#cp ./FactualUpdateResult.h $FRAMEWORK_DIR/Headers/
+#cp ./FactualSchemaResult.h $FRAMEWORK_DIR/Headers/
+#cp ./FactualFieldMetadata.h $FRAMEWORK_DIR/Headers/
 mkdir $FRAMEWORK_DIR/Docs
 headerdoc2html -u -q -o $FRAMEWORK_DIR/Docs/ $FRAMEWORK_DIR/Headers
 

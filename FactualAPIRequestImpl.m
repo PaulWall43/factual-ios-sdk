@@ -17,6 +17,9 @@ static long _lastRequestId = 0;
 
 static const NSTimeInterval kTimeoutInterval = 180.0;
 static NSString* kUserAgent = @"Factual-IPhoneSDK-V-1.0";
+static NSString* kFactualLibHeader = @"X-Factual-Lib";
+static NSString* kFactualLibHeaderSDKValue = @"factual--iPhone-SDK-1.0";
+
 
 
 @implementation FactualAPIRequestImpl
@@ -78,6 +81,7 @@ static NSString* kUserAgent = @"Factual-IPhoneSDK-V-1.0";
                           timeoutInterval:kTimeoutInterval];
 
   [request setValue:kUserAgent forHTTPHeaderField:@"User-Agent"];
+  [request setValue:kFactualLibHeaderSDKValue forHTTPHeaderField:kFactualLibHeader];
   
   if (payload != nil) {
     _httpMethod = @"POST";
@@ -109,6 +113,7 @@ static NSString* kUserAgent = @"Factual-IPhoneSDK-V-1.0";
   [request setCachePolicy:NSURLRequestReloadIgnoringLocalCacheData];
   [request setTimeoutInterval:kTimeoutInterval];
   [request setValue:kUserAgent forHTTPHeaderField:@"User-Agent"];
+  [request setValue:kFactualLibHeaderSDKValue forHTTPHeaderField:kFactualLibHeader];
   
   if (payload != nil) {
     _httpMethod = @"POST";

@@ -8,6 +8,7 @@
 #import "FactualQuery.h"
 #import "FactualQueryImpl.h"
 #import "CJSONSerializer.h"
+#import "NSString (Escaping).h"
 
 /* -----------------------------------------------------------------------------
  Predicate Strings
@@ -81,7 +82,7 @@ static NSString* compoundFilterPredicateStrings[] = {
   
   if (self = [super init]) {
     _type = type;
-    _filters = [filterValues retain];
+    _filters = (NSMutableArray*)[filterValues retain];
   }
   return self;
 }
@@ -351,7 +352,7 @@ static NSString* compoundFilterPredicateStrings[] = {
   
   if (self.rowId != nil) {
     [array addObject:[NSString stringWithFormat:@"subjectKey=%@",
-                      [self.rowId stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
+                      [self.rowId stringWithPercentEscape]]];
     /*
 		[qryString appendFormat:@"subjectKey=%@&",
 		 [self.rowId stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
@@ -394,7 +395,8 @@ static NSString* compoundFilterPredicateStrings[] = {
       }
       NSMutableString* filterStr = [[[NSMutableString alloc]init ]autorelease];
       [filterStr appendFormat:@"filters=%@",
-       [[[[CJSONSerializer serializer] serializeDictionary:filterDictionary] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding] stringByReplacingOccurrencesOfString:@"&" withString:@"%26"] ];    
+       [[[CJSONSerializer serializer] serializeDictionary:filterDictionary]
+        stringWithPercentEscape]];
       
       [array addObject:filterStr];
       //[qryString appendString:filterStr];
@@ -410,7 +412,7 @@ static NSString* compoundFilterPredicateStrings[] = {
         [qString appendString:term];
       }
       
-      [array addObject:[NSString stringWithFormat:@"q=%@",[qString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
+      [array addObject:[NSString stringWithFormat:@"q=%@",[qString stringWithPercentEscape]]];
       
       //[qryString appendFormat:@"q=%@&",[qString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
     }
@@ -420,7 +422,8 @@ static NSString* compoundFilterPredicateStrings[] = {
       [self.geoFilter appendToDictionary:geoDictionary];
 
       [array addObject:[NSString stringWithFormat:@"geo=%@",
-                        [[[[CJSONSerializer serializer] serializeDictionary:geoDictionary] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding] stringByReplacingOccurrencesOfString:@"&" withString:@"%26"] ]];
+                      [[[CJSONSerializer serializer] serializeDictionary:geoDictionary] stringWithPercentEscape]]];
+      
       /*[qryString appendFormat:@"geo=%@",
        [[[[CJSONSerializer serializer] serializeDictionary:geoDictionary] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding] stringByReplacingOccurrencesOfString:@"&" withString:@"%26"] ];    
        */
@@ -471,7 +474,7 @@ FactualSortCriteria(PrivateMethods) IMPLEMENTATION
 
 -(void) generateQueryString:(NSMutableString*) intoString {
   [intoString appendFormat:@"%@:%@",
-   [self.fieldName stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding],
+   [self.fieldName stringWithPercentEscape],
    (self.sortOrder == FactualSortOrder_Ascending) ? @"asc":@"desc"];
 }
   

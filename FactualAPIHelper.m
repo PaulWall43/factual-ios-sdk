@@ -24,7 +24,7 @@
   }
   else if (apiVersion == 3) { 
     NSString *url = [NSString stringWithFormat:@"http://api.v3.factual.com/%@",queryStr];
-    
+
     return [url autorelease];
   }
   return nil;
