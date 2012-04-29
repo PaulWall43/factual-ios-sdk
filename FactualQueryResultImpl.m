@@ -20,13 +20,17 @@
 	NSArray *rows = [jsonResponse objectForKey:@"data"];
   // bail if no data ... 
   if (columns == nil && rows == nil) {
+#ifdef TARGET_IPHONE_SIMULATOR    
     NSLog(@"fields or row data missing!");
+#endif    
     return nil;
   }
   // otherwise validate rows have proper number of cells ... 
   for (NSArray* row in rows) {
      if ([row count] != [columns count]) {
+#ifdef TARGET_IPHONE_SIMULATOR           
        NSLog(@"Invalid Cell Count in Row!");
+#endif       
        return nil;
      }
   }
@@ -35,7 +39,9 @@
 	NSNumber *theTotalRows = [jsonResponse objectForKey:@"total_rows"];
 	long totalRows = 0L;
   if (!theTotalRows) {
+#ifdef TARGET_IPHONE_SIMULATOR        
 		NSLog(@"total_rows object missing");
+#endif    
 	}
   else {
     totalRows = [theTotalRows unsignedIntValue];
@@ -55,7 +61,9 @@
 	NSArray *rows = [jsonResponse objectForKey:@"data"];
     // bail if no data ... 
   if (rows == nil) {
+#ifdef TARGET_IPHONE_SIMULATOR        
     NSLog(@"fields or row data missing!");
+#endif    
     return nil;
   }
 
@@ -63,7 +71,9 @@
   
 	long totalRows = 0L;
   if (!theTotalRows) {
+#ifdef TARGET_IPHONE_SIMULATOR        
 		NSLog(@"total_rows object missing");
+#endif    
 	}
   else {
     totalRows = [theTotalRows unsignedIntValue];

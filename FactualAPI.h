@@ -48,7 +48,6 @@
 @private
   NSString*              _apiKey;
   NSString*              _secret;
-  NSMutableDictionary*   _requests;
 }
 
 

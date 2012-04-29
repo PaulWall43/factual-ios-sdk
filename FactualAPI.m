@@ -36,27 +36,11 @@ NSString *const FactualCoreErrorDomain = @"FactualCoreErrorDomain";
   if (self = [super init]) {
     _apiKey = [apiKey retain];
     _secret = [[secret copy]retain];
-    _requests = [[NSMutableDictionary dictionaryWithCapacity:0] retain];
   }
   return self;
 }
 
-- (void) dealloc {
-  // grab request dictionary ...
-  NSMutableDictionary* requests = nil;
-  @synchronized(@"FactualAPI") {
-    requests = _requests;
-    _requests = nil;
-  }
-  // cancel any outstanding requests ... 
-  for (FactualAPIRequestImpl* request in requests) {
-    [request cancel];
-  }
-  
-  // destroy the collection...
-  [requests removeAllObjects];
-  [requests release];
-  
+- (void) dealloc {  
   [_apiKey release];
   [_secret release];
   [super dealloc];
@@ -81,18 +65,6 @@ NSString *const FactualCoreErrorDomain = @"FactualCoreErrorDomain";
                                   withAPIObject:self
                                 optionalPayload:payload] autorelease];
   
-  // add it to requests table ... 
-  @synchronized(@"FactualAPI") {
-    if (_requests != nil) {
-      [_requests setObject:requestObject forKey:[requestObject requestId]];
-    }
-    else {
-#ifdef TARGET_IPHONE_SIMULATOR        
-      NSLog(@"Error: Request Collection Null. Failing Request!");
-#endif      
-      requestObject = nil;
-    }
-  }
   return requestObject;
 }
 
@@ -113,18 +85,6 @@ NSString *const FactualCoreErrorDomain = @"FactualCoreErrorDomain";
                                 consumerKey:_apiKey
                                 consumerSecret:_secret] autorelease];
   
-    // add it to requests table ... 
-  @synchronized(@"FactualAPI") {
-    if (_requests != nil) {
-      [_requests setObject:requestObject forKey:[requestObject requestId]];
-    }
-    else {
-#ifdef TARGET_IPHONE_SIMULATOR        
-      NSLog(@"Error: Request Collection Null. Failing Request!");
-#endif      
-      requestObject = nil;
-    }
-  }
   return requestObject;
 }
 
@@ -171,8 +131,9 @@ NSString *const FactualCoreErrorDomain = @"FactualCoreErrorDomain";
   NSString* urlStr = [FactualAPIHelper buildAPIRequestURL:hosts[FactualApplicationModeNormal] apiVersion:3 queryStr:queryStr];
   
   if (_secret != nil) { 
-    
-    NSLog(@"using OAuth Request for Places Request Secret:%@",_secret);
+#ifdef TARGET_IPHONE_SIMULATOR
+    NSLog(@"using OAuth Request for Places Request");
+#endif
     
     return [self allocateOAuthRequest:urlStr
                           requestType:FactualRequestType_PlacesQuery 
@@ -238,13 +199,6 @@ NSString *const FactualCoreErrorDomain = @"FactualCoreErrorDomain";
 // FactualAPIPrivate implementation 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
--(void) releaseRequest:(FactualAPIRequest *)requestObject{
-  @synchronized(@"FactualAPI") {
-    if (_requests != nil) {
-      [_requests removeObjectForKey:[requestObject requestId]];
-    }
-  }
-}
 
 
 @end

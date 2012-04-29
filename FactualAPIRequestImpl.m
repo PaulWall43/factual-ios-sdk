@@ -210,7 +210,6 @@ static NSString* kFactualLibHeaderSDKValue = @"factual--iPhone-SDK-1.0";
   if ( self = [super init]) {
     _url = [[theURL copy ]retain];
     _requestType = theRequestType;
-    _apiObject = theAPIObject;
     _delegate = [theDelegate retain];
     _tableId  = [tableId retain];
     _httpMethod = @"GET";
@@ -235,7 +234,6 @@ static NSString* kFactualLibHeaderSDKValue = @"factual--iPhone-SDK-1.0";
   if ( self = [super init]) {
     _url = [[theURL copy ]retain];
     _requestType = theRequestType;
-    _apiObject = theAPIObject;
     _delegate = [theDelegate retain];
     _tableId  = [tableId retain];
     _httpMethod = @"GET";
@@ -254,8 +252,6 @@ static NSString* kFactualLibHeaderSDKValue = @"factual--iPhone-SDK-1.0";
   [_requestId release];
   [_tableId release];
   [_delegate release];
-  [_connection cancel];
-  [_connection release];
   [_url release];
   [super dealloc];
 }
@@ -269,9 +265,9 @@ static NSString* kFactualLibHeaderSDKValue = @"factual--iPhone-SDK-1.0";
     [_responseText release];
     _responseText = nil;
   }
-  if (_apiObject != nil) {
-    [((FactualAPI*)_apiObject) releaseRequest:self];
-    _apiObject = nil;
+  if (_connection != nil) { 
+    [_connection cancel];
+    _connection = nil;
   }
 }
 

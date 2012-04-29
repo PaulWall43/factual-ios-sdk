@@ -10,6 +10,6 @@
 
 @interface FactualAPI(FactualAPIPrivate)
 
-  -(void) releaseRequest:(FactualAPIRequest*) requestObject;
+
 
 @end

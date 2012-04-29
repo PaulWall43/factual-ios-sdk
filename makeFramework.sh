@@ -9,7 +9,7 @@ set -e
 # Define these to suit your nefarious purposes
                  FRAMEWORK_NAME=FactualSDK
                        LIB_NAME=libFactualSDK
-              FRAMEWORK_VERSION=1.0
+              FRAMEWORK_VERSION=1.1
                      BUILD_TYPE=Release
 
 # Where we'll put the build framework.

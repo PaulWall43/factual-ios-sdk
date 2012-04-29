@@ -22,7 +22,6 @@
   NSString*               _url;
   NSString*               _httpMethod;
   NSMutableData*          _responseText;
-  id                      _apiObject;
 }
 
 @property (nonatomic,readonly) NSString* url;
