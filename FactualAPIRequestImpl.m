@@ -139,7 +139,7 @@ static NSString* kFactualLibHeaderSDKValue = @"factual--iPhone-SDK-1.0";
 // helper to generate NSError from error response ... 
 -(void) generateErrorCallbackFromServerError:(NSDictionary*) jsonResp {
   NSString *errorMessage = (
-                            ([jsonResp objectForKey:@"error"]!= nil) ? [jsonResp objectForKey:@"error"] : @"Unable to parse response");
+                            ([jsonResp objectForKey:@"message"]!= nil) ? [jsonResp objectForKey:@"message"] : @"Unable to parse response");
   
   return [self generateErrorCallback:errorMessage];
 }
