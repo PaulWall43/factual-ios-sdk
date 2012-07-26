@@ -7,7 +7,9 @@
 //
 
 #import "FactualRowImpl.h"
-#import "CJSONDataSerializer.h"
+
+#import "CJSONDeserializer.h"
+#import "CJSONSerializer.h"
 
 
 @implementation FactualRowImpl
@@ -21,8 +23,8 @@
             columnIndex:(NSDictionary*) columnIndex copyValues:(boolean_t) copyValues {
   if (self = [super init]) {
     // hold on to a reference to the underlying column name and index dictionaries 
-    _columns = [columnNames retain];
-    _columnIndex = [columnIndex retain];
+    _columns = [columnNames mutableCopy];
+    _columnIndex = [columnIndex mutableCopy];
     
     //if optional row is not null, then assign row id directly 
     if (optionalRowId != nil) {
@@ -30,7 +32,7 @@
         _rowId = [optionalRowId copy];
       }
       else {
-        _rowId = [optionalRowId retain];
+        _rowId = optionalRowId;
       }
     }
     // see if capacity is at least at min required
@@ -45,7 +47,7 @@
             _rowId = [cellValue copy];
           }
           else {
-            _rowId = [cellValue retain];
+            _rowId = cellValue;
           }
           
         }
@@ -68,9 +70,9 @@
     }
     else {
       cells = [NSArray array];
-      _rowId = [[cellValues objectAtIndex:0]retain];
+      _rowId = [cellValues objectAtIndex:0];
     }
-    _cells = [cells retain];
+    _cells = cells;
   }
   return self;
 }
@@ -84,13 +86,14 @@
       //_columns = [columnNames retain];
       //_columnIndex = [columnIndex retain];
     
-    _jsonObject = [cellValues retain];
-    
+    _jsonObject = cellValues;
+      
+
     // see if capacity is at least at min required
     // locate factual id 
     NSString* factualId = [cellValues valueForKey:@"factual_id"];
     if (factualId != nil) { 
-      _rowId = [factualId retain];
+      _rowId = factualId;
     }
     else { 
       _rowId = @"undefined";
@@ -98,18 +101,6 @@
   }
   return self;
 }
-
-
-
--(void) dealloc {
-  [_cells release];
-  [_rowId release];
-  [_columns release];
-  [_columnIndex release];
-  [_jsonObject release];
-  [super dealloc];
-}
-
 
 // get row id ... 
 -(NSString*) rowId {
@@ -148,16 +139,18 @@
         return (NSString*)object;
         }
       else if ([object isKindOfClass:[NSArray class]])
-        { 
-          CJSONDataSerializer* serializer = [CJSONDataSerializer serializer];
-          NSData* data = [serializer serializeArray:(NSArray*)object];
-          return [[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] autorelease];
+      { 
+          NSError *theError = nil;
+          CJSONSerializer* serializer = [CJSONSerializer serializer];
+          NSData* data = [serializer serializeArray:(NSArray*)object error:&theError];
+          return [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
         }
       else if ([object isKindOfClass:[NSDictionary class]])
-        {
-        CJSONDataSerializer* serializer = [CJSONDataSerializer serializer];
-        NSData* data = [serializer serializeDictionary:(NSDictionary*)object];
-        return [[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] autorelease];
+      {
+          NSError *theError = nil;
+        CJSONSerializer* serializer = [CJSONSerializer serializer];
+        NSData* data = [serializer serializeDictionary:(NSDictionary*)object error:&theError];
+        return [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
         }
       else
         {
@@ -235,15 +228,18 @@
 	}
   else if ([object isKindOfClass:[NSArray class]])
 	{ 
-    CJSONDataSerializer* serializer = [CJSONDataSerializer serializer];
-    NSData* data = [serializer serializeArray:(NSArray*)object];
-    return [[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] autorelease];
+        
+        NSError *theError = nil;
+    CJSONSerializer* serializer = [CJSONSerializer serializer];
+        NSData* data = [serializer serializeArray:(NSArray*)object  error:&theError];
+    return [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
 	}
   else if ([object isKindOfClass:[NSDictionary class]])
-	{
-    CJSONDataSerializer* serializer = [CJSONDataSerializer serializer];
-    NSData* data = [serializer serializeDictionary:(NSDictionary*)object];
-    return [[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] autorelease];
+  {
+      NSError *theError = nil;
+    CJSONSerializer* serializer = [CJSONSerializer serializer];
+    NSData* data = [serializer serializeDictionary:(NSDictionary*)object error:&theError];
+    return [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
 	}
   else
 	{

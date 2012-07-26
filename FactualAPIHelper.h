@@ -7,6 +7,8 @@
 
 #import <Foundation/Foundation.h>
 #import "FactualQuery.h"
+#import "FactualFacetQuery.h"
+#import "FacetQuery.h"
 
 @interface FactualAPIHelper : NSObject {
   
@@ -16,7 +18,9 @@
                   apiVersion:(NSInteger) apiVersion
                   queryStr:(NSString*) queryStr;
 
++(NSString*) buildQueryString:(NSString*) apiKey path:(NSString*) path queryParams:(FactualQuery*) tableQuery;
 +(NSString*) buildTableQueryString:(NSString*) apiKey tableId:(NSString*) tableId queryParams:(FactualQuery*) queryParams;
++(NSString*) buildPlacesQueryString:(NSString*) apiKey tableId:(NSString*) tableId facetParams:(FactualFacetQuery*) tableQuery;
 +(NSString*) buildPlacesQueryString:(NSString*) apiKey tableId:(NSString*) tableId queryParams:(FactualQuery*) tableQuery;
 +(NSString*) buildUpdateQueryString:(NSString*) tableId;
 +(NSString*) buildTableUpdatePostBody:(NSString*) apiKey

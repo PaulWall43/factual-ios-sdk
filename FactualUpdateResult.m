@@ -17,17 +17,11 @@
             tableId:(NSString*)tableId {
 
   if (self = [super init]) {
-    _affectedRowId = [rowIdValue retain];
+    _affectedRowId = rowIdValue;
     _exists = existsValue;
-    _tableId = [tableId retain];
+    _tableId = tableId;
   }
   return self;
-}
-
--(void) dealloc {
-  [_affectedRowId release];
-  [_tableId release];
-  [super dealloc];
 }
 
 -(NSString*) description {

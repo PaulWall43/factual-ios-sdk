@@ -53,10 +53,11 @@ static NSString* kFactualLibHeaderSDKValue = @"factual--iPhone-SDK-1.0";
 //////////////////////////////////////////////////////////////////////////////////////////////////
 -(void) parsePlacesQueryResponse:(NSDictionary*) jsonResponse {
   if (jsonResponse != nil) {
+      NSLog(@"JSON RESULT %@", jsonResponse);
     
     FactualQueryResult* queryResult = [FactualQueryResultImpl queryResultFromPlacesJSON:jsonResponse];
-    
-    if (queryResult != nil) {
+      
+      if (queryResult != nil) {
       if ([_delegate respondsToSelector:@selector(requestComplete:receivedQueryResult:)]) {
         [_delegate requestComplete:self receivedQueryResult:queryResult];
       }
@@ -67,7 +68,19 @@ static NSString* kFactualLibHeaderSDKValue = @"factual--iPhone-SDK-1.0";
 }
 
 
-
+//////////////////////////////////////////////////////////////////////////////////////////////////
+// facet query response handler ...  
+//////////////////////////////////////////////////////////////////////////////////////////////////
+-(void) parseFacetQueryResponse:(NSDictionary*) jsonResponse {
+    if (jsonResponse != nil) {
+        NSLog(@"JSON RESULT %@", jsonResponse);
+            if ([_delegate respondsToSelector:@selector(requestComplete:receivedRawResult:)]) {
+                [_delegate requestComplete:self receivedRawResult:jsonResponse];
+            }
+            return;
+    }
+    [self generateErrorCallback:@"Unable to create Response Object from Query Response!"];
+}
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 // internal helpers 
@@ -102,13 +115,13 @@ static NSString* kFactualLibHeaderSDKValue = @"factual--iPhone-SDK-1.0";
 -(NSURLConnection*) buildOAuthConnection:(NSString*) consumerKey 
                          consumerSecret:(NSString*) consumerSecret
                                  payload:(NSString*) payload {
-  OAConsumer* consumer = [[[OAConsumer alloc]initWithKey:consumerKey secret:consumerSecret]autorelease];
+  OAConsumer* consumer = [[OAConsumer alloc]initWithKey:consumerKey secret:consumerSecret];
   
-  OAMutableURLRequest* request = [[[OAMutableURLRequest alloc ]initWithURL:[NSURL URLWithString:_url]
+  OAMutableURLRequest* request = [[OAMutableURLRequest alloc ]initWithURL:[NSURL URLWithString:_url]
                                                                  consumer:consumer
                                                                     token:nil
                                                                     realm:nil
-                                                        signatureProvider:nil] autorelease];
+                                                        signatureProvider:nil];
 
   [request setCachePolicy:NSURLRequestReloadIgnoringLocalCacheData];
   [request setTimeoutInterval:kTimeoutInterval];
@@ -182,6 +195,9 @@ static NSString* kFactualLibHeaderSDKValue = @"factual--iPhone-SDK-1.0";
     case FactualRequestType_PlacesQuery: { 
       [self parsePlacesQueryResponse:[jsonResp objectForKey:@"response"]];
     }
+    case FactualRequestType_FacetQuery: { 
+      [self parseFacetQueryResponse:[jsonResp objectForKey:@"response"]];
+    }
     break;
       
     default: {
@@ -208,14 +224,14 @@ static NSString* kFactualLibHeaderSDKValue = @"factual--iPhone-SDK-1.0";
 
 {
   if ( self = [super init]) {
-    _url = [[theURL copy ]retain];
+    _url = [theURL copy];
     _requestType = theRequestType;
-    _delegate = [theDelegate retain];
-    _tableId  = [tableId retain];
+    _delegate = theDelegate;
+    _tableId  = tableId;
     _httpMethod = @"GET";
     _responseText = nil;
     @synchronized(@"FactualAPIRequestImpl") {
-      _requestId = [[[NSNumber numberWithLong:++_lastRequestId] stringValue] retain];
+      _requestId = [[NSNumber numberWithLong:++_lastRequestId] stringValue];
     }
     _connection = [self buildConnection:payload];
   }
@@ -232,28 +248,18 @@ static NSString* kFactualLibHeaderSDKValue = @"factual--iPhone-SDK-1.0";
               consumerSecret:(NSString*) consumerSecret { 
 
   if ( self = [super init]) {
-    _url = [[theURL copy ]retain];
+    _url = [theURL copy];
     _requestType = theRequestType;
-    _delegate = [theDelegate retain];
-    _tableId  = [tableId retain];
+    _delegate = theDelegate;
+    _tableId  = tableId;
     _httpMethod = @"GET";
     _responseText = nil;
     @synchronized(@"FactualAPIRequestImpl") {
-      _requestId = [[[NSNumber numberWithLong:++_lastRequestId] stringValue] retain];
+      _requestId = [[NSNumber numberWithLong:++_lastRequestId] stringValue];
     }
     _connection = [self buildOAuthConnection:consumerKey consumerSecret:consumerSecret payload:payload];
   }
   return self;
-}
-
-
-- (void)dealloc {
-  [self cancel];
-  [_requestId release];
-  [_tableId release];
-  [_delegate release];
-  [_url release];
-  [super dealloc];
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -262,7 +268,6 @@ static NSString* kFactualLibHeaderSDKValue = @"factual--iPhone-SDK-1.0";
 
 -(void) cancel {
   if (_responseText != nil) {
-    [_responseText release];
     _responseText = nil;
   }
   if (_connection != nil) { 

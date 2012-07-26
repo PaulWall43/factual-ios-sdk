@@ -14,15 +14,9 @@
 // initialization 
 -(id) initFromJSON:(NSDictionary*) jsonResponse {
   if (self = [super init]) {
-    _fieldData = [jsonResponse retain];
+    _fieldData = jsonResponse;
   }
   return self;
-}
-
-// dealloc
--(void) dealloc {
-  [_fieldData release];
-  [super dealloc];
 }
 
 -(NSString*) fieldName {

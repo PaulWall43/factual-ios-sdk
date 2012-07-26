@@ -7,8 +7,11 @@
 
 #import "FactualQuery.h"
 #import "FactualQueryImpl.h"
+#import "FactualFacetQuery.h"
+#import "FactualFacetQueryImpl.h"
 #import "CJSONSerializer.h"
 #import "NSString (Escaping).h"
+#import "UrlUtil.h"
 
 /* -----------------------------------------------------------------------------
  Predicate Strings
@@ -22,11 +25,17 @@ static NSString* simplePredicateStrings[]  = {
   @"$lt",
   @"$gte",
   @"$lte",
-  @"$bw"
+  @"$bw",
+  @"$search"
+  @"$nbw",
+  @"$blank",
 };
 
 static NSString* compoundValuePredicateStrings[] = {
-  @"$in"
+  @"$in",
+  @"$nin",
+  @"$bwin",
+  @"$nbwin",
 };
 
 static NSString* compoundFilterPredicateStrings[] = {
@@ -54,12 +63,6 @@ static NSString* compoundFilterPredicateStrings[] = {
   return self;
 }
 
--(void) dealloc {
-  [_value release];
-  [_fieldName release];
-  [super dealloc];
-}
-
 -(void) appendToDictionary:(NSMutableDictionary*) dictionary {
   NSDictionary* tuple  = [NSDictionary dictionaryWithObject:_value forKey:simplePredicateStrings[_type]]; 
   [dictionary setObject:tuple forKey:self.fieldName];
@@ -82,14 +85,9 @@ static NSString* compoundFilterPredicateStrings[] = {
   
   if (self = [super init]) {
     _type = type;
-    _filters = (NSMutableArray*)[filterValues retain];
+    _filters = (NSMutableArray*)filterValues;
   }
   return self;
-}
-
--(void) dealloc {
-  [_filters release];
-  [super dealloc];
 }
 
 -(void) appendToDictionary:(NSMutableDictionary*) dictionary {
@@ -124,12 +122,6 @@ static NSString* compoundFilterPredicateStrings[] = {
   return self;
 }
 
--(void) dealloc {
-  [_fieldName release];
-  [_values release];
-  [super dealloc];
-}
-
 -(void) appendToDictionary:(NSMutableDictionary*) dictionary {
   NSMutableDictionary* nestedDictionary = [NSMutableDictionary dictionaryWithCapacity:1];
   [nestedDictionary setObject:_values forKey:compoundValuePredicateStrings[_type]];
@@ -144,51 +136,75 @@ static NSString* compoundFilterPredicateStrings[] = {
 @implementation FactualRowFilter
 
 +(FactualRowFilter*) fieldName:(NSString*)  fieldName equalTo:(id) value {
-  return [[[FactualSimpleValueFilterPredicate alloc] initWithPredicateType:Eq fieldName:fieldName value:value]autorelease];
+  return [[FactualSimpleValueFilterPredicate alloc] initWithPredicateType:Eq fieldName:fieldName value:value];
 }
 
 +(FactualRowFilter*) fieldName:(NSString*)  fieldName notEqualTo:(id) value {
-  return [[[FactualSimpleValueFilterPredicate alloc] initWithPredicateType:NEq fieldName:fieldName value:value]autorelease];  
+  return [[FactualSimpleValueFilterPredicate alloc] initWithPredicateType:NEq fieldName:fieldName value:value];  
 }
 
 +(FactualRowFilter*) fieldName:(NSString*) fieldName greaterThan:(id) value {
-  return [[[FactualSimpleValueFilterPredicate alloc] initWithPredicateType:Gt fieldName:fieldName value:value]autorelease];  
+  return [[FactualSimpleValueFilterPredicate alloc] initWithPredicateType:Gt fieldName:fieldName value:value];  
 }
 
 +(FactualRowFilter*) fieldName:(NSString*) fieldName lessThan:(id) value {
-  return [[[FactualSimpleValueFilterPredicate alloc] initWithPredicateType:Lt fieldName:fieldName value:value]autorelease];  
+  return [[FactualSimpleValueFilterPredicate alloc] initWithPredicateType:Lt fieldName:fieldName value:value];  
 }
 
 +(FactualRowFilter*) fieldName:(NSString*) fieldName greaterThanOrEqualTo:(id) value {
-  return [[[FactualSimpleValueFilterPredicate alloc] initWithPredicateType:GtEq fieldName:fieldName value:value]autorelease];  
+  return [[FactualSimpleValueFilterPredicate alloc] initWithPredicateType:GtEq fieldName:fieldName value:value];  
 }
 
 +(FactualRowFilter*) fieldName:(NSString*) fieldName lessThanOrEqualTo:(id) value {
-  return [[[FactualSimpleValueFilterPredicate alloc] initWithPredicateType:LtEq fieldName:fieldName value:value]autorelease];  
+  return [[FactualSimpleValueFilterPredicate alloc] initWithPredicateType:LtEq fieldName:fieldName value:value];  
 }
 
 +(FactualRowFilter*) fieldName:(NSString*) fieldName In:(id) value,... {
   NSMutableArray* values = [NSMutableArray array];
-  
+    
   va_list ap;
   va_start(ap, value);
-  
+    
   while (value) {
     [values addObject:value];
     value = va_arg(ap, id);
   }
   va_end(ap);
-  
-  return [[[FactualCompoundValueFilterPredicate alloc] initWithPredicateType:In fieldName:fieldName values:values]autorelease];
+
+  return [[FactualCompoundValueFilterPredicate alloc] initWithPredicateType:In fieldName:fieldName values:values];
 }
 
 +(FactualRowFilter*) fieldName:(NSString*) fieldName InArray:(NSArray*) values {
-  return [[[FactualCompoundValueFilterPredicate alloc] initWithPredicateType:In fieldName:fieldName values:values]autorelease];
+  return [[FactualCompoundValueFilterPredicate alloc] initWithPredicateType:In fieldName:fieldName values:values];
 }
 
 
 +(FactualRowFilter*) fieldName:(NSString*) fieldName beginsWith:(NSString*) value {
-  return [[[FactualSimpleValueFilterPredicate alloc] initWithPredicateType:BeginsWith fieldName:fieldName value:value]autorelease];
+  return [[FactualSimpleValueFilterPredicate alloc] initWithPredicateType:BeginsWith fieldName:fieldName value:value];
+}
+
++(FactualRowFilter*) fieldName:(NSString*) fieldName search:(NSString*) value {
+    return [[FactualSimpleValueFilterPredicate alloc] initWithPredicateType:Search fieldName:fieldName value:value];
+}
+
++(FactualRowFilter*) fieldName:(NSString*) fieldName notBeginsWith:(NSString*) value {
+    return [[FactualSimpleValueFilterPredicate alloc] initWithPredicateType:NotBeginsWith fieldName:fieldName value:value];
+}
+
++(FactualRowFilter*) fieldName:(NSString*) fieldName blank:(NSString*) value {
+    return [[FactualSimpleValueFilterPredicate alloc] initWithPredicateType:NotBeginsWith fieldName:fieldName value:value];
+}
+
++(FactualRowFilter*) fieldName:(NSString*) fieldName notInArray:(NSArray*) values {
+    return [[FactualCompoundValueFilterPredicate alloc] initWithPredicateType:NotIn fieldName:fieldName values:values];
+}
+
++(FactualRowFilter*) fieldName:(NSString*) fieldName beginsWithAnyArray:(NSArray*) values {
+    return [[FactualCompoundValueFilterPredicate alloc] initWithPredicateType:BeginsWithAny fieldName:fieldName values:values];
+}
+
++(FactualRowFilter*) fieldName:(NSString*) fieldName notBeginsWithAnyArray:(NSArray*) values {
+    return [[FactualCompoundValueFilterPredicate alloc] initWithPredicateType:NotBeginsWithAny fieldName:fieldName values:values];
 }
 
 +(FactualRowFilter*) orFilter:(FactualRowFilter*)rowFilter,... {
@@ -204,7 +220,7 @@ static NSString* compoundFilterPredicateStrings[] = {
   }
   va_end(ap);
   
-  return [[[FactualCompoundRowFilterPredicate alloc] initWithPredicateType:Or filterValues:rowFilters] autorelease];
+  return [[FactualCompoundRowFilterPredicate alloc] initWithPredicateType:Or filterValues:rowFilters ];
 }
 
 +(FactualRowFilter*) orFilterWithArray:(NSArray*)rowFilters {
@@ -214,7 +230,7 @@ static NSString* compoundFilterPredicateStrings[] = {
       @throw [NSException exceptionWithName:@"Invalid Arguement" reason:@"Invalid filter type in array!" userInfo:nil];
     }
   }  
-  return [[[FactualCompoundRowFilterPredicate alloc] initWithPredicateType:Or filterValues:rowFilters] autorelease];
+  return [[FactualCompoundRowFilterPredicate alloc] initWithPredicateType:Or filterValues:rowFilters];
 }
 
 +(FactualRowFilter*) andFilterWithArray:(NSArray*)rowFilters {
@@ -224,7 +240,7 @@ static NSString* compoundFilterPredicateStrings[] = {
       @throw [NSException exceptionWithName:@"Invalid Arguement" reason:@"Invalid filter type in array!" userInfo:nil];
     }
   }  
-  return [[[FactualCompoundRowFilterPredicate alloc] initWithPredicateType:And filterValues:rowFilters] autorelease];
+  return [[FactualCompoundRowFilterPredicate alloc] initWithPredicateType:And filterValues:rowFilters];
 }
 
 
@@ -240,7 +256,7 @@ static NSString* compoundFilterPredicateStrings[] = {
   }
   va_end(ap);
   
-  return [[[FactualCompoundRowFilterPredicate alloc] initWithPredicateType:And filterValues:rowFilters] autorelease];
+  return [[FactualCompoundRowFilterPredicate alloc] initWithPredicateType:And filterValues:rowFilters];
 }
 
 
@@ -253,10 +269,10 @@ static NSString* compoundFilterPredicateStrings[] = {
 
 @implementation FactualQuery
 
-@dynamic rowId,offset,limit,primarySortCriteria,secondarySortCriteria,rowFilters,fullTextTerms;
+@dynamic rowId,offset,limit,primarySortCriteria,secondarySortCriteria,rowFilters,fullTextTerms,includeRowCount,selectTerms;
 
 +(FactualQuery*) query {
-  return [[[FactualQueryImplementation alloc] init] autorelease];
+  return [[FactualQueryImplementation alloc] init];
 }
 
 @end
@@ -274,29 +290,20 @@ static NSString* compoundFilterPredicateStrings[] = {
 @synthesize fullTextTerms=_textTerms;
 @synthesize rowFilters=_rowFilters;
 @synthesize geoFilter=_geoFilter;
-
+@synthesize includeRowCount=_includeRowCount;
+@synthesize selectTerms=_selectTerms;
 
 
 -(id) init {
   if (self = [super init]) {
-    _rowFilters = [[NSMutableArray arrayWithCapacity:0] retain];
-    _textTerms  = [[NSMutableArray arrayWithCapacity:0] retain];
+    _rowFilters = [NSMutableArray arrayWithCapacity:0];
+    _textTerms  = [NSMutableArray arrayWithCapacity:0];
+    _selectTerms  = [NSMutableArray arrayWithCapacity:0];
     _offset = 0;
     _limit  = 0;
+    _includeRowCount = false;
   }
   return self;
-}
-
--(void) dealloc {
-  
-  [_rowId release];
-  [_primarySortCriteria release];
-  [_secondarySortCriteria release];
-  [_rowFilters release];
-  [_textTerms release];
-  [_geoFilter release];
-  
-  [super dealloc];
 }
 
 -(void) addFullTextQueryTerm:(NSString*) textTerm {
@@ -323,6 +330,12 @@ static NSString* compoundFilterPredicateStrings[] = {
   }
 }
 
+-(void) addSelectTerm:(NSString*) selectTerm {
+    if ([selectTerm length] != 0) {
+        [_selectTerms addObject:selectTerm];    
+    }
+}
+
 -(void) clearFullTextFilter {
   [_textTerms removeAllObjects];
 }
@@ -344,10 +357,11 @@ static NSString* compoundFilterPredicateStrings[] = {
 }
 
 -(void) generateQueryString:(NSMutableString*)qryString {
-  NSMutableArray* array = [[[NSMutableArray alloc] initWithCapacity:10]autorelease];
+  NSMutableArray* array = [[NSMutableArray alloc] initWithCapacity:10];
   
-  [array addObject:@"include_count=t"];
-  
+  if (self.includeRowCount) {
+      [array addObject:[NSString stringWithFormat:@"include_count=true"]];
+  }
   //[qryString appendString:@"include_count=t&"];
   
   if (self.rowId != nil) {
@@ -370,7 +384,7 @@ static NSString* compoundFilterPredicateStrings[] = {
     }
     
     if (self.primarySortCriteria != nil || self.secondarySortCriteria != nil) {
-      NSMutableString* sortStr = [[[NSMutableString alloc]init ]autorelease];
+      NSMutableString* sortStr = [[NSMutableString alloc]init ];
       [sortStr appendString:@"sort="];
       if (self.primarySortCriteria != nil) {
         [self.primarySortCriteria generateQueryString:sortStr];
@@ -388,23 +402,28 @@ static NSString* compoundFilterPredicateStrings[] = {
     
             
     if ([self.rowFilters count] != 0) {
-      NSMutableDictionary* filterDictionary = [[[NSMutableDictionary alloc] initWithCapacity:0]autorelease];
-      
-      for (FactualRowFilter* filter in self.rowFilters) {
-        [filter appendToDictionary:filterDictionary];
-      }
-      NSMutableString* filterStr = [[[NSMutableString alloc]init ]autorelease];
-      [filterStr appendFormat:@"filters=%@",
-       [[[CJSONSerializer serializer] serializeDictionary:filterDictionary]
-        stringWithPercentEscape]];
-      
-      [array addObject:filterStr];
-      //[qryString appendString:filterStr];
-      //[qryString appendString:@"&"];
+        NSMutableDictionary* filterDictionary = [[NSMutableDictionary alloc] initWithCapacity:0];
+        
+        if ([self.rowFilters count] == 1) {
+            [[self.rowFilters objectAtIndex: 0] appendToDictionary:filterDictionary];
+        } else {
+            FactualCompoundRowFilterPredicate* andFilter = [[FactualCompoundRowFilterPredicate alloc] initWithPredicateType:And filterValues:self.rowFilters];
+            [andFilter appendToDictionary:filterDictionary];
+        }
+NSError *theError = nil;
+        NSMutableString* filterStr = [[NSMutableString alloc]init ];
+        [filterStr appendFormat:@"filters=%@",
+         [[[NSString alloc] initWithData:
+            [[CJSONSerializer serializer] serializeDictionary:filterDictionary  error:&theError] 
+            encoding:NSUTF8StringEncoding]
+          stringWithPercentEscape]];
+        [array addObject:filterStr];
+            //[qryString appendString:filterStr];
+            //[qryString appendString:@"&"];
     }
     
     if ([self.fullTextTerms count] != 0) {
-      NSMutableString* qString = [[[NSMutableString alloc] init] autorelease];
+      NSMutableString* qString = [[NSMutableString alloc] init];
       int termNumber=0;
       for (NSString* term in self.fullTextTerms) {
         if(termNumber++ != 0) 
@@ -416,13 +435,29 @@ static NSString* compoundFilterPredicateStrings[] = {
       
       //[qryString appendFormat:@"q=%@&",[qString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
     }
+      if ([self.selectTerms count] != 0) {
+          NSMutableString* qString = [[NSMutableString alloc] init];
+          int termNumber=0;
+          for (NSString* term in self.selectTerms) {
+              if(termNumber++ != 0) 
+                  [qString appendString:@","];
+              [qString appendString:term];
+          }
+          
+          [array addObject:[NSString stringWithFormat:@"select=%@",[qString stringWithPercentEscape]]];
+          
+          //[qryString appendFormat:@"q=%@&",[qString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+      }
     
     if (self.geoFilter != nil) {
-      NSMutableDictionary* geoDictionary = [[[NSMutableDictionary alloc] initWithCapacity:0]autorelease];
+      NSMutableDictionary* geoDictionary = [[NSMutableDictionary alloc] initWithCapacity:0];
       [self.geoFilter appendToDictionary:geoDictionary];
-
+        
+        NSError *theError = nil;
       [array addObject:[NSString stringWithFormat:@"geo=%@",
-                      [[[CJSONSerializer serializer] serializeDictionary:geoDictionary] stringWithPercentEscape]]];
+                        [[[NSString alloc] initWithData:
+                          [[CJSONSerializer serializer] serializeDictionary:geoDictionary error:&theError] 
+                        encoding:NSUTF8StringEncoding] stringWithPercentEscape]]];
       
       /*[qryString appendFormat:@"geo=%@",
        [[[[CJSONSerializer serializer] serializeDictionary:geoDictionary] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding] stringByReplacingOccurrencesOfString:@"&" withString:@"%26"] ];    
@@ -430,17 +465,13 @@ static NSString* compoundFilterPredicateStrings[] = {
       
     }
   }
-  
-  int paramCount=0;
-  for (NSString* str in array) {
-    if (paramCount++ != 0) 
-      [qryString appendString:@"&"];
-    [qryString appendString:str];
-  }
+    
+  [UrlUtil appendParams:array to:qryString];
 }
 
 
 @end
+
 
 /* -----------------------------------------------------------------------------
  FactualSortCriteria IMPLEMENTATION
@@ -456,11 +487,6 @@ static NSString* compoundFilterPredicateStrings[] = {
     self.sortOrder = sortOrder;
   }
   return self;
-}
-
--(void) dealloc {
-  [_fieldName release];
-  [super dealloc];
 }
 
 @end
@@ -490,7 +516,7 @@ FactualSortCriteria(PrivateMethods) IMPLEMENTATION
 @implementation FactualGeoFilter
 
 +(FactualGeoFilter*) createDistanceFromPointGeoFilter:(CLLocationCoordinate2D) location distance:(double)distance {
-  return [[[FactualDistanceFromPointGeoFilter alloc] initWithLocation:location distance:distance]autorelease];
+  return [[FactualDistanceFromPointGeoFilter alloc] initWithLocation:location distance:distance];
 }
 
 @end

@@ -104,6 +104,19 @@ typedef enum  {
  @discussion construct a prefix match text filter (on a particular field)
  */ 
 +(FactualRowFilter*) fieldName:(NSString*) fieldName beginsWith:(NSString*) value;
+
++(FactualRowFilter*) fieldName:(NSString*) fieldName search:(NSString*) value;
+
++(FactualRowFilter*) fieldName:(NSString*) fieldName notBeginsWith:(NSString*) value;
+
++(FactualRowFilter*) fieldName:(NSString*) fieldName blank:(NSString*) value;
+
++(FactualRowFilter*) fieldName:(NSString*) fieldName notInArray:(NSArray*) values;
+
++(FactualRowFilter*) fieldName:(NSString*) fieldName beginsWithAnyArray:(NSArray*) values;
+
++(FactualRowFilter*) fieldName:(NSString*) fieldName notBeginsWithAnyArray:(NSArray*) values;
+
 /*! @method 
  @discussion construct an OR filter consisting of one or more nested filters
  followed by a nil
@@ -181,6 +194,9 @@ typedef enum  {
  */
 @property(nonatomic,readonly) NSMutableArray* fullTextTerms;
 
+@property (nonatomic, assign) BOOL includeRowCount;
+
+@property (nonatomic,readonly) NSMutableArray* selectTerms;
 
 @end
 
@@ -241,5 +257,7 @@ typedef enum  {
  @discussion clear all previously set row filters 
  */
 -(void) clearRowFilters;
+
+-(void) addSelectTerm:(NSString*) selectTerm;
 
 @end

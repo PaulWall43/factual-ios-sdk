@@ -15,7 +15,11 @@
 #import "FactualAPIRequest.h"
 #import "FactualQueryResult.h"
 #import "FactualQuery.h"
-
+#import "FactualFacetQuery.h"
+#import "Geocode.h"
+#import "Geopulse.h"
+#import "Resolve.h"
+#import "FacetQuery.h"
 
 
 // forward declare delegate ... 
@@ -69,9 +73,22 @@
 */
 - (id) initWithAPIKey:(NSString*) apiKey secret:(NSString*) secret;
 
-- (void) dealloc;
+- (FactualAPIRequest*)   geopulse:(Geopulse*) geopulse
+                           withDelegate:(id<FactualAPIDelegate>) delegate;
 
+- (FactualAPIRequest*)   reverseGeocode:(Geocode*) geocode
+                           withDelegate:(id<FactualAPIDelegate>) delegate;
 
+- (FactualAPIRequest*)   monetize:(FactualQuery*) queryParams
+                     withDelegate:(id<FactualAPIDelegate>) delegate;
+
+- (FactualAPIRequest*)   queryTable:(NSString*) tableId  
+                      resolveParams:(Resolve*) resolve
+                       withDelegate:(id<FactualAPIDelegate>) delegate;
+
+- (FactualAPIRequest*)   queryTable:(NSString*) tableId  
+                      facetParams:(FactualFacetQuery*) facet
+                       withDelegate:(id<FactualAPIDelegate>) delegate;
 /*! @method
     @discussion Use this method to query a Factual table. You must specify 
     the Factual table id. You can specify additional query parameters via the
@@ -105,6 +122,10 @@
                         optionalQueryParams:(FactualQuery*) queryParams
                         withDelegate:(id<FactualAPIDelegate>) delegate; 
 
+
+- (FactualAPIRequest*)   get:(NSString*) path  
+                      params:(NSDictionary*) params
+                withDelegate:(id<FactualAPIDelegate>) delegate;
 
 @end
 
@@ -167,6 +188,7 @@
 
   - (void)requestComplete:(FactualAPIRequest*) request receivedQueryResult:(FactualQueryResult*) queryResult;
 
-
+  -(void) requestComplete:(FactualAPIRequest *)request receivedRawResult:(NSDictionary *)
+      queryResultObj;
 @end
 

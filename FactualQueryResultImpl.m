@@ -49,15 +49,16 @@
   
   // ok ready to go... alloc response object and return ... 
   FactualQueryResultImpl* objectOut 
-    = [[[FactualQueryResultImpl alloc]initWithColumns:columns 
+    = [[FactualQueryResultImpl alloc]initWithColumns:columns 
                                                  rows:rows 
                                             totalRows:totalRows 
-                                              tableId:tableId ]autorelease];
+                                              tableId:tableId ];
 
   return objectOut;
 }
 
 +(FactualQueryResult *) queryResultFromPlacesJSON:(NSDictionary *)jsonResponse {
+
 	NSArray *rows = [jsonResponse objectForKey:@"data"];
     // bail if no data ... 
   if (rows == nil) {
@@ -78,36 +79,34 @@
   else {
     totalRows = [theTotalRows unsignedIntValue];
   }
-  
     // ok ready to go... alloc response object and return ... 
   FactualQueryResultImpl* objectOut 
-  = [[[FactualQueryResultImpl alloc]initWithOnlyRows:rows 
+  = [[FactualQueryResultImpl alloc]initWithOnlyRows:rows 
                                           totalRows:totalRows 
-                                            tableId:nil ]autorelease];
+                                            tableId:nil ];
   
   return objectOut;
 }
-
 
 -(id) initWithColumns:(NSArray*) theColumns 
                  rows:(NSArray*) theRows 
             totalRows:(NSUInteger) theTotalRows
               tableId:(NSString*) tableId {
   if (self = [super init]) {
-    _tableId = [tableId retain];
+    _tableId = tableId;
     // setup total rows 
     _totalRows = theTotalRows;
     // setup columns array 
-    _columns = [[NSMutableArray arrayWithCapacity:([theColumns count]-1)] retain];
+    _columns = [NSMutableArray arrayWithCapacity:([theColumns count]-1)];
     // and dictionary 
-    _columnToIndex = [[NSMutableDictionary dictionaryWithCapacity: [theColumns count]-1]retain];
+    _columnToIndex = [NSMutableDictionary dictionaryWithCapacity: [theColumns count]-1];
     
     // populate both ... 
     for (NSUInteger i=1;i<[theColumns count];++i) {
       [_columnToIndex setValue: [NSNumber numberWithUnsignedInt:(i-1)] forKey:[theColumns objectAtIndex:i]];
       [((NSMutableArray*)_columns) addObject: [theColumns objectAtIndex:i]];
     }    
-    _rows = [[NSMutableArray arrayWithCapacity:[_rows count]]retain];
+    _rows = [NSMutableArray arrayWithCapacity:[_rows count]];
     for (NSArray* rowData in theRows) {
       [_rows addObject: [[FactualRowImpl alloc]initWithJSONArray:rowData optionalRowId:nil columnNames:_columns columnIndex:_columnToIndex copyValues:NO]];
     }
@@ -122,16 +121,15 @@
               tableId:(NSString*) tableId {
   if (self = [super init]) {
     
-    _tableId = [tableId retain];
+    _tableId = tableId;
       // setup total rows 
     _totalRows = theTotalRows;
-    
+
     if ([theRows count] != 0) { 
       // ok, now populate row data ...  
-      _rows = [[NSMutableArray arrayWithCapacity:[_rows count]]retain];
+      _rows = [NSMutableArray arrayWithCapacity:[_rows count]];
       for (NSDictionary* rowData in theRows) {
-        
-        FactualRowImpl* rowObject =[[[FactualRowImpl alloc]initWithJSONObject:rowData] autorelease];
+        FactualRowImpl* rowObject =[[FactualRowImpl alloc]initWithJSONObject:rowData];
         
         [_rows addObject: rowObject];
       }
@@ -140,15 +138,6 @@
     
   }
   return self;
-}
-
-
--(void) dealloc {
-  [_columnToIndex release];
-  [_rows release];
-  [_columns release];
-  [_tableId release];
-  [super dealloc];
 }
 
 // get the row at the given index 

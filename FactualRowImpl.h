@@ -27,8 +27,6 @@
 
 -(id) initWithJSONObject:(NSDictionary*) cellValues;
 
--(void) dealloc;
-
 -(NSString*) stringValueForName:(NSString*) fieldName;
 
 -(NSString*) stringValueAtIndex:(NSInteger) fieldIndex;

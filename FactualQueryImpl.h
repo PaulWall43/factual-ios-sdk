@@ -7,6 +7,7 @@
 
 #import <Foundation/Foundation.h>
 #import "FactualQuery.h"
+#import "FacetQuery.h"
 
 typedef enum {
   Eq,
@@ -15,11 +16,17 @@ typedef enum {
   Lt,
   GtEq,
   LtEq,
-  BeginsWith
+  BeginsWith,
+  Search,
+  NotBeginsWith,
+  Blank
 } SimplePredicateType;
 
 typedef enum {
-  In
+  In,
+  NotIn,
+  BeginsWithAny,
+  NotBeginsWithAny
 } CompoundValuePredicateType;
 
 typedef enum {
@@ -132,8 +139,8 @@ typedef enum {
   NSMutableArray*    _rowFilters;
   NSMutableArray*    _textTerms;
   FactualGeoFilter* _geoFilter;
+  NSMutableArray*    _selectTerms;
 }
-
 @property(nonatomic,retain)   FactualGeoFilter* geoFilter;
 
 -(void) generateQueryString:(NSMutableString*)intoString;

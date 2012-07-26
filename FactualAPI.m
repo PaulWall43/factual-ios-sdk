@@ -10,6 +10,11 @@
 #import "FactualAPIHelper.h"
 #import "FactualAPIRequestImpl.h"
 #import "FactualAPIPrivate.h"
+#import "CJSONSerializer.h"
+#import "NSString (Escaping).h"
+#import "Geocode.h"
+#import "Geopulse.h"
+#import "Resolve.h" 
 
 typedef enum {
 	FactualApplicationModeNormal = 0,
@@ -34,16 +39,10 @@ NSString *const FactualCoreErrorDomain = @"FactualCoreErrorDomain";
 
 -(id) initWithAPIKey:(NSString*) apiKey secret:(NSString *)secret{
   if (self = [super init]) {
-    _apiKey = [apiKey retain];
-    _secret = [[secret copy]retain];
+    _apiKey = apiKey;
+    _secret = [secret copy];
   }
   return self;
-}
-
-- (void) dealloc {  
-  [_apiKey release];
-  [_secret release];
-  [super dealloc];
 }
 
 - (NSInteger) apiVersion {
@@ -58,12 +57,12 @@ NSString *const FactualCoreErrorDomain = @"FactualCoreErrorDomain";
  
   // build the request object ...
   FactualAPIRequestImpl* requestObject 
-  = [[[FactualAPIRequestImpl alloc] initWithURL:urlStr 
+  = [[FactualAPIRequestImpl alloc] initWithURL:urlStr 
                                     requestType:theRequestType  
                                 optionalTableId:tableId
                                    withDelegate:delegate
                                   withAPIObject:self
-                                optionalPayload:payload] autorelease];
+                                optionalPayload:payload];
   
   return requestObject;
 }
@@ -76,14 +75,14 @@ NSString *const FactualCoreErrorDomain = @"FactualCoreErrorDomain";
   
     // build the request object ...
   FactualAPIRequestImpl* requestObject 
-  = [[[FactualAPIRequestImpl alloc] initOAuthRequestWithURL:urlStr 
+  = [[FactualAPIRequestImpl alloc] initOAuthRequestWithURL:urlStr 
                                     requestType:theRequestType  
                                 optionalTableId:tableId
                                    withDelegate:delegate
                                   withAPIObject:self
                                 optionalPayload:payload
                                 consumerKey:_apiKey
-                                consumerSecret:_secret] autorelease];
+                                consumerSecret:_secret];
   
   return requestObject;
 }
@@ -119,39 +118,118 @@ NSString *const FactualCoreErrorDomain = @"FactualCoreErrorDomain";
                optionalPayload:postBodyStr];
 }
 
+- (FactualAPIRequest*)   get:(NSString*) path  
+                      params:(NSDictionary*) params
+                withDelegate:(id<FactualAPIDelegate>) delegate { 
+    
+	NSMutableString *qry = [[NSMutableString alloc] initWithFormat:path];
+    [qry appendString:@"?"];
+    
+    for(id key in params) {
+        [qry appendString:key];
+        [qry appendString:@"="];
+        NSString* escapedParamValue = (__bridge NSString*) CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault,(__bridge CFStringRef)[params objectForKey:key],NULL,CFSTR("?=&+"),kCFStringEncodingUTF8);
+        [qry appendString:escapedParamValue];
+    }
+    NSString* urlStr = [FactualAPIHelper buildAPIRequestURL:hosts[FactualApplicationModeNormal] apiVersion:3 queryStr:qry];
+    
+    if (_secret != nil) { 
+#ifdef TARGET_IPHONE_SIMULATOR
+        NSLog(@"using OAuth Request for Places Request");
+#endif
+        
+        return [self allocateOAuthRequest:urlStr
+                              requestType:FactualRequestType_PlacesQuery 
+                          optionalTableId:nil
+                             withDelegate:delegate 
+                          optionalPayload:nil];
+        
+    }
+    else { 
+        return [self allocateRequest:urlStr
+                         requestType:FactualRequestType_PlacesQuery 
+                     optionalTableId:nil
+                        withDelegate:delegate 
+                     optionalPayload:nil];
+    }
+}
+
+- (FactualAPIRequest*)   geopulse:(Geopulse*) geopulse
+                           withDelegate:(id<FactualAPIDelegate>) delegate { 
+    
+	NSMutableString *qry = [[NSMutableString alloc] initWithFormat:@"places/geopulse?"];
+    [geopulse generateQueryString:qry];
+    return [self request:qry ofType: FactualRequestType_PlacesQuery withDelegate:delegate];
+}
+
+- (FactualAPIRequest*)   reverseGeocode:(Geocode*) geocode
+                         withDelegate:(id<FactualAPIDelegate>) delegate { 
+    
+	NSMutableString *qry = [[NSMutableString alloc] initWithFormat:@"places/geocode?"];
+    [geocode generateQueryString:qry];
+    return [self request:qry ofType: FactualRequestType_PlacesQuery withDelegate:delegate];
+}
+
+- (FactualAPIRequest*)   monetize:(FactualQuery*) queryParams
+                       withDelegate:(id<FactualAPIDelegate>) delegate { 
+    // build a query string using query object and table id
+    NSString* queryStr = [FactualAPIHelper buildQueryString:((_secret == nil) ? _apiKey: nil) path:@"places/monetize" queryParams:queryParams];
+    return [self request:queryStr ofType: FactualRequestType_PlacesQuery withDelegate:delegate];
+}
+
+- (FactualAPIRequest*)   queryTable:(NSString*) tableId  
+                        resolveParams:(Resolve*) resolve
+                        withDelegate:(id<FactualAPIDelegate>) delegate { 
+    NSString *qryPath = [[NSString alloc] initWithFormat:@"%@/resolve", tableId];
+	NSMutableString *queryStr = [[NSMutableString alloc] initWithFormat:@"%@?", qryPath];
+    [resolve generateQueryString:queryStr];
+    return [self request:queryStr ofType: FactualRequestType_PlacesQuery withDelegate:delegate];
+}
 
 - (FactualAPIRequest*)   queryTable:(NSString*) tableId  
                         optionalQueryParams:(FactualQuery*) queryParams
                         withDelegate:(id<FactualAPIDelegate>) delegate { 
-
-  
     // build a query string using query object and table id
   NSString* queryStr = [FactualAPIHelper buildPlacesQueryString:((_secret == nil) ? _apiKey: nil) tableId:tableId queryParams:queryParams];
-    // build url .. 
-  NSString* urlStr = [FactualAPIHelper buildAPIRequestURL:hosts[FactualApplicationModeNormal] apiVersion:3 queryStr:queryStr];
-  
-  if (_secret != nil) { 
-#ifdef TARGET_IPHONE_SIMULATOR
-    NSLog(@"using OAuth Request for Places Request");
-#endif
-    
-    return [self allocateOAuthRequest:urlStr
-                          requestType:FactualRequestType_PlacesQuery 
-                      optionalTableId:nil
-                         withDelegate:delegate 
-                      optionalPayload:nil];
-    
-  }
-  else { 
-    return [self allocateRequest:urlStr
-                     requestType:FactualRequestType_PlacesQuery 
-                 optionalTableId:nil
-                    withDelegate:delegate 
-                 optionalPayload:nil];
-  }
-  
+  return [self request:queryStr ofType: FactualRequestType_PlacesQuery withDelegate:delegate];
 }
 
+
+- (FactualAPIRequest*)   queryTable:(NSString*) tableId  
+                        facetParams:(FactualFacetQuery*) facet
+                       withDelegate:(id<FactualAPIDelegate>) delegate {
+    // build a query string using query object and table id
+    NSString* queryStr = [FactualAPIHelper buildPlacesQueryString:((_secret == nil) ? _apiKey: nil) tableId:tableId facetParams:facet];
+    return [self request:queryStr ofType: FactualRequestType_FacetQuery withDelegate:delegate];
+}
+
+
+- (FactualAPIRequest*)   request:(NSString*) queryStr ofType:(NSInteger)theRequestType 
+                       withDelegate:(id<FactualAPIDelegate>) delegate { 
+    // build url .. 
+    NSString* urlStr = [FactualAPIHelper buildAPIRequestURL:hosts[FactualApplicationModeNormal] apiVersion:3 queryStr:queryStr];
+
+    if (_secret != nil) { 
+#ifdef TARGET_IPHONE_SIMULATOR
+        NSLog(@"using OAuth Request for Places Request");
+#endif
+        
+        return [self allocateOAuthRequest:urlStr
+                              requestType:theRequestType 
+                          optionalTableId:nil
+                             withDelegate:delegate 
+                          optionalPayload:nil];
+        
+    }
+    else { 
+        return [self allocateRequest:urlStr
+                         requestType:theRequestType 
+                     optionalTableId:nil
+                        withDelegate:delegate 
+                     optionalPayload:nil];
+    }
+
+}
 
 // schema query api
 - (FactualAPIRequest*) getTableSchema:(NSString*) tableId 

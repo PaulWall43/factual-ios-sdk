@@ -8,6 +8,7 @@
 #import "FactualAPIHelper.h"
 #import "CJSONSerializer.h"
 #import "FactualQueryImpl.h"
+#import "FactualFacetQueryImpl.h"
 
 
 @implementation FactualAPIHelper
@@ -19,13 +20,13 @@
   if (apiVersion == 2) { 
     NSString *url = [NSString stringWithFormat:@"http://%@/v%d/%@",
                      hostName, apiVersion,queryStr];
-    return [url autorelease];
+    return url;
 
   }
   else if (apiVersion == 3) { 
     NSString *url = [NSString stringWithFormat:@"http://api.v3.factual.com/%@",queryStr];
 
-    return [url autorelease];
+    return url;
   }
   return nil;
 }
@@ -33,7 +34,7 @@
 
 +(NSString*) buildTableQueryString:(NSString*) apiKey tableId:(NSString*) tableId queryParams:(FactualQuery*) tableQuery{
   
-	NSMutableString *qry = [[[NSMutableString alloc] initWithFormat:@"tables/%@/read", tableId] autorelease];
+	NSMutableString *qry = [[NSMutableString alloc] initWithFormat:@"tables/%@/read", tableId];
 
   
   if (tableQuery != nil) {
@@ -51,26 +52,53 @@
   
 } 
 
-
-  //NEW API!!!
-+(NSString*) buildPlacesQueryString:(NSString*) apiKey tableId:(NSString*) tableId queryParams:(FactualQuery*) tableQuery{
-  
-	NSMutableString *qry = [[[NSMutableString alloc] initWithFormat:@"t/%@?", tableId] autorelease];
-
-  if (tableQuery != nil) {  
-    FactualQueryImplementation* queryImpl = (FactualQueryImplementation*)tableQuery;
-    [queryImpl generateQueryString:qry];
-  }
-  if (apiKey != nil) { 
-    [qry appendString:@"&"];
-    [qry appendString:@"KEY="];
-    [qry appendString:apiKey];
-  }
++(NSString*) buildQueryString:(NSString*) apiKey path:(NSString*) path queryParams:(FactualQuery*) tableQuery{
+    NSMutableString *qry = [[NSMutableString alloc] initWithFormat:@"%@?", path];
+    
+    if (tableQuery != nil) {  
+        FactualQueryImplementation* queryImpl = (FactualQueryImplementation*)tableQuery;
+        [queryImpl generateQueryString:qry];
+    }
+    if (apiKey != nil) { 
+        [qry appendString:@"&"];
+        [qry appendString:@"KEY="];
+        [qry appendString:apiKey];
+    }
 #ifdef TARGET_IPHONE_SIMULATOR    
-  NSLog(@"Filter Query%@",qry);
+    NSLog(@"Filter Query%@",qry);
 #endif  
     // [qry deleteCharactersInRange:NSMakeRange([qry length] - 1, 1)];
 	return qry;
+}
+
++(NSString*) buildQueryString:(NSString*) apiKey path:(NSString*) path facetQueryParams:(FactualFacetQuery*) tableQuery{
+    NSMutableString *qry = [[NSMutableString alloc] initWithFormat:@"%@?", path];
+    
+    if (tableQuery != nil) {  
+        FactualQueryImplementation* queryImpl = (FactualQueryImplementation*)tableQuery;
+        [queryImpl generateQueryString:qry];
+    }
+    if (apiKey != nil) { 
+        [qry appendString:@"&"];
+        [qry appendString:@"KEY="];
+        [qry appendString:apiKey];
+    }
+#ifdef TARGET_IPHONE_SIMULATOR    
+    NSLog(@"Filter Query%@",qry);
+#endif  
+    // [qry deleteCharactersInRange:NSMakeRange([qry length] - 1, 1)];
+	return qry;
+}
+
++(NSString*) buildPlacesQueryString:(NSString*) apiKey tableId:(NSString*) tableId facetParams:(FactualFacetQuery*) tableQuery{
+    NSString *qry = [[NSString alloc] initWithFormat:@"t/%@/facets", tableId];
+	return [self buildQueryString:apiKey path:qry facetQueryParams:tableQuery];
+} 
+
+//NEW API!!!
++(NSString*) buildPlacesQueryString:(NSString*) apiKey tableId:(NSString*) tableId queryParams:(FactualQuery*) tableQuery{
+    NSString *qry = [[NSString alloc] initWithFormat:@"t/%@", tableId];
+	return [self buildQueryString:apiKey path:qry queryParams:tableQuery];
 } 
 
 
@@ -105,12 +133,14 @@
   if (tokenId != nil) {
     [postBodyStr appendFormat:@"token=%@&",tokenId];
   }
+  
+    NSError *error = NULL;
+    
   // ok now create a serialized representation of facts ... 
-  NSString* serializedFacts = [[CJSONSerializer serializer] serializeDictionary:facts];
+  NSString* serializedFacts = [[NSString alloc] initWithData: [[CJSONSerializer serializer] serializeDictionary:facts  error:&error] encoding: NSUTF8StringEncoding];
   // and then encode them properly ... 
-  NSString* escapedFacts = (NSString*) CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault,(CFStringRef)serializedFacts,NULL,CFSTR("?=&+"),kCFStringEncodingUTF8);
+  NSString* escapedFacts = (__bridge NSString*) CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault,(__bridge CFStringRef)serializedFacts,NULL,CFSTR("?=&+"),kCFStringEncodingUTF8);
   // auto release it 
-  [escapedFacts autorelease];
   // append to final string 
   [postBodyStr appendFormat:@"values=%@",escapedFacts];
   
@@ -123,18 +153,18 @@
                            source:(NSString*)source
                           comment:(NSString*)comment {
   
-	NSMutableString *qry = [[[NSMutableString alloc] initWithFormat:@"tables/%@/rate?api_key=%@&rowId=%@&rating=-1", 
+	NSMutableString *qry = [[NSMutableString alloc] initWithFormat:@"tables/%@/rate?api_key=%@&rowId=%@&rating=-1", 
                            tableId,
                            apiKey,
-                           rowId] autorelease];
+                           rowId];
   if (source != nil) {
     [qry appendFormat:@"&source=%@",
-     [((NSString*) CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault,(CFStringRef)source,NULL,CFSTR("?=&+"),kCFStringEncodingUTF8)) autorelease]
+     ((__bridge NSString*) CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault,(__bridge CFStringRef)source,NULL,CFSTR("?=&+"),kCFStringEncodingUTF8))
      ];
   }
   if (comment != nil) {
     [qry appendFormat:@"&comments=%@",
-     [((NSString*) CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault,(CFStringRef)comment,NULL,CFSTR("?=&+"),kCFStringEncodingUTF8)) autorelease]
+     ((__bridge NSString*) CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault,(__bridge CFStringRef)comment,NULL,CFSTR("?=&+"),kCFStringEncodingUTF8))
      ];
   }
   

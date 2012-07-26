@@ -28,7 +28,4 @@
 -(id) initFromJSON:(NSDictionary*) jsonResponse
            tableId:(NSString*) tableId;
 
-// deallocation
--(void) dealloc;
-
 @end

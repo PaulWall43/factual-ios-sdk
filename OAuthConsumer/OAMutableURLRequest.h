@@ -31,7 +31,6 @@
 #import "OASignatureProviding.h"
 #import "NSMutableURLRequest+Parameters.h"
 #import "NSURL+Base.h"
-#import "NSString+URLEncoding.h"
 
 
 @interface OAMutableURLRequest : NSMutableURLRequest {

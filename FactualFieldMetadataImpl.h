@@ -15,8 +15,4 @@
 // initialization 
 -(id) initFromJSON:(NSDictionary*) jsonResponse;
 
-// dealloc
--(void) dealloc;
-
-
 @end

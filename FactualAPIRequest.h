@@ -15,6 +15,7 @@ typedef enum  {
   FactualRequestType_RowUpdate,
   FactualRequestType_SchemaQuery,
   FactualRequestType_PlacesQuery,
+  FactualRequestType_FacetQuery,
   FactualRequestType_FlagBadRowRequest
 } FactualRequestType;
 
