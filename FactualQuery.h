@@ -9,35 +9,34 @@
 #import <Foundation/Foundation.h>
 #import <CoreLocation/CoreLocation.h>
 
-
 typedef enum  {
-  FactualSortOrder_Ascending,
-  FactualSortOrder_Descending
-  
+    FactualSortOrder_Ascending,
+    FactualSortOrder_Descending
+    
 } FactualSortOrder;
 
 /*! @abstract Encapsulates sort criteria, including field name and sort order 
  @discussion
  Factual currently supports a two level sort. Use this data structure in the 
  Query object (see below) to specify the primary or secondary sort criteria.
-*/
+ */
 @interface FactualSortCriteria : NSObject {
-  NSString* _fieldName;
-  FactualSortOrder _sortOrder;
+    NSString* _fieldName;
+    FactualSortOrder _sortOrder;
 }
-  /*! @property 
-   @discussion the field, within the factual table, to sort by
-   */ 
-  @property (nonatomic, copy) NSString* fieldName;
-  /*! @property 
-   @discussion the sort direction (ascending or descending)
-   */ 
-  @property (nonatomic) FactualSortOrder sortOrder;
+/*! @property 
+ @discussion the field, within the factual table, to sort by
+ */ 
+@property (nonatomic, copy) NSString* fieldName;
+/*! @property 
+ @discussion the sort direction (ascending or descending)
+ */ 
+@property (nonatomic) FactualSortOrder sortOrder;
 
-  /*! @method 
-   @discussion initializer used to create sort criteria  
-  */ 
-  -(id) initWithFieldName:(NSString*) fieldName sortOrder:(FactualSortOrder) order;
+/*! @method 
+ @discussion initializer used to create sort criteria  
+ */ 
+-(id) initWithFieldName:(NSString*) fieldName sortOrder:(FactualSortOrder) order;
 
 @end
 
@@ -51,17 +50,17 @@ typedef enum  {
  geo filters - see Query). 
  
  A simple filter can be constructed as follows: 
-  FactualRowFilter* simpleFilter = [FactualRowFilter fieldName:\@"name" 
-    equalTo:\@"John Bolton"];
+ FactualRowFilter* simpleFilter = [FactualRowFilter fieldName:\@"name" 
+ equalTo:\@"John Bolton"];
  An AND might be constructed as follows: 
-  FactualRowFilter* andFilter = [FactualRowFilter andFilter: 
-    [FactualRowFilter fieldName:\@"name" equalTo:\@"John Bolton"],
-      [FactualRowFilter orFilter:
-        [FactualRowFilter fieldName:\@"profession" equalTo:\@"Singer"],
-        [FactualRowFilter fieldName:\@"profession" equalTo:\@"SongWriter"]]];
+ FactualRowFilter* andFilter = [FactualRowFilter andFilter: 
+ [FactualRowFilter fieldName:\@"name" equalTo:\@"John Bolton"],
+ [FactualRowFilter orFilter:
+ [FactualRowFilter fieldName:\@"profession" equalTo:\@"Singer"],
+ [FactualRowFilter fieldName:\@"profession" equalTo:\@"SongWriter"]]];
  
  which basically bolis down to: 
-  name="JohnBolton" AND (profession="Singer" OR profession="SongWriter")
+ name="JohnBolton" AND (profession="Singer" OR profession="SongWriter")
  
  */
 @interface FactualRowFilter : NSObject 
@@ -105,16 +104,39 @@ typedef enum  {
  */ 
 +(FactualRowFilter*) fieldName:(NSString*) fieldName beginsWith:(NSString*) value;
 
+/*! @method 
+ @discussion construct a full text search filter (on a particular field)
+ */ 
 +(FactualRowFilter*) fieldName:(NSString*) fieldName search:(NSString*) value;
 
+/*! @method 
+ @discussion construct a filter where the field does not begin with a value
+ */ 
 +(FactualRowFilter*) fieldName:(NSString*) fieldName notBeginsWith:(NSString*) value;
 
-+(FactualRowFilter*) fieldName:(NSString*) fieldName blank:(NSString*) value;
+/*! @method 
+ @discussion construct a filter where the field is blank
+ */ 
++(FactualRowFilter*) fieldBlank:(NSString*) fieldName;
 
+/*! @method 
+ @discussion construct a filter where the field is not blank
+ */ 
++(FactualRowFilter*) fieldNotBlank:(NSString*) fieldName;
+
+/*! @method 
+ @discussion construct a filter where the field does not equal any of the specified values
+ */ 
 +(FactualRowFilter*) fieldName:(NSString*) fieldName notInArray:(NSArray*) values;
 
+/*! @method 
+ @discussion construct a filter where the field begins with any of the specified values
+ */ 
 +(FactualRowFilter*) fieldName:(NSString*) fieldName beginsWithAnyArray:(NSArray*) values;
 
+/*! @method 
+ @discussion construct a filter where the field does not begin with any of the specified values
+ */ 
 +(FactualRowFilter*) fieldName:(NSString*) fieldName notBeginsWithAnyArray:(NSArray*) values;
 
 /*! @method 
@@ -145,7 +167,7 @@ typedef enum  {
 
 /*!@abstract Encapsulates all the parameters supported by the Factual Query API
  @discussion
-
+ 
  To query a Factual table, you must first construct a Query object and specify 
  some basic row selection criteria. You can optionally construct an empty Query 
  object, which will return to you the first (limit) number of rows using a table's
@@ -154,12 +176,6 @@ typedef enum  {
  details
  */
 @interface FactualQuery : NSObject 
-
-/*! @property 
- @discussion filter the results by a specific row id. Setting a rowId filter 
- invalidates all other filter criteria and returns either 0 or 1 records
- */ 
-@property (nonatomic, copy) NSString* rowId;
 
 /*! @property 
  @discussion used to specify the offset (number of records to skip) when
@@ -178,7 +194,7 @@ typedef enum  {
  @discussion set the primary sort criteria for the query in context. This 
  parameter is ignored in the case of full-text (see below) or geo (see below 
  queries).
-*/
+ */
 @property (nonatomic,retain) FactualSortCriteria* primarySortCriteria;
 /*! @property 
  @discussion set the secondary sort criteria for the query in context. Same
@@ -193,9 +209,17 @@ typedef enum  {
  @discussion text query terms used to perform a full-text query 
  */
 @property(nonatomic,readonly) NSMutableArray* fullTextTerms;
-
+/*! @property 
+ @discussion when true, the response will include a count of the total number of rows in
+ * the table that conform to the request based on included filters.
+ * Requesting the row count will increase the time required to return a
+ * response. The default behavior is to NOT include a row count 
+ */
 @property (nonatomic, assign) BOOL includeRowCount;
 
+/*! @property 
+ @discussion Sets the fields to select. This is optional.
+ */
 @property (nonatomic,readonly) NSMutableArray* selectTerms;
 
 @end
@@ -229,7 +253,6 @@ typedef enum  {
  */
 -(void) addFullTextQueryTermsFromArray:(NSArray*) terms;
 
-
 /*! @method 
  @discussion clear all text terms previosuly associated with this query object
  */
@@ -251,13 +274,16 @@ typedef enum  {
  @discussion add one or more row filters to the query. Row filters further limit
  the query results by applying the specified filters against any records returned
  as a result of any other query filter operations (full-text / geo). 
-*/
+ */
 -(void) addRowFilter:(FactualRowFilter*) rowFilter;
 /*! @method 
  @discussion clear all previously set row filters 
  */
 -(void) clearRowFilters;
 
+/*! @method 
+ @discussion add a field to select
+ */
 -(void) addSelectTerm:(NSString*) selectTerm;
 
 @end

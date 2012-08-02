@@ -9,6 +9,9 @@
 #import "FactualAPI.h"
 #import "CJSONDeserializer.h"
 #import "FactualQueryResultImpl.h"
+#import "FactualFacetResponseImpl.h"
+#import "FactualFacetResponse.h"
+#import "FactualResolveResult.h"
 #import "FactualAPIPrivate.h"
 #import "FactualSchemaResultImpl.h"
 #import "OAMutableURLRequest.h"
@@ -19,7 +22,6 @@ static const NSTimeInterval kTimeoutInterval = 180.0;
 static NSString* kUserAgent = @"Factual-IPhoneSDK-V-1.0";
 static NSString* kFactualLibHeader = @"X-Factual-Lib";
 static NSString* kFactualLibHeaderSDKValue = @"factual--iPhone-SDK-1.0";
-
 
 
 @implementation FactualAPIRequestImpl
@@ -33,17 +35,17 @@ static NSString* kFactualLibHeaderSDKValue = @"factual--iPhone-SDK-1.0";
 
 - (void) generateErrorCallback: (NSString*) errorString {
 #ifdef TARGET_IPHONE_SIMULATOR  
-  NSLog(@"generateErrorCallback:%@ error:%@",_requestId,errorString);
+    NSLog(@"generateErrorCallback:%@ error:%@",_requestId,errorString);
 #endif  
-  if ([_delegate respondsToSelector:@selector(requestComplete:failedWithError:)]) {
-    NSError* error = [NSError errorWithDomain:@"FactualCoreErrorDomain"
-                               code:0
-                           userInfo:[NSDictionary dictionaryWithObject:errorString
-                                                                forKey:NSLocalizedDescriptionKey]];
-    
-    [_delegate requestComplete:self failedWithError:error];
-  }
-  [self cancel];
+    if ([_delegate respondsToSelector:@selector(requestComplete:failedWithError:)]) {
+        NSError* error = [NSError errorWithDomain:@"FactualCoreErrorDomain"
+                                             code:0
+                                         userInfo:[NSDictionary dictionaryWithObject:errorString
+                                                                              forKey:NSLocalizedDescriptionKey]];
+        
+        [_delegate requestComplete:self failedWithError:error];
+    }
+    [self cancel];
 }
 
 
@@ -52,32 +54,70 @@ static NSString* kFactualLibHeaderSDKValue = @"factual--iPhone-SDK-1.0";
 // places query response handler ...  
 //////////////////////////////////////////////////////////////////////////////////////////////////
 -(void) parsePlacesQueryResponse:(NSDictionary*) jsonResponse {
-  if (jsonResponse != nil) {
-      NSLog(@"JSON RESULT %@", jsonResponse);
-    
-    FactualQueryResult* queryResult = [FactualQueryResultImpl queryResultFromPlacesJSON:jsonResponse];
-      
-      if (queryResult != nil) {
-      if ([_delegate respondsToSelector:@selector(requestComplete:receivedQueryResult:)]) {
-        [_delegate requestComplete:self receivedQueryResult:queryResult];
-      }
-      return;
-    }
-  }
-  [self generateErrorCallback:@"Unable to create Response Object from Query Response!"];
-}
-
-
-//////////////////////////////////////////////////////////////////////////////////////////////////
-// facet query response handler ...  
-//////////////////////////////////////////////////////////////////////////////////////////////////
--(void) parseFacetQueryResponse:(NSDictionary*) jsonResponse {
     if (jsonResponse != nil) {
-        NSLog(@"JSON RESULT %@", jsonResponse);
-            if ([_delegate respondsToSelector:@selector(requestComplete:receivedRawResult:)]) {
-                [_delegate requestComplete:self receivedRawResult:jsonResponse];
+        FactualQueryResult* queryResult = [FactualQueryResultImpl queryResultFromPlacesJSON:jsonResponse];
+        
+        if (queryResult != nil) {
+            if ([_delegate respondsToSelector:@selector(requestComplete:receivedQueryResult:)]) {
+                [_delegate requestComplete:self receivedQueryResult:queryResult];
             }
             return;
+        }
+    }
+    [self generateErrorCallback:@"Unable to create Response Object from Query Response!"];
+}
+
+-(void) parseFacetQueryResponse:(NSDictionary*) jsonResponse {
+    if (jsonResponse != nil) {
+        FactualFacetResponseImpl* queryResult = [FactualFacetResponseImpl facetResponseFromJSON:jsonResponse];
+        if (queryResult != nil) {
+            if ([_delegate respondsToSelector:@selector(requestComplete:receivedFacetResult:)]) {
+                [_delegate requestComplete:self receivedFacetResult:queryResult];
+            }
+            return;
+        }
+    }
+    [self generateErrorCallback:@"Unable to create Response Object from Query Response!"];
+}
+
+-(void) parseResolveQueryResponse:(NSDictionary*) jsonResponse {
+    if (jsonResponse != nil) {
+        FactualResolveResult* queryResult = [FactualResolveResult resolveResultFromPlacesJSON:jsonResponse];
+        
+        if (queryResult != nil) {
+            if ([_delegate respondsToSelector:@selector(requestComplete:receivedResolveResult:)]) {
+                [_delegate requestComplete:self receivedResolveResult:queryResult];
+            }
+            return;
+        }
+    }
+    [self generateErrorCallback:@"Unable to create Response Object from Query Response!"];
+}
+
+-(void) parseMatchQueryResponse:(NSDictionary*) jsonResponse {
+    if (jsonResponse != nil) {
+        NSArray* data = [jsonResponse objectForKey:@"data"];
+        NSString* factualId = nil;
+        if ([data count] > 0) {
+            factualId = [[data objectAtIndex:0] objectForKey:@"factual_id"];
+        }
+        if ([_delegate respondsToSelector:@selector(requestComplete:receivedMatchResult:)]) {
+            [_delegate requestComplete:self receivedMatchResult:factualId];
+        }
+        return;
+    }
+    [self generateErrorCallback:@"Unable to create Response Object from Query Response!"];
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+// raw request query response handler ...  
+//////////////////////////////////////////////////////////////////////////////////////////////////
+-(void) parseRawRequestResponse:(NSDictionary*) jsonResponse {
+    if (jsonResponse != nil) {
+        if ([_delegate respondsToSelector:@selector(requestComplete:receivedRawResult:)]) {
+            [_delegate requestComplete:self receivedRawResult:jsonResponse];
+        }
+        return;
     }
     [self generateErrorCallback:@"Unable to create Response Object from Query Response!"];
 }
@@ -87,63 +127,60 @@ static NSString* kFactualLibHeaderSDKValue = @"factual--iPhone-SDK-1.0";
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 -(NSURLConnection*) buildConnection:(NSString*) payload {
-  NSMutableURLRequest* request =
-  
-    [NSMutableURLRequest requestWithURL:[NSURL URLWithString:_url]
-                          cachePolicy:NSURLRequestReloadIgnoringLocalCacheData
-                          timeoutInterval:kTimeoutInterval];
-
-  [request setValue:kUserAgent forHTTPHeaderField:@"User-Agent"];
-  [request setValue:kFactualLibHeaderSDKValue forHTTPHeaderField:kFactualLibHeader];
-  
-  if (payload != nil) {
-    _httpMethod = @"POST";
-  }
-  
-  [request setHTTPMethod:_httpMethod];
-
-  if (payload != nil) {
-     
-    [request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
+    NSMutableURLRequest* request =
     
-    [request setHTTPBody:[payload dataUsingEncoding:NSUTF8StringEncoding]];
-  }
-  
-  return [[NSURLConnection alloc] initWithRequest:request delegate:self];
+    [NSMutableURLRequest requestWithURL:[NSURL URLWithString:_url]
+                            cachePolicy:NSURLRequestReloadIgnoringLocalCacheData
+                        timeoutInterval:kTimeoutInterval];
+    
+    [request setValue:kUserAgent forHTTPHeaderField:@"User-Agent"];
+    [request setValue:kFactualLibHeaderSDKValue forHTTPHeaderField:kFactualLibHeader];
+    
+    if (payload != nil) {
+        _httpMethod = @"POST";
+    }
+    
+    [request setHTTPMethod:_httpMethod];
+    
+    if (payload != nil) {
+        
+        [request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
+        
+        [request setHTTPBody:[payload dataUsingEncoding:NSUTF8StringEncoding]];
+    }
+    
+    return [[NSURLConnection alloc] initWithRequest:request delegate:self];
 }
 
 -(NSURLConnection*) buildOAuthConnection:(NSString*) consumerKey 
-                         consumerSecret:(NSString*) consumerSecret
-                                 payload:(NSString*) payload {
-  OAConsumer* consumer = [[OAConsumer alloc]initWithKey:consumerKey secret:consumerSecret];
-  
-  OAMutableURLRequest* request = [[OAMutableURLRequest alloc ]initWithURL:[NSURL URLWithString:_url]
-                                                                 consumer:consumer
-                                                                    token:nil
-                                                                    realm:nil
-                                                        signatureProvider:nil];
-
-  [request setCachePolicy:NSURLRequestReloadIgnoringLocalCacheData];
-  [request setTimeoutInterval:kTimeoutInterval];
-  [request setValue:kUserAgent forHTTPHeaderField:@"User-Agent"];
-  [request setValue:kFactualLibHeaderSDKValue forHTTPHeaderField:kFactualLibHeader];
-  
-  if (payload != nil) {
-    _httpMethod = @"POST";
-  }
-  
-  [request setHTTPMethod:_httpMethod];
-  
-  if (payload != nil) {
+                          consumerSecret:(NSString*) consumerSecret
+                                 payload:(NSString*) payload requestMethod: (NSString*) requestMethod {
+    OAConsumer* consumer = [[OAConsumer alloc]initWithKey:consumerKey secret:consumerSecret];
     
-    [request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
-    [request setHTTPBody:[payload dataUsingEncoding:NSUTF8StringEncoding]];
-  }
-  
-  // prepare the url 
-  [request prepare];
-  
-  return [[NSURLConnection alloc] initWithRequest:request delegate:self];
+    OAMutableURLRequest* request = [[OAMutableURLRequest alloc ]initWithURL:[NSURL URLWithString:_url]
+                                                                   consumer:consumer
+                                                                      token:nil
+                                                                      realm:nil
+                                                          signatureProvider:nil];
+    
+    [request setCachePolicy:NSURLRequestReloadIgnoringLocalCacheData];
+    [request setTimeoutInterval:kTimeoutInterval];
+    [request setValue:kUserAgent forHTTPHeaderField:@"User-Agent"];
+    [request setValue:kFactualLibHeaderSDKValue forHTTPHeaderField:kFactualLibHeader];
+    
+    _httpMethod = requestMethod;
+    
+    [request setHTTPMethod:_httpMethod];
+    
+    if (payload != nil) {
+        [request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
+        [request setHTTPBody:[payload dataUsingEncoding:NSUTF8StringEncoding]];
+    }
+    
+    // prepare the url 
+    [request prepare];
+    
+    return [[NSURLConnection alloc] initWithRequest:request delegate:self];
 }
 
 
@@ -151,61 +188,76 @@ static NSString* kFactualLibHeaderSDKValue = @"factual--iPhone-SDK-1.0";
 
 // helper to generate NSError from error response ... 
 -(void) generateErrorCallbackFromServerError:(NSDictionary*) jsonResp {
-  NSString *errorMessage = (
-                            ([jsonResp objectForKey:@"message"]!= nil) ? [jsonResp objectForKey:@"message"] : @"Unable to parse response");
-  
-  return [self generateErrorCallback:errorMessage];
+    NSString *errorMessage = (
+                              ([jsonResp objectForKey:@"message"]!= nil) ? [jsonResp objectForKey:@"message"] : @"Unable to parse response");
+    
+    return [self generateErrorCallback:errorMessage];
 }
 
 
 
 
 -(void) handleResponseData:(NSData*) responsePayload {
-  //NSLog(@"NSURLConnection handleResponseData:%@ URL:%@\nPayload:%@",
-  //        _requestId,[_url description],[[[NSString alloc]initWithData:responsePayload encoding:NSASCIIStringEncoding] autorelease] );
-
-  // ok get ready to parse the response ... 
-  NSError* error = nil;
-  // construct parser ... 
-  CJSONDeserializer *deserializer = [CJSONDeserializer deserializer];
-  
-  // parse the json 
-  NSDictionary *jsonResp = [deserializer deserialize:responsePayload error:&error];
-  
-  // check for errors ... 
-	if (jsonResp == nil 
-      || error != nil 
-      || [jsonResp objectForKey:@"status"] == nil
-    ) {
-    // call delegate here ... 
-    NSString *errorMessage = (error ? [error localizedDescription] : @"Unable to parse response");
+    //NSLog(@"NSURLConnection handleResponseData:%@ URL:%@\nPayload:%@",
+    //        _requestId,[_url description],[[[NSString alloc]initWithData:responsePayload encoding:NSASCIIStringEncoding] autorelease] );
     
-    [self generateErrorCallback:errorMessage];
-      
-    return;
-  }
-  // ok check status field next ... 
-  if ([[jsonResp objectForKey:@"status"] caseInsensitiveCompare:@"ok"] != 0) {
-    [self generateErrorCallbackFromServerError:jsonResp];
-    return;
-  } 
-  // next do request specific parsing ... 
-  switch (_requestType) {
-      
-    case FactualRequestType_PlacesQuery: { 
-      [self parsePlacesQueryResponse:[jsonResp objectForKey:@"response"]];
+    // ok get ready to parse the response ... 
+    NSError* error = nil;
+    // construct parser ... 
+    CJSONDeserializer *deserializer = [CJSONDeserializer deserializer];
+    
+    // parse the json 
+    NSDictionary *jsonResp = [deserializer deserialize:responsePayload error:&error];
+    
+    // check for errors ... 
+	if (jsonResp == nil 
+        || error != nil 
+        || [jsonResp objectForKey:@"status"] == nil
+        ) {
+        // call delegate here ... 
+        NSString *errorMessage = (error ? [error localizedDescription] : @"Unable to parse response");
+        
+        [self generateErrorCallback:errorMessage];
+        
+        return;
     }
-    case FactualRequestType_FacetQuery: { 
-      [self parseFacetQueryResponse:[jsonResp objectForKey:@"response"]];
+    // ok check status field next ... 
+    if ([[jsonResp objectForKey:@"status"] caseInsensitiveCompare:@"ok"] != 0) {
+        [self generateErrorCallbackFromServerError:jsonResp];
+        return;
+    } 
+    // next do request specific parsing ... 
+    switch (_requestType) {
+        case FactualRequestType_PlacesQuery: { 
+            [self parsePlacesQueryResponse:[jsonResp objectForKey:@"response"]];
+        }
+            break;
+        case FactualRequestType_FacetQuery: { 
+            [self parseFacetQueryResponse:[jsonResp objectForKey:@"response"]];
+        }
+            break;
+        case FactualRequestType_RawRequest: {
+            [self parseRawRequestResponse:[jsonResp objectForKey:@"response"]];
+        }
+            break;
+        case FactualRequestType_ResolveQuery: {
+            [self parseResolveQueryResponse:[jsonResp objectForKey:@"response"]];
+        }
+            break;
+        case FactualRequestType_MatchQuery: {
+            [self parseMatchQueryResponse:[jsonResp objectForKey:@"response"]];
+        }
+            break;         
+        case FactualRequestType_SchemaQuery: {
+            [self parseRawRequestResponse:[jsonResp objectForKey:@"response"]];
+        }
+            break;          
+        default: {
+            [NSException raise:NSGenericException format:@"Unknown Request Type!"];
+        }
+            break;
     }
-    break;
-      
-    default: {
-      [NSException raise:NSGenericException format:@"Unknown Request Type!"];
-    }
-    break;
-  }
-  [self cancel];
+    [self cancel];
 }
 
 
@@ -218,24 +270,24 @@ static NSString* kFactualLibHeaderSDKValue = @"factual--iPhone-SDK-1.0";
 -(id) initWithURL:(NSString *) theURL
       requestType:(NSInteger) theRequestType
   optionalTableId:(NSString*) tableId
-      withDelegate:(id<FactualAPIDelegate>) theDelegate
-      withAPIObject:(id) theAPIObject
-      optionalPayload:(NSString*) payload
+     withDelegate:(id<FactualAPIDelegate>) theDelegate
+    withAPIObject:(id) theAPIObject
+  optionalPayload:(NSString*) payload
 
 {
-  if ( self = [super init]) {
-    _url = [theURL copy];
-    _requestType = theRequestType;
-    _delegate = theDelegate;
-    _tableId  = tableId;
-    _httpMethod = @"GET";
-    _responseText = nil;
-    @synchronized(@"FactualAPIRequestImpl") {
-      _requestId = [[NSNumber numberWithLong:++_lastRequestId] stringValue];
+    if ( self = [super init]) {
+        _url = [theURL copy];
+        _requestType = theRequestType;
+        _delegate = theDelegate;
+        _tableId  = tableId;
+        _httpMethod = @"GET";
+        _responseText = nil;
+        @synchronized(@"FactualAPIRequestImpl") {
+            _requestId = [[NSNumber numberWithLong:++_lastRequestId] stringValue];
+        }
+        _connection = [self buildConnection:payload];
     }
-    _connection = [self buildConnection:payload];
-  }
-  return self;
+    return self;
 }
 
 -(id) initOAuthRequestWithURL:(NSString *) theURL
@@ -245,21 +297,22 @@ static NSString* kFactualLibHeaderSDKValue = @"factual--iPhone-SDK-1.0";
                 withAPIObject:(id) theAPIObject
               optionalPayload:(NSString*) payload
                   consumerKey:(NSString*) consumerKey
-              consumerSecret:(NSString*) consumerSecret { 
-
-  if ( self = [super init]) {
-    _url = [theURL copy];
-    _requestType = theRequestType;
-    _delegate = theDelegate;
-    _tableId  = tableId;
-    _httpMethod = @"GET";
-    _responseText = nil;
-    @synchronized(@"FactualAPIRequestImpl") {
-      _requestId = [[NSNumber numberWithLong:++_lastRequestId] stringValue];
+               consumerSecret:(NSString*) consumerSecret
+                requestMethod:(NSString*) requestMethod { 
+    
+    if ( self = [super init]) {
+        _url = [theURL copy];
+        _requestType = theRequestType;
+        _delegate = theDelegate;
+        _tableId  = tableId;
+        _httpMethod = requestMethod;
+        _responseText = nil;
+        @synchronized(@"FactualAPIRequestImpl") {
+            _requestId = [[NSNumber numberWithLong:++_lastRequestId] stringValue];
+        }
+        _connection = [self buildOAuthConnection:consumerKey consumerSecret:consumerSecret payload:payload requestMethod: requestMethod];
     }
-    _connection = [self buildOAuthConnection:consumerKey consumerSecret:consumerSecret payload:payload];
-  }
-  return self;
+    return self;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -267,13 +320,13 @@ static NSString* kFactualLibHeaderSDKValue = @"factual--iPhone-SDK-1.0";
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 -(void) cancel {
-  if (_responseText != nil) {
-    _responseText = nil;
-  }
-  if (_connection != nil) { 
-    [_connection cancel];
-    _connection = nil;
-  }
+    if (_responseText != nil) {
+        _responseText = nil;
+    }
+    if (_connection != nil) { 
+        [_connection cancel];
+        _connection = nil;
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -281,43 +334,43 @@ static NSString* kFactualLibHeaderSDKValue = @"factual--iPhone-SDK-1.0";
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
-  //NSLog(@"NSURLConnection:%@ URL:%@ Did Receive Response",_requestId,_url);
-  _responseText = [[NSMutableData alloc] init];
-
-  if ([_delegate respondsToSelector:@selector(requestDidReceiveInitialResponse:)]) {
-    [_delegate requestDidReceiveInitialResponse:self];
-  }
+    //NSLog(@"NSURLConnection:%@ URL:%@ Did Receive Response",_requestId,_url);
+    _responseText = [[NSMutableData alloc] init];
+    
+    if ([_delegate respondsToSelector:@selector(requestDidReceiveInitialResponse:)]) {
+        [_delegate requestDidReceiveInitialResponse:self];
+    }
 }
 
 
 - (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
-  //NSLog(@"NSURLConnection:%@ URL:%@ Did Receive Data",_requestId,_url);
-  [_responseText appendData:data];
-  if ([_delegate respondsToSelector:@selector(requestDidReceiveData:)]) {
-    [_delegate requestDidReceiveData:self];
-  }
+    //NSLog(@"NSURLConnection:%@ URL:%@ Did Receive Data",_requestId,_url);
+    [_responseText appendData:data];
+    if ([_delegate respondsToSelector:@selector(requestDidReceiveData:)]) {
+        [_delegate requestDidReceiveData:self];
+    }
 }
 
 - (NSCachedURLResponse *)connection:(NSURLConnection *)connection
                   willCacheResponse:(NSCachedURLResponse*)cachedResponse {
-  return nil;
+    return nil;
 }
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection {
 #ifdef TARGET_IPHONE_SIMULATOR    
-  NSLog(@"NSURLConnection:%@ URL:%@ Finished Loading",_requestId,_url);
+    NSLog(@"NSURLConnection:%@ URL:%@ Finished Loading",_requestId,_url);
 #endif  
-  [self handleResponseData:_responseText];
+    [self handleResponseData:_responseText];
 }
 
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
 #ifdef TARGET_IPHONE_SIMULATOR    
-  NSLog(@"NSURLConnection:%@ URL: returned Error:%@",_url,[error localizedDescription]);
+    NSLog(@"NSURLConnection:%@ URL: returned Error:%@",_url,[error localizedDescription]);
 #endif  
-  if ([_delegate respondsToSelector:@selector(requestComplete:failedWithError:)]) {
-    [_delegate requestComplete:self failedWithError:error];
-  }
-  [self cancel];  
+    if ([_delegate respondsToSelector:@selector(requestComplete:failedWithError:)]) {
+        [_delegate requestComplete:self failedWithError:error];
+    }
+    [self cancel];  
 }
 
 

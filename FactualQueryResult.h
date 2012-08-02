@@ -13,7 +13,7 @@
  @discussion Upon successful query execution, this object information about
  the resulting record set and zero or more FactualRow objects.
  
-*/ 
+ */ 
 @interface FactualQueryResult : NSObject
 
 /*! @property 
@@ -46,7 +46,7 @@
 
 /*! @method 
  @discussion get the FactualRow object at the given index
-*/
+ */
 -(FactualRow*) rowAtIndex:(NSInteger) index;  
 
 @end

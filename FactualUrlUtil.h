@@ -7,7 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <CoreLocation/CoreLocation.h>
 
-@interface UrlUtil : NSObject
+@interface FactualUrlUtil : NSObject
 +(void) appendParams:(NSMutableArray*)array to: (NSMutableString*)qryString;
+
++(NSString*) locationToJson: (CLLocationCoordinate2D) location;
+
 @end

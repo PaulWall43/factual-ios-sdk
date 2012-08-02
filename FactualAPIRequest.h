@@ -11,12 +11,15 @@
 @protocol FactualAPIDelegate;
 
 typedef enum  {
-  FactualRequestType_RowQuery,
-  FactualRequestType_RowUpdate,
-  FactualRequestType_SchemaQuery,
-  FactualRequestType_PlacesQuery,
-  FactualRequestType_FacetQuery,
-  FactualRequestType_FlagBadRowRequest
+    FactualRequestType_RowQuery,
+    FactualRequestType_RowUpdate,
+    FactualRequestType_SchemaQuery,
+    FactualRequestType_PlacesQuery,
+    FactualRequestType_ResolveQuery,
+    FactualRequestType_MatchQuery,
+    FactualRequestType_RawRequest,
+    FactualRequestType_FacetQuery,
+    FactualRequestType_FlagBadRowRequest
 } FactualRequestType;
 
 /*!@abstract Request tracking object returned as a result of a call to the 
@@ -30,27 +33,27 @@ typedef enum  {
  by the user to identify the request context within a request completion 
  callback, but it is also possible to store the request id separately and use
  this to identify requests.
-*/
+ */
 @interface FactualAPIRequest : NSObject
 
 /*! @property 
  @discussion get unique request id associated with this object
-*/
+ */
 @property(nonatomic,readonly) NSString* requestId;
 
 /*! @property 
  @discussion get the delegate to fire events to
-*/
+ */
 @property(nonatomic,readonly) id<FactualAPIDelegate> delegate;
 
 /*! @property 
  @discussion get the request type ... 
-*/
+ */
 @property(nonatomic,readonly) FactualRequestType requestType;
 
 /*! @property 
  @discussion the table id (optional) associated with this request
-*/
+ */
 @property (nonatomic,readonly) NSString* tableId;
 
 

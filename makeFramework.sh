@@ -4,6 +4,9 @@
 # Modified by Juan Batiz-Benet to fit GHUnit
 # Modified by Gabriel Handford for GHUnit
 
+xcodebuild -configuration Release;
+xcodebuild -configuration Debug -sdk iphonesimulator;
+
 set -e
 
 # Define these to suit your nefarious purposes
@@ -44,8 +47,8 @@ ln -s Versions/Current/$FRAMEWORK_NAME $FRAMEWORK_DIR/$FRAMEWORK_NAME
 
 # Check that this is what your static libraries
 # are called
-ARM_FILES="build-bin/Release-iphoneos/${LIB_NAME}.a"
-I386_FILES="build-bin/Debug-iphonesimulator/${LIB_NAME}.a"
+ARM_FILES="build/Release-iphoneos/${LIB_NAME}.a"
+I386_FILES="build/Debug-iphonesimulator/${LIB_NAME}.a"
 
 # The trick for creating a fully usable library is
 # to use lipo to glue the different library
@@ -56,7 +59,6 @@ I386_FILES="build-bin/Debug-iphonesimulator/${LIB_NAME}.a"
 # The library file is given the same name as the
 # framework with no .a extension.
 echo "Framework: Creating library..."
-
 lipo \
   -create \
   "$ARM_FILES" \
@@ -71,6 +73,7 @@ cp ./FactualAPI.h $FRAMEWORK_DIR/Headers/
 cp ./FactualAPIRequest.h $FRAMEWORK_DIR/Headers/
 cp ./FactualQueryResult.h $FRAMEWORK_DIR/Headers/
 cp ./FactualRow.h $FRAMEWORK_DIR/Headers/
+cp ./*.h $FRAMEWORK_DIR/Headers/
 #cp ./FactualUpdateResult.h $FRAMEWORK_DIR/Headers/
 #cp ./FactualSchemaResult.h $FRAMEWORK_DIR/Headers/
 #cp ./FactualFieldMetadata.h $FRAMEWORK_DIR/Headers/

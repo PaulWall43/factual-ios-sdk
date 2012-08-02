@@ -10,54 +10,68 @@
 #import <FactualSDK/FactualAPI.h>
 #import "FactualQueryImpl.h"
 #import "FactualFacetQueryImpl.h"
-#import "FactualPoint.h"
-#import "Geocode.h"
-#import "Geopulse.h"
-#import "Resolve.h"
+#import "FactualGeopulse.h"
+#import "FactualMatchQuery.h"
+#import "FactualResolve.h"
+#import "FactualMetadata.h"
+#import <CoreLocation/CLLocation.h>
+#import "FactualFacetResponse.h"
 
 @implementation FactualSDKTests
 
 FactualAPI* _apiObject;
-BOOL finished;
-FactualQueryResult* queryResult;
-NSDictionary* rawResult;
-double latitude;
-double longitude;
-double meters;
+BOOL _finished;
+FactualQueryResult* _queryResult;
+FactualResolveResult* _resolveResult;
+NSDictionary* _rawResult;
+FactualFacetResponse* _facetResult;
+NSString* _matchResult;
+
+double _latitude;
+double _longitude;
+double _meters;
+
+// Add your key and secret
+NSString* _key = nil;
+NSString* _secret = nil;
 
 - (void)setUp
 {
     [super setUp];
-    latitude = 34.06018;
-    longitude = -118.41835;
-    meters = 5000;
-    finished = false;
-    queryResult = nil;
-    queryResult = nil;
+    _latitude = 34.06018;
+    _longitude = -118.41835;
+    _meters = 5000;
 
-    _apiObject = [[FactualAPI alloc] initWithAPIKey:@"U3QbOw7bW9nxDN4TppoqQlxwnJmSISUbJ3h3pRj1" secret:@"2AFaSQYCFjSsDkZKLOhpT8QE2zQRLCUxcJnMMfSa"];
+    _finished = false;
+    
+    _queryResult = nil;
+    _resolveResult = nil;
+    _rawResult = nil;
+    _facetResult = nil;
+    _matchResult = nil;
+    _apiObject = [[FactualAPI alloc] initWithAPIKey:_key secret:_secret];
 }
 
 - (void)tearDown
 {
     [super tearDown];
     
-    finished = false;
-    queryResult = nil;
-    rawResult = nil;
+    _finished = false;
+    
+    _queryResult = nil;
+    _resolveResult = nil;
+    _rawResult = nil;
+    _facetResult = nil;
+    _matchResult = nil;
 }
 
 - (void)testCoreExample1
 {
     FactualQuery* queryObject = [FactualQuery query];
     [queryObject addRowFilter:[FactualRowFilter fieldName:@"country"
-                                                equalTo:@"US"]];
-
+                                                  equalTo:@"US"]];
     [_apiObject queryTable:@"places" optionalQueryParams:queryObject withDelegate:self];
-
     [self waitForResponse];
-    [self assertOk];
-
 }
 
 - (void)testCoreExample2
@@ -65,12 +79,11 @@ double meters;
     FactualQuery* queryObject = [FactualQuery query];
     
     [queryObject addRowFilter:[FactualRowFilter fieldName:@"name"
-                                                beginsWith:@"Star"]];
+                                               beginsWith:@"Star"]];
     
     [_apiObject queryTable:@"places" optionalQueryParams:queryObject withDelegate:self];
     
     [self waitForResponse];
-    [self assertOk];
 }
 
 - (void)testCoreExample3
@@ -82,7 +95,6 @@ double meters;
     [_apiObject queryTable:@"places" optionalQueryParams:queryObject withDelegate:self];
     
     [self waitForResponse];
-    [self assertOk];
 }
 
 - (void)testCoreExample4
@@ -96,9 +108,8 @@ double meters;
     [_apiObject queryTable:@"places" optionalQueryParams:queryObject withDelegate:self];
     
     [self waitForResponse];
-    [self assertOk];
     
-    STAssertEquals(5U, [queryResult.rows count], @"Not equal");
+    STAssertEquals(5U, [_queryResult.rows count], @"Not equal");
 }
 
 - (void)testCoreExample5
@@ -108,24 +119,23 @@ double meters;
     [queryObject addRowFilter:[FactualRowFilter fieldName:@"name"
                                                   equalTo:@"Stand"]];
     
-    CLLocationCoordinate2D coordinate = {latitude, longitude};
+    CLLocationCoordinate2D coordinate = {_latitude, _longitude};
     [queryObject setGeoFilter:coordinate 
-                 radiusInMeters:meters];
-
+               radiusInMeters:_meters];
+    
     [_apiObject queryTable:@"places" optionalQueryParams:queryObject withDelegate:self];
     
     [self waitForResponse];
-    [self assertOk];
-
+    
 }
 
 - (void)testSort_byDistance
 {
     FactualQuery* queryObject = [FactualQuery query];
     
-    CLLocationCoordinate2D coordinate = {latitude, longitude};
+    CLLocationCoordinate2D coordinate = {_latitude, _longitude};
     [queryObject setGeoFilter:coordinate 
-               radiusInMeters:meters];
+               radiusInMeters:_meters];
     
     FactualSortCriteria* primarySort = [[FactualSortCriteria alloc] initWithFieldName:@"$distance" sortOrder:FactualSortOrder_Ascending];
     [queryObject setPrimarySortCriteria:primarySort];
@@ -133,7 +143,6 @@ double meters;
     [_apiObject queryTable:@"places" optionalQueryParams:queryObject withDelegate:self];
     
     [self waitForResponse];
-    [self assertOk];
 }
 
 - (void)testRowFilters_2beginsWith
@@ -148,7 +157,6 @@ double meters;
     [_apiObject queryTable:@"places" optionalQueryParams:queryObject withDelegate:self];
     
     [self waitForResponse];
-    [self assertOk];
 }
 
 - (void)testIn
@@ -160,8 +168,7 @@ double meters;
     [_apiObject queryTable:@"places" optionalQueryParams:queryObject withDelegate:self];
     
     [self waitForResponse];
-    [self assertOk];
-
+    
 }
 
 - (void)testComplicated
@@ -171,16 +178,14 @@ double meters;
                                                        In:@"MA",@"VT",@"NH",nil]];
     [queryObject addRowFilter:[FactualRowFilter orFilter:[FactualRowFilter fieldName:@"name"
                                                                           beginsWith:@"Coffee"]
-                              ,[FactualRowFilter fieldName:@"name"
+                               ,[FactualRowFilter fieldName:@"name"
                                                  beginsWith:@"Star"], nil]];
-
+    
     [_apiObject queryTable:@"places" optionalQueryParams:queryObject withDelegate:self];
     
     [self waitForResponse];
-    [self assertOk];
     
 }
-
 
 - (void)testSimpleTel
 {
@@ -190,12 +195,16 @@ double meters;
     [_apiObject queryTable:@"places" optionalQueryParams:queryObject withDelegate:self];
     
     [self waitForResponse];
-    [self assertOk];
 }
 
-// Doesn't work
 - (void)testFullTextSearch_on_a_field
 {
+    FactualQuery* queryObject = [FactualQuery query];
+    [queryObject addRowFilter:[FactualRowFilter fieldName:@"name"
+                                                   search:@"Fried Chicken"]];
+    [_apiObject queryTable:@"places" optionalQueryParams:queryObject withDelegate:self];
+    
+    [self waitForResponse];
 }
 
 - (void)testCrosswalk_ex1
@@ -206,8 +215,6 @@ double meters;
     
     [_apiObject queryTable:@"crosswalk" optionalQueryParams:queryObject withDelegate:self];
     [self waitForResponse];
-    [self assertOk];
-    
 }
 
 - (void)testCrosswalk_ex2
@@ -220,7 +227,6 @@ double meters;
     
     [_apiObject queryTable:@"crosswalk" optionalQueryParams:queryObject withDelegate:self];
     [self waitForResponse];
-    [self assertOk];
 }
 
 - (void)testCrosswalk_ex3
@@ -233,7 +239,6 @@ double meters;
     
     [_apiObject queryTable:@"crosswalk" optionalQueryParams:queryObject withDelegate:self];
     [self waitForResponse];
-    [self assertOk];
 }
 
 - (void)testCrosswalk_limit
@@ -244,85 +249,31 @@ double meters;
     queryObject.limit = 1;
     [_apiObject queryTable:@"crosswalk" optionalQueryParams:queryObject withDelegate:self];
     [self waitForResponse];
-    [self assertOk];
 }
 
-
-// Doesn't work
-- (void)testApiException_BadAuth
+- (void)testMonetize
 {
+    FactualQuery* queryObject = [FactualQuery query];
+    [queryObject addRowFilter:[FactualRowFilter fieldName:@"place_locality"
+                                                  equalTo:@"Los Angeles"]];
+    
+    [_apiObject monetize:queryObject withDelegate:self];
+    
+    [self waitForResponse];
 }
-
-// Doesn't work
-- (void)testApiException_BadSelectField
-{
-}
-
 
 - (void)testSelect
 {
     FactualQuery* queryObject = [FactualQuery query];
     [queryObject addRowFilter:[FactualRowFilter fieldName:@"country"
                                                   equalTo:@"US"]];
+    [queryObject addSelectTerm:@"address"];
+    [queryObject addSelectTerm:@"country"];
     [_apiObject queryTable:@"places" optionalQueryParams:queryObject withDelegate:self];
     
     [self waitForResponse];
-    [self assertOk];
 }
 
-// Doesn't work
-- (void)testCustomRead1
-{
-}
-
-// Doesn't work
-- (void)testCustomRead2
-{
-}
- 
- - (void)testGeocode
- {
- FactualPoint* point = [[FactualPoint alloc] initWithLatitude:latitude longitude:longitude];
- Geocode* geocode = [[Geocode alloc] initWithPoint:point];
- [_apiObject reverseGeocode:geocode withDelegate:self];
- [self waitForResponse];
- [self assertOk];
- }
- 
- - (void)testGeopulse
- {
- FactualPoint* point = [[FactualPoint alloc] initWithLatitude:latitude longitude:longitude];
- Geopulse* geopulse = [[Geopulse alloc] initWithPoint:point];
- [geopulse addSelectTerm:@"commercial_density"];
- [geopulse addSelectTerm:@"commercial_profile"];
- [_apiObject geopulse:geopulse withDelegate:self];
- [self waitForResponse];
- [self assertOk];
- }
- - (void)testMonetize
- {
- FactualQuery* queryObject = [FactualQuery query];
- [queryObject addRowFilter:[FactualRowFilter fieldName:@"place_locality"
- equalTo:@"Los Angeles"]];
- 
- [_apiObject monetize:queryObject withDelegate:self];
- 
- [self waitForResponse];
- [self assertOk];
- }
- 
- - (void)testResolve_ex1
- {
- Resolve* queryObject = [Resolve resolve];
- [queryObject addProperty:@"name" value:@"McDonalds"];
- [queryObject addProperty:@"address" value:@"10451 Santa Monica Blvd"];
- [queryObject addProperty:@"region" value:@"CA"];
- [queryObject addProperty:@"postcode" value:@"90025"];
- [_apiObject queryTable:@"places" resolveParams:queryObject withDelegate:self];
- [self waitForResponse];
- [self assertOk];
- } 
- 
 - (void)testWorldGeographies
 {
     FactualQuery* queryObject = [FactualQuery query];
@@ -335,10 +286,23 @@ double meters;
     [_apiObject queryTable:@"world-geographies" optionalQueryParams:queryObject withDelegate:self];
     
     [self waitForResponse];
-    [self assertOk];
-    
 }
- 
+
+- (void)testResolve_ex1
+{
+    FactualResolve* queryObject = [FactualResolve resolve];
+    [queryObject addProperty:@"name" value:@"McDonalds"];
+    [queryObject addProperty:@"address" value:@"10451 Santa Monica Blvd"];
+    [queryObject addProperty:@"region" value:@"CA"];
+    [queryObject addProperty:@"postcode" value:@"90025"];
+    [_apiObject queryTable:@"places" resolveParams:queryObject withDelegate:self];
+    
+    [self waitForResponse];
+    
+    NSLog(@"Is resolved: %u, Obj: %@", [_resolveResult isResolved], [_resolveResult getResolved]);
+    
+} 
+
 - (void)testFacet
 {
     FactualFacetQuery* queryObject = [FactualFacetQuery facetQuery];
@@ -355,41 +319,196 @@ double meters;
     [_apiObject queryTable:@"places" facetParams:queryObject withDelegate:self];
     
     [self waitForResponse];
-    [self assertOk];
 }
 
- 
-- (void)assertOk
+- (void)testSchema
 {
-    STAssertTrue(true, @"Finished");
-    NSLog(@"Active request Completed with row count:%d TableId:%@", [queryResult rowCount], queryResult.tableId);
-    //for (FactualRow* row in queryResult.rows) {
-     //   NSLog(@"Row: %@, Names-values: %@", row.rowId, row.namesAndValues);
-    //}
+    [_apiObject getTableSchema:@"restaurants-us" withDelegate:self];
+    
+    [self waitForResponse];
+}
+
+- (void)testMatch
+{
+    FactualMatchQuery* queryObject = [FactualMatchQuery match];
+    [queryObject addProperty:@"name" value:@"McDonalds"];
+    [queryObject addProperty:@"address" value:@"10451 Santa Monica Blvd"];
+    [queryObject addProperty:@"region" value:@"CA"];
+    [queryObject addProperty:@"postcode" value:@"90025"];
+    [_apiObject queryTable:@"places" matchParams:queryObject withDelegate:self];
+    
+    [self waitForResponse];
+}
+
+- (void)testGeopulse
+{
+    CLLocationCoordinate2D point;
+    point.longitude = _longitude;
+    point.latitude = _latitude;
+    FactualGeopulse* geopulse = [FactualGeopulse geopulse:point];
+    [geopulse addSelectTerm:@"commercial_density"];
+    [geopulse addSelectTerm:@"commercial_profile"];
+    [_apiObject geopulse:geopulse withDelegate:self];
+    [self waitForResponse];
+}
+
+- (void)testGeocode
+{
+    CLLocationCoordinate2D point;
+    point.longitude = _longitude;
+    point.latitude = _latitude;
+    [_apiObject reverseGeocode:point withDelegate:self];
+    [self waitForResponse];
+}
+
+- (void)testRawRead
+{
+    NSMutableDictionary* params = [[NSMutableDictionary alloc] init];
+    [params setValue:@"3" forKey:@"limit"];
+    [_apiObject get:@"t/places" params:params withDelegate: self];
+    
+    [self waitForResponse];
+}
+
+- (void)testFlagDuplicate
+{
+    FactualMetadata* metadata = [FactualMetadata metadata: @"testuser"];
+    metadata.comment = @"my comment";
+    metadata.reference = @"www.mytest.com";
+    [_apiObject flagDuplicate:@"2EH4Pz" factualId: @"f33527e0-a8b4-4808-a820-2686f18cb00c" metadata: metadata withDelegate:self];
+    [self waitForResponse];
+}
+
+- (void)testFlagInaccurate
+{
+    FactualMetadata* metadata = [FactualMetadata metadata: @"testuser"];
+    metadata.comment = @"my comment";
+    metadata.reference = @"www.mytest.com";
+    [_apiObject flagInaccurate:@"2EH4Pz" factualId: @"f33527e0-a8b4-4808-a820-2686f18cb00c" metadata: metadata withDelegate:self];
+    [self waitForResponse];
+}
+
+- (void)testFlagInappropriate
+{
+    FactualMetadata* metadata = [FactualMetadata metadata: @"testuser"];
+    metadata.comment = @"my comment";
+    metadata.reference = @"www.mytest.com";
+    [_apiObject flagInappropriate:@"2EH4Pz" factualId: @"f33527e0-a8b4-4808-a820-2686f18cb00c" metadata: metadata withDelegate:self];
+    [self waitForResponse];
+}
+
+- (void)testFlagNonExistent
+{
+    FactualMetadata* metadata = [FactualMetadata metadata: @"testuser"];
+    metadata.comment = @"my comment";
+    metadata.reference = @"www.mytest.com";
+    [_apiObject flagNonExistent:@"2EH4Pz" factualId: @"f33527e0-a8b4-4808-a820-2686f18cb00c" metadata: metadata withDelegate:self];
+    [self waitForResponse];
+}
+
+- (void)testFlagSpam
+{
+    FactualMetadata* metadata = [FactualMetadata metadata: @"testuser"];
+    metadata.comment = @"my comment";
+    metadata.reference = @"www.mytest.com";
+    [_apiObject flagSpam:@"2EH4Pz" factualId: @"f33527e0-a8b4-4808-a820-2686f18cb00c" metadata: metadata withDelegate:self];
+    [self waitForResponse];
+}
+
+- (void)testFlagOther
+{
+    FactualMetadata* metadata = [FactualMetadata metadata: @"testuser"];
+    metadata.comment = @"my comment";
+    metadata.reference = @"www.mytest.com";
+    [_apiObject flagOther:@"2EH4Pz" factualId: @"f33527e0-a8b4-4808-a820-2686f18cb00c" metadata: metadata withDelegate:self];
+    [self waitForResponse];
+}
+
+- (void)testSubmitAdd
+{
+    FactualMetadata* metadata = [FactualMetadata metadata: @"testuser"];
+    metadata.comment = @"my comment";
+    metadata.reference = @"www.mytest.com";
+    
+    FactualSubmit* submit = [FactualSubmit submit];
+    [submit addProperty:@"longitude" value:@"100"];
+    [_apiObject submit:@"2EH4Pz" submitParams:submit metadata:metadata withDelegate:self];
+    [self waitForResponse];
+}
+
+- (void)testSubmitEdit
+{
+    FactualMetadata* metadata = [FactualMetadata metadata: @"testuser"];
+    metadata.comment = @"my comment";
+    metadata.reference = @"www.mytest.com";
+    
+    FactualSubmit* submit = [FactualSubmit submit];
+    [submit addProperty:@"longitude" value:@"100"];
+    [_apiObject submit:@"2EH4Pz" factualId:@"f33527e0-a8b4-4808-a820-2686f18cb00c" submitParams:submit metadata:metadata withDelegate:self];
+    [self waitForResponse];
+}
+
+- (void)testSubmitDelete
+{
+    FactualMetadata* metadata = [FactualMetadata metadata: @"testuser"];
+    metadata.comment = @"my comment";
+    metadata.reference = @"www.mytest.com";
+    
+    FactualSubmit* submit = [FactualSubmit submit];
+    [submit removeValue:@"longitude"];
+    [_apiObject submit:@"2EH4Pz" factualId:@"f33527e0-a8b4-4808-a820-2686f18cb00c" submitParams:submit metadata:metadata withDelegate:self];
+    [self waitForResponse];
 }
 
 - (void)waitForResponse
 {
-    while (!finished) {
+    while (!_finished) {
         [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantFuture]];
     }
 }
 
--(void) requestComplete:(FactualAPIRequest *)request receivedRawResult:(NSDictionary *)rawResult {
-    rawResult = rawResult;
-    finished = true;
-    for (id key in rawResult) {
-        NSLog(@"KEY: %@, VALUE: %@", key, [rawResult objectForKey:key]);
-    }
+-(void) requestComplete:(FactualAPIRequest *)request receivedRawResult:(NSDictionary *)result {
+    _rawResult = result;
+    _finished = true;
+     for (id key in result) {
+     NSLog(@"KEY: %@, VALUE: %@", key, [result objectForKey:key]);
+     }
 }
 
--(void) requestComplete:(FactualAPIRequest *)request receivedQueryResult:(FactualQueryResult *)queryResultObj {
-    queryResult = queryResultObj;
-    finished = true;
+-(void) requestComplete:(FactualAPIRequest *)request receivedQueryResult:(FactualQueryResult *)queryResult {
+    _queryResult = queryResult;
+    _finished = true;
+     for (id row in queryResult.rows) {
+     NSLog(@"Row: %@", row);
+     }
+}
+
+-(void) requestComplete:(FactualAPIRequest *)request receivedResolveResult:(FactualResolveResult *)result {
+    _resolveResult = result;
+    _finished = true;
+    
+     for (id row in result.rows) {
+     NSLog(@"Resolve Row: %@", row);
+     }
+}
+
+-(void) requestComplete:(FactualAPIRequest *)request receivedMatchResult:(NSString *)factualId {
+    _matchResult = factualId;
+    _finished = true;
+}
+
+-(void) requestComplete:(FactualAPIRequest *)request receivedFacetResult:(FactualFacetResponse *)result {
+    _facetResult = result;
+    _finished = true;
+    
+     for (id key in result.data) {
+     NSLog(@"KEY: %@, VALUE: %@", key, [result.data objectForKey:key]);
+     }
+     NSLog(@"TOTAL ROW COUNT: %d", result.totalRows);
 }
 
 -(void) requestComplete:(FactualAPIRequest *)request failedWithError:(NSError *)error {
     NSLog(@"FAILED with error");
-    finished = true;
+    _finished = true;
 }
 @end

@@ -10,8 +10,19 @@
 #import "FactualQuery.h"
 #import "FactualQueryImpl.h"
 
+/*!@abstract Encapsulates all the parameters supported by the Factual Facet API
+ @discussion
+ */
 @interface FactualFacetQuery : NSObject 
+
+/*! @property 
+ @discussion For each facet value count, the minimum number of results it must have in order to be returned in the response. Must be zero or greater. The default is 1.
+ */ 
 @property (nonatomic, assign) NSUInteger minCountPerFacetValue;
+
+/*! @property 
+ @discussion The maximum number of unique facet values that can be returned for a single field. Range is 1-250. The default is 25.
+ */ 
 @property (nonatomic, assign) NSUInteger maxValuesPerFacet;
 
 /*! @property 
@@ -53,10 +64,18 @@
  */
 @property(nonatomic,readonly) NSMutableArray* fullTextTerms;
 
+/*! @property 
+ @discussion when true, the response will include a count of the total number of rows in
+ * the table that conform to the request based on included filters.
+ * Requesting the row count will increase the time required to return a
+ * response. The default behavior is to NOT include a row count 
+ */
 @property (nonatomic, assign) BOOL includeRowCount;
 
+/*! @property 
+ @discussion Sets the fields to select. This is optional.
+ */
 @property (nonatomic,readonly) NSMutableArray* selectTerms;
-
 
 @property(nonatomic,retain)   FactualGeoFilter* geoFilter;
 
@@ -118,6 +137,9 @@
  */
 -(void) clearRowFilters;
 
+/*! @method 
+ @discussion clear all previously set row filters 
+ */
 -(void) addSelectTerm:(NSString*) selectTerm;
 
 @end

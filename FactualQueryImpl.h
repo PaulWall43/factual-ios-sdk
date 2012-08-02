@@ -7,31 +7,30 @@
 
 #import <Foundation/Foundation.h>
 #import "FactualQuery.h"
-#import "FacetQuery.h"
 
 typedef enum {
-  Eq,
-  NEq,
-  Gt,
-  Lt,
-  GtEq,
-  LtEq,
-  BeginsWith,
-  Search,
-  NotBeginsWith,
-  Blank
+    Eq,
+    NEq,
+    Gt,
+    Lt,
+    GtEq,
+    LtEq,
+    BeginsWith,
+    Search,
+    NotBeginsWith,
+    Blank
 } SimplePredicateType;
 
 typedef enum {
-  In,
-  NotIn,
-  BeginsWithAny,
-  NotBeginsWithAny
+    In,
+    NotIn,
+    BeginsWithAny,
+    NotBeginsWithAny
 } CompoundValuePredicateType;
 
 typedef enum {
-  And,
-  Or
+    And,
+    Or
 } CompoundFilterPredicateType;
 
 /* -----------------------------------------------------------------------------
@@ -49,9 +48,9 @@ typedef enum {
  ------------------------------------------------------------------------------*/
 
 @interface FactualSimpleValueFilterPredicate : FactualRowFilter {
-  NSString* _fieldName;
-  SimplePredicateType _type;
-  id _value;
+    NSString* _fieldName;
+    SimplePredicateType _type;
+    id _value;
 }
 
 @property (nonatomic,copy)   NSString* fieldName;
@@ -69,8 +68,8 @@ typedef enum {
  ------------------------------------------------------------------------------*/
 
 @interface FactualCompoundRowFilterPredicate : FactualRowFilter {
-  CompoundFilterPredicateType _type;
-  NSMutableArray* _filters;
+    CompoundFilterPredicateType _type;
+    NSMutableArray* _filters;
 }
 
 @property (nonatomic,assign) CompoundFilterPredicateType type;
@@ -86,9 +85,9 @@ typedef enum {
 
 @interface FactualCompoundValueFilterPredicate : FactualRowFilter
 {
-  CompoundValuePredicateType _type;
-  NSArray* _values;
-  NSString* _fieldName;
+    CompoundValuePredicateType _type;
+    NSArray* _values;
+    NSString* _fieldName;
 }
 @property (nonatomic,assign) CompoundValuePredicateType type;
 @property (nonatomic,retain) NSArray* values;
@@ -115,8 +114,8 @@ typedef enum {
 
 @interface FactualDistanceFromPointGeoFilter : FactualGeoFilter
 {
-  CLLocationCoordinate2D _location;
-  double                 _radiusInMeters;
+    CLLocationCoordinate2D _location;
+    double                 _radiusInMeters;
 }
 
 @property (nonatomic,assign) CLLocationCoordinate2D location;
@@ -131,15 +130,15 @@ typedef enum {
  ------------------------------------------------------------------------------*/
 
 @interface FactualQueryImplementation : FactualQuery {
-  NSString*   _rowId;
-  NSUInteger  _offset;
-  NSUInteger  _limit;
-  FactualSortCriteria* _primarySortCriteria;
-  FactualSortCriteria* _secondarySortCriteria;
-  NSMutableArray*    _rowFilters;
-  NSMutableArray*    _textTerms;
-  FactualGeoFilter* _geoFilter;
-  NSMutableArray*    _selectTerms;
+    NSString*   _rowId;
+    NSUInteger  _offset;
+    NSUInteger  _limit;
+    FactualSortCriteria* _primarySortCriteria;
+    FactualSortCriteria* _secondarySortCriteria;
+    NSMutableArray*    _rowFilters;
+    NSMutableArray*    _textTerms;
+    FactualGeoFilter* _geoFilter;
+    NSMutableArray*    _selectTerms;
 }
 @property(nonatomic,retain)   FactualGeoFilter* geoFilter;
 
@@ -156,12 +155,3 @@ typedef enum {
 -(void) generateQueryString:(NSMutableString*) intoString;
 
 @end
-
-
-
-
-
-
-
-
-

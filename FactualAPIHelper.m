@@ -14,42 +14,31 @@
 @implementation FactualAPIHelper
 
 +(NSString*) buildAPIRequestURL:(NSString*) hostName 
-                  apiVersion:(NSInteger) apiVersion
-                    queryStr:(NSString*) queryStr {
-  
-  if (apiVersion == 2) { 
-    NSString *url = [NSString stringWithFormat:@"http://%@/v%d/%@",
-                     hostName, apiVersion,queryStr];
-    return url;
-
-  }
-  else if (apiVersion == 3) { 
+                       queryStr:(NSString*) queryStr {
+    
     NSString *url = [NSString stringWithFormat:@"http://api.v3.factual.com/%@",queryStr];
-
     return url;
-  }
-  return nil;
 }
 
 
 +(NSString*) buildTableQueryString:(NSString*) apiKey tableId:(NSString*) tableId queryParams:(FactualQuery*) tableQuery{
-  
+    
 	NSMutableString *qry = [[NSMutableString alloc] initWithFormat:@"tables/%@/read", tableId];
-
-  
-  if (tableQuery != nil) {
-    [qry appendString:@"?api_key="];
-    [qry appendString:apiKey];
-    [qry appendString:@"&"];
-    FactualQueryImplementation* queryImpl = (FactualQueryImplementation*)tableQuery;
-    [queryImpl generateQueryString:qry]; 
-  }
+    
+    
+    if (tableQuery != nil) {
+        [qry appendString:@"?api_key="];
+        [qry appendString:apiKey];
+        [qry appendString:@"&"];
+        FactualQueryImplementation* queryImpl = (FactualQueryImplementation*)tableQuery;
+        [queryImpl generateQueryString:qry]; 
+    }
 #ifdef TARGET_IPHONE_SIMULATOR    
-  NSLog(@"Filter Query%@",qry);
+    NSLog(@"Filter Query%@",qry);
 #endif  
 	// [qry deleteCharactersInRange:NSMakeRange([qry length] - 1, 1)];
 	return qry;
-  
+    
 } 
 
 +(NSString*) buildQueryString:(NSString*) apiKey path:(NSString*) path queryParams:(FactualQuery*) tableQuery{
@@ -103,48 +92,54 @@
 
 
 +(NSString*) buildUpdateQueryString:(NSString*) tableId {
-  return [NSString stringWithFormat:@"tables/%@/input", tableId];
+    return [NSString stringWithFormat:@"tables/%@/input", tableId];
 }
 
 +(NSString*) buildSchemaQueryString:(NSString*) apiKey tableId:(NSString*) tableId {
-  return [NSString stringWithFormat:@"tables/%@/schema?api_key=%@", tableId,apiKey];
+    NSMutableString *qry = [[NSMutableString alloc] initWithFormat:@"t/%@/schema?", tableId];
+    if (apiKey != nil) { 
+        [qry appendString:@"&"];
+        [qry appendString:@"KEY="];
+        [qry appendString:apiKey];
+    }
+    return qry;
 }
 
 +(NSString*) buildTableUpdatePostBody:(NSString*) apiKey
                                 facts:(NSDictionary*) facts
-                       optionalRowId:(NSString*) rowId  
+                        optionalRowId:(NSString*) rowId  
                        optionalSource:(NSString*) source 
-             optionalUserTokenId:(NSString*) tokenId 
+                  optionalUserTokenId:(NSString*) tokenId 
                       optionalComment:(NSString*) comment {
-  
-  // create a mutable string ... 
-  NSMutableString* postBodyStr = [NSMutableString stringWithCapacity:2048];
-  
-  [postBodyStr appendFormat:@"api_key=%@&",apiKey];
-  if (rowId != nil) {
-    [postBodyStr appendFormat:@"subjectKey=%@&",rowId];
-  }
-  if (source != nil){
-    [postBodyStr appendFormat:@"source=%@&",source];
-  }
-  if (comment != nil) {
-    [postBodyStr appendFormat:@"comments=%@&",comment];
-  }
-  if (tokenId != nil) {
-    [postBodyStr appendFormat:@"token=%@&",tokenId];
-  }
-  
+    
+    // create a mutable string ... 
+    NSMutableString* postBodyStr = [NSMutableString stringWithCapacity:2048];
+    
+    [postBodyStr appendFormat:@"api_key=%@&",apiKey];
+    if (rowId != nil) {
+        [postBodyStr appendFormat:@"subjectKey=%@&",rowId];
+    }
+    if (source != nil){
+        [postBodyStr appendFormat:@"source=%@&",source];
+    }
+    if (comment != nil) {
+        [postBodyStr appendFormat:@"comments=%@&",comment];
+    }
+    if (tokenId != nil) {
+        [postBodyStr appendFormat:@"token=%@&",tokenId];
+    }
+    
     NSError *error = NULL;
     
-  // ok now create a serialized representation of facts ... 
-  NSString* serializedFacts = [[NSString alloc] initWithData: [[CJSONSerializer serializer] serializeDictionary:facts  error:&error] encoding: NSUTF8StringEncoding];
-  // and then encode them properly ... 
-  NSString* escapedFacts = (__bridge NSString*) CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault,(__bridge CFStringRef)serializedFacts,NULL,CFSTR("?=&+"),kCFStringEncodingUTF8);
-  // auto release it 
-  // append to final string 
-  [postBodyStr appendFormat:@"values=%@",escapedFacts];
-  
-  return postBodyStr;
+    // ok now create a serialized representation of facts ... 
+    NSString* serializedFacts = [[NSString alloc] initWithData: [[CJSONSerializer serializer] serializeDictionary:facts  error:&error] encoding: NSUTF8StringEncoding];
+    // and then encode them properly ... 
+    NSString* escapedFacts = (__bridge NSString*) CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault,(__bridge CFStringRef)serializedFacts,NULL,CFSTR("?=&+"),kCFStringEncodingUTF8);
+    // auto release it 
+    // append to final string 
+    [postBodyStr appendFormat:@"values=%@",escapedFacts];
+    
+    return postBodyStr;
 }
 
 +(NSString*) buildRateQueryString:(NSString*)apiKey 
@@ -152,23 +147,23 @@
                             rowId:(NSString*)rowId
                            source:(NSString*)source
                           comment:(NSString*)comment {
-  
+    
 	NSMutableString *qry = [[NSMutableString alloc] initWithFormat:@"tables/%@/rate?api_key=%@&rowId=%@&rating=-1", 
-                           tableId,
-                           apiKey,
-                           rowId];
-  if (source != nil) {
-    [qry appendFormat:@"&source=%@",
-     ((__bridge NSString*) CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault,(__bridge CFStringRef)source,NULL,CFSTR("?=&+"),kCFStringEncodingUTF8))
-     ];
-  }
-  if (comment != nil) {
-    [qry appendFormat:@"&comments=%@",
-     ((__bridge NSString*) CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault,(__bridge CFStringRef)comment,NULL,CFSTR("?=&+"),kCFStringEncodingUTF8))
-     ];
-  }
-  
-  return qry;
+                            tableId,
+                            apiKey,
+                            rowId];
+    if (source != nil) {
+        [qry appendFormat:@"&source=%@",
+         ((__bridge NSString*) CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault,(__bridge CFStringRef)source,NULL,CFSTR("?=&+"),kCFStringEncodingUTF8))
+         ];
+    }
+    if (comment != nil) {
+        [qry appendFormat:@"&comments=%@",
+         ((__bridge NSString*) CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault,(__bridge CFStringRef)comment,NULL,CFSTR("?=&+"),kCFStringEncodingUTF8))
+         ];
+    }
+    
+    return qry;
 }
 
 

@@ -9,7 +9,7 @@
 #import "FactualFacetQueryImpl.h"
 #import "CJSONSerializer.h"
 #import "NSString (Escaping).h"
-#import "UrlUtil.h"
+#import "FactualUrlUtil.h"
 
 @implementation FactualFacetQueryImplementation
 
@@ -96,126 +96,96 @@
 -(void) generateQueryString:(NSMutableString*)qryString {
     NSMutableArray* array = [[NSMutableArray alloc] initWithCapacity:10];
     
-    if (self.includeRowCount) {
+    if (_includeRowCount) {
         [array addObject:[NSString stringWithFormat:@"include_count=true"]];
     }
-    //[qryString appendString:@"include_count=t&"];
     
-    if (self.rowId != nil) {
-        [array addObject:[NSString stringWithFormat:@"subjectKey=%@",
-                          [self.rowId stringWithPercentEscape]]];
-        /*
-         [qryString appendFormat:@"subjectKey=%@&",
-		 [self.rowId stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
-         */
-    }
-    else {
-        if (self.limit > 0) {
-            [array addObject:[NSString stringWithFormat:@"limit=%d", self.limit]];
-            //[qryString appendFormat:@"limit=%d&", self.limit];
-        }
-        
-        if (self.offset > 0) {
-            [array addObject:[NSString stringWithFormat:@"offset=%d", self.offset]];
-            //[qryString appendFormat:@"offset=%d&", self.offset];
-        }
-        
-        if (self.primarySortCriteria != nil || self.secondarySortCriteria != nil) {
-            NSMutableString* sortStr = [[NSMutableString alloc]init ];
-            [sortStr appendString:@"sort="];
-            if (self.primarySortCriteria != nil) {
-                [self.primarySortCriteria generateQueryString:sortStr];
-                if (self.secondarySortCriteria != nil) {
-                    [sortStr appendString:@","];
-                }
-            }
-            if (self.secondarySortCriteria != nil) {
-                [self.secondarySortCriteria generateQueryString:sortStr];
-            }
-            [array addObject:sortStr];
-            //[qryString appendString:sortStr];
-            //[qryString appendString:@"&"];
-        }
-        
-        
-        if ([self.rowFilters count] != 0) {
-            NSMutableDictionary* filterDictionary = [[NSMutableDictionary alloc] initWithCapacity:0];
-            
-            if ([self.rowFilters count] == 1) {
-                [[self.rowFilters objectAtIndex: 0] appendToDictionary:filterDictionary];
-            } else {
-                FactualCompoundRowFilterPredicate* andFilter = [[FactualCompoundRowFilterPredicate alloc] initWithPredicateType:And filterValues:self.rowFilters];
-                [andFilter appendToDictionary:filterDictionary];
-            }
-            
-            NSMutableString* filterStr = [[NSMutableString alloc]init ];
-            
-            NSError *error = NULL;
-            NSData *serial = [[CJSONSerializer serializer] serializeDictionary:filterDictionary error:&error];
-            NSString *str = [[NSString alloc] initWithData: serial encoding: NSUTF8StringEncoding];
-            
-            
-            [filterStr appendFormat:@"filters=%@",[str
-              stringWithPercentEscape]];
-            
-            [array addObject:filterStr];
-            //[qryString appendString:filterStr];
-            //[qryString appendString:@"&"];
-        }
-        
-        if ([self.fullTextTerms count] != 0) {
-            NSMutableString* qString = [[NSMutableString alloc] init];
-            int termNumber=0;
-            for (NSString* term in self.fullTextTerms) {
-                if(termNumber++ != 0) 
-                    [qString appendString:@","];
-                [qString appendString:term];
-            }
-            
-            [array addObject:[NSString stringWithFormat:@"q=%@",[qString stringWithPercentEscape]]];
-            
-            //[qryString appendFormat:@"q=%@&",[qString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
-        }
-        if ([self.selectTerms count] != 0) {
-            NSMutableString* qString = [[NSMutableString alloc] init];
-            int termNumber=0;
-            for (NSString* term in self.selectTerms) {
-                if(termNumber++ != 0) 
-                    [qString appendString:@","];
-                [qString appendString:term];
-            }
-            
-            [array addObject:[NSString stringWithFormat:@"select=%@",[qString stringWithPercentEscape]]];
-            
-            //[qryString appendFormat:@"q=%@&",[qString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
-        }
-        
-        if (self.geoFilter != nil) {
-            NSMutableDictionary* geoDictionary = [[NSMutableDictionary alloc] initWithCapacity:0];
-            [self.geoFilter appendToDictionary:geoDictionary];
-
-            NSError *error = NULL;
-            NSData *serial = [[CJSONSerializer serializer] serializeDictionary:geoDictionary error:&error];
-            NSString *str = [[NSString alloc] initWithData: serial encoding: NSUTF8StringEncoding];
-            
-            [array addObject:[NSString stringWithFormat:@"geo=%@",
-                              [str stringWithPercentEscape]]];
-            
-            /*[qryString appendFormat:@"geo=%@",
-             [[[[CJSONSerializer serializer] serializeDictionary:geoDictionary] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding] stringByReplacingOccurrencesOfString:@"&" withString:@"%26"] ];    
-             */
-            
-        }
-        
-        if (self.maxValuesPerFacet != 0) {
-            [array addObject:[NSString stringWithFormat:@"limit=%d", self.maxValuesPerFacet]];
-        }
-        if (self.minCountPerFacetValue != 0) {
-            [array addObject:[NSString stringWithFormat:@"min_count=%d", self.minCountPerFacetValue]];
-        }
+    if (_limit > 0) {
+        [array addObject:[NSString stringWithFormat:@"limit=%d", _limit]];
     }
     
-    [UrlUtil appendParams:array to:qryString];
+    if (_offset > 0) {
+        [array addObject:[NSString stringWithFormat:@"offset=%d", _offset]];
+    }
+    
+    if (_primarySortCriteria != nil || _secondarySortCriteria != nil) {
+        NSMutableString* sortStr = [[NSMutableString alloc]init ];
+        [sortStr appendString:@"sort="];
+        if (_primarySortCriteria != nil) {
+            [_primarySortCriteria generateQueryString:sortStr];
+            if (_secondarySortCriteria != nil) {
+                [sortStr appendString:@","];
+            }
+        }
+        if (_secondarySortCriteria != nil) {
+            [_secondarySortCriteria generateQueryString:sortStr];
+        }
+        [array addObject:sortStr];
+    }
+    
+    if ([_rowFilters count] != 0) {
+        NSMutableDictionary* filterDictionary = [[NSMutableDictionary alloc] initWithCapacity:0];
+        
+        if ([_rowFilters count] == 1) {
+            [[_rowFilters objectAtIndex: 0] appendToDictionary:filterDictionary];
+        } else {
+            FactualCompoundRowFilterPredicate* andFilter = [[FactualCompoundRowFilterPredicate alloc] initWithPredicateType:And filterValues:_rowFilters];
+            [andFilter appendToDictionary:filterDictionary];
+        }
+        NSError *error = nil;
+        NSMutableString* filterStr = [[NSMutableString alloc]init ];
+        [filterStr appendFormat:@"filters=%@",
+         [[[NSString alloc] initWithData:
+           [[CJSONSerializer serializer] serializeDictionary:filterDictionary  error:&error] 
+                                encoding:NSUTF8StringEncoding]
+          stringWithPercentEscape]];
+        [array addObject:filterStr];
+    }
+    
+    if ([_textTerms count] != 0) {
+        NSMutableString* qString = [[NSMutableString alloc] init];
+        int termNumber=0;
+        for (NSString* term in _textTerms) {
+            if(termNumber++ != 0) 
+                [qString appendString:@","];
+            [qString appendString:term];
+        }
+        
+        [array addObject:[NSString stringWithFormat:@"q=%@",[qString stringWithPercentEscape]]];
+        
+    }
+    if ([_selectTerms count] != 0) {
+        NSMutableString* qString = [[NSMutableString alloc] init];
+        int termNumber=0;
+        for (NSString* term in _selectTerms) {
+            if(termNumber++ != 0) 
+                [qString appendString:@","];
+            [qString appendString:term];
+        }
+        
+        [array addObject:[NSString stringWithFormat:@"select=%@",[qString stringWithPercentEscape]]];
+        
+    }
+    
+    if (_geoFilter != nil) {
+        NSMutableDictionary* geoDictionary = [[NSMutableDictionary alloc] initWithCapacity:0];
+        [_geoFilter appendToDictionary:geoDictionary];
+        
+        NSError *error = nil;
+        [array addObject:[NSString stringWithFormat:@"geo=%@",
+                          [[[NSString alloc] initWithData:
+                            [[CJSONSerializer serializer] serializeDictionary:geoDictionary error:&error] 
+                                                 encoding:NSUTF8StringEncoding] stringWithPercentEscape]]];
+    }
+    
+    if (_maxValuesPerFacet != 0) {
+        [array addObject:[NSString stringWithFormat:@"limit=%d", _maxValuesPerFacet]];
+    }
+    if (_minCountPerFacetValue != 0) {
+        [array addObject:[NSString stringWithFormat:@"min_count=%d", _minCountPerFacetValue]];
+    }
+    
+    [FactualUrlUtil appendParams:array to:qryString];
 }
 
 @end

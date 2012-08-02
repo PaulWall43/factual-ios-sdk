@@ -10,11 +10,11 @@
 
 
 @interface FactualQueryResultImpl : FactualQueryResult {
-  NSUInteger       _totalRows;
-  NSMutableArray* _rows;
-  NSArray* _columns;
-  NSDictionary* _columnToIndex;
-  NSString* _tableId;
+    NSUInteger       _totalRows;
+    NSMutableArray* _rows;
+    NSArray* _columns;
+    NSDictionary* _columnToIndex;
+    NSString* _tableId;
 }
 
 // initialization ... 
@@ -26,13 +26,13 @@
 
 // internal init 
 -(id) initWithColumns:(NSArray*) columns 
-              rows:(NSArray*) rows 
+                 rows:(NSArray*) rows 
             totalRows:(NSUInteger) totalRows
               tableId:(NSString*) tableId;
 
 -(id) initWithOnlyRows:(NSArray*) rows 
-            totalRows:(NSUInteger) totalRows
-              tableId:(NSString*) tableId;
+             totalRows:(NSUInteger) totalRows
+               tableId:(NSString*) tableId;
 
 
 // get the row at the given index 

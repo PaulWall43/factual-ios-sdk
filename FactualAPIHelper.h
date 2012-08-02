@@ -8,15 +8,13 @@
 #import <Foundation/Foundation.h>
 #import "FactualQuery.h"
 #import "FactualFacetQuery.h"
-#import "FacetQuery.h"
 
 @interface FactualAPIHelper : NSObject {
-  
+    
 }
 
 +(NSString*) buildAPIRequestURL:(NSString*) host 
-                  apiVersion:(NSInteger) apiVersion
-                  queryStr:(NSString*) queryStr;
+                       queryStr:(NSString*) queryStr;
 
 +(NSString*) buildQueryString:(NSString*) apiKey path:(NSString*) path queryParams:(FactualQuery*) tableQuery;
 +(NSString*) buildTableQueryString:(NSString*) apiKey tableId:(NSString*) tableId queryParams:(FactualQuery*) queryParams;
@@ -27,7 +25,7 @@
                                 facts:(NSDictionary*) facts
                         optionalRowId:(NSString*) rowId  
                        optionalSource:(NSString*) source 
-             optionalUserTokenId:(NSString*) tokenId 
+                  optionalUserTokenId:(NSString*) tokenId 
                       optionalComment:(NSString*) comment;
 +(NSString*) buildSchemaQueryString:(NSString*) apiKey tableId:(NSString*) tableId;
 +(NSString*) buildRateQueryString:(NSString*)apiKey 

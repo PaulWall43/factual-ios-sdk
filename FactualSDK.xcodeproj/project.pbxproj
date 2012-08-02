@@ -65,16 +65,34 @@
 		258F599813F4866700A0C0CA /* OAuthConsumer.h in Headers */ = {isa = PBXBuildFile; fileRef = 258F596C13F4866700A0C0CA /* OAuthConsumer.h */; };
 		258F599B13F4A42B00A0C0CA /* Base64Transcoder.c in Sources */ = {isa = PBXBuildFile; fileRef = 258F599913F4A42B00A0C0CA /* Base64Transcoder.c */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		258F599C13F4A42B00A0C0CA /* Base64Transcoder.h in Headers */ = {isa = PBXBuildFile; fileRef = 258F599A13F4A42B00A0C0CA /* Base64Transcoder.h */; };
-		CA81E1C915C31ADE00EB89A6 /* Geocode.h in Headers */ = {isa = PBXBuildFile; fileRef = CA81E1C715C31ADE00EB89A6 /* Geocode.h */; };
-		CA81E1CA15C31ADE00EB89A6 /* Geocode.m in Sources */ = {isa = PBXBuildFile; fileRef = CA81E1C815C31ADE00EB89A6 /* Geocode.m */; };
-		CA81E1CE15C31B1100EB89A6 /* FactualPoint.h in Headers */ = {isa = PBXBuildFile; fileRef = CA81E1CC15C31B1100EB89A6 /* FactualPoint.h */; };
-		CA81E1CF15C31B1100EB89A6 /* FactualPoint.m in Sources */ = {isa = PBXBuildFile; fileRef = CA81E1CD15C31B1100EB89A6 /* FactualPoint.m */; };
-		CA81E1D215C342C900EB89A6 /* Geopulse.h in Headers */ = {isa = PBXBuildFile; fileRef = CA81E1D015C342C800EB89A6 /* Geopulse.h */; };
-		CA81E1D315C342C900EB89A6 /* Geopulse.m in Sources */ = {isa = PBXBuildFile; fileRef = CA81E1D115C342C900EB89A6 /* Geopulse.m */; };
-		CA81E1D615C348BD00EB89A6 /* UrlUtil.h in Headers */ = {isa = PBXBuildFile; fileRef = CA81E1D415C348BC00EB89A6 /* UrlUtil.h */; };
-		CA81E1D715C348BD00EB89A6 /* UrlUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = CA81E1D515C348BD00EB89A6 /* UrlUtil.m */; };
-		CA81E1DA15C3502800EB89A6 /* Resolve.h in Headers */ = {isa = PBXBuildFile; fileRef = CA81E1D815C3502800EB89A6 /* Resolve.h */; };
-		CA81E1DB15C3502800EB89A6 /* Resolve.m in Sources */ = {isa = PBXBuildFile; fileRef = CA81E1D915C3502800EB89A6 /* Resolve.m */; };
+		CA0970B215C873DD0030EAC2 /* FactualGeopulseImpl.h in Headers */ = {isa = PBXBuildFile; fileRef = CA0970B015C873DC0030EAC2 /* FactualGeopulseImpl.h */; };
+		CA0970B315C873DD0030EAC2 /* FactualGeopulseImpl.m in Sources */ = {isa = PBXBuildFile; fileRef = CA0970B115C873DC0030EAC2 /* FactualGeopulseImpl.m */; };
+		CA0970B615C89DEA0030EAC2 /* FactualResolveImpl.h in Headers */ = {isa = PBXBuildFile; fileRef = CA0970B415C89DE90030EAC2 /* FactualResolveImpl.h */; };
+		CA0970B715C89DEA0030EAC2 /* FactualResolveImpl.m in Sources */ = {isa = PBXBuildFile; fileRef = CA0970B515C89DE90030EAC2 /* FactualResolveImpl.m */; };
+		CA0970BA15C8A1330030EAC2 /* FactualResolveResult.h in Headers */ = {isa = PBXBuildFile; fileRef = CA0970B815C8A1310030EAC2 /* FactualResolveResult.h */; };
+		CA0970BB15C8A1330030EAC2 /* FactualResolveResult.m in Sources */ = {isa = PBXBuildFile; fileRef = CA0970B915C8A1320030EAC2 /* FactualResolveResult.m */; };
+		CA0970BE15C8AFA90030EAC2 /* FactualFacetResponse.h in Headers */ = {isa = PBXBuildFile; fileRef = CA0970BC15C8AFA80030EAC2 /* FactualFacetResponse.h */; };
+		CA0970BF15C8AFA90030EAC2 /* FactualFacetResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = CA0970BD15C8AFA80030EAC2 /* FactualFacetResponse.m */; };
+		CA0970C215C8AFC30030EAC2 /* FactualFacetResponseImpl.h in Headers */ = {isa = PBXBuildFile; fileRef = CA0970C015C8AFC10030EAC2 /* FactualFacetResponseImpl.h */; };
+		CA0970C315C8AFC30030EAC2 /* FactualFacetResponseImpl.m in Sources */ = {isa = PBXBuildFile; fileRef = CA0970C115C8AFC20030EAC2 /* FactualFacetResponseImpl.m */; };
+		CA0970C615C9D0D30030EAC2 /* FactualSubmit.h in Headers */ = {isa = PBXBuildFile; fileRef = CA0970C415C9D0D10030EAC2 /* FactualSubmit.h */; };
+		CA0970C715C9D0D30030EAC2 /* FactualSubmit.m in Sources */ = {isa = PBXBuildFile; fileRef = CA0970C515C9D0D20030EAC2 /* FactualSubmit.m */; };
+		CA0970CA15C9D0F00030EAC2 /* FactualSubmitImpl.h in Headers */ = {isa = PBXBuildFile; fileRef = CA0970C815C9D0EE0030EAC2 /* FactualSubmitImpl.h */; };
+		CA0970CB15C9D0F00030EAC2 /* FactualSubmitImpl.m in Sources */ = {isa = PBXBuildFile; fileRef = CA0970C915C9D0EF0030EAC2 /* FactualSubmitImpl.m */; };
+		CA0970CE15C9E7390030EAC2 /* FactualMetadata.h in Headers */ = {isa = PBXBuildFile; fileRef = CA0970CC15C9E7370030EAC2 /* FactualMetadata.h */; };
+		CA0970CF15C9E7390030EAC2 /* FactualMetadata.m in Sources */ = {isa = PBXBuildFile; fileRef = CA0970CD15C9E7380030EAC2 /* FactualMetadata.m */; };
+		CA0970D215CAFABF0030EAC2 /* FactualMatchQuery.h in Headers */ = {isa = PBXBuildFile; fileRef = CA0970D015CAFABC0030EAC2 /* FactualMatchQuery.h */; };
+		CA0970D315CAFABF0030EAC2 /* FactualMatchQuery.m in Sources */ = {isa = PBXBuildFile; fileRef = CA0970D115CAFABD0030EAC2 /* FactualMatchQuery.m */; };
+		CA0970D615CAFAD00030EAC2 /* FactualMatchQueryImpl.h in Headers */ = {isa = PBXBuildFile; fileRef = CA0970D415CAFACE0030EAC2 /* FactualMatchQueryImpl.h */; };
+		CA0970D715CAFAD00030EAC2 /* FactualMatchQueryImpl.m in Sources */ = {isa = PBXBuildFile; fileRef = CA0970D515CAFACF0030EAC2 /* FactualMatchQueryImpl.m */; };
+		CA09711415D05F0C0030EAC2 /* FactualMetadataImpl.h in Headers */ = {isa = PBXBuildFile; fileRef = CA09711215D05F070030EAC2 /* FactualMetadataImpl.h */; };
+		CA09711515D05F0C0030EAC2 /* FactualMetadataImpl.m in Sources */ = {isa = PBXBuildFile; fileRef = CA09711315D05F090030EAC2 /* FactualMetadataImpl.m */; };
+		CA81E1D215C342C900EB89A6 /* FactualGeopulse.h in Headers */ = {isa = PBXBuildFile; fileRef = CA81E1D015C342C800EB89A6 /* FactualGeopulse.h */; };
+		CA81E1D315C342C900EB89A6 /* FactualGeopulse.m in Sources */ = {isa = PBXBuildFile; fileRef = CA81E1D115C342C900EB89A6 /* FactualGeopulse.m */; };
+		CA81E1D615C348BD00EB89A6 /* FactualUrlUtil.h in Headers */ = {isa = PBXBuildFile; fileRef = CA81E1D415C348BC00EB89A6 /* FactualUrlUtil.h */; };
+		CA81E1D715C348BD00EB89A6 /* FactualUrlUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = CA81E1D515C348BD00EB89A6 /* FactualUrlUtil.m */; };
+		CA81E1DA15C3502800EB89A6 /* FactualResolve.h in Headers */ = {isa = PBXBuildFile; fileRef = CA81E1D815C3502800EB89A6 /* FactualResolve.h */; };
+		CA81E1DB15C3502800EB89A6 /* FactualResolve.m in Sources */ = {isa = PBXBuildFile; fileRef = CA81E1D915C3502800EB89A6 /* FactualResolve.m */; };
 		CA81E1F015C707A000EB89A6 /* FactualFacetQueryImpl.h in Headers */ = {isa = PBXBuildFile; fileRef = CA81E1EE15C7079F00EB89A6 /* FactualFacetQueryImpl.h */; };
 		CA81E1F115C707A000EB89A6 /* FactualFacetQueryImpl.m in Sources */ = {isa = PBXBuildFile; fileRef = CA81E1EF15C7079F00EB89A6 /* FactualFacetQueryImpl.m */; };
 		CA81E1F815C70C7500EB89A6 /* FactualFacetQuery.h in Headers */ = {isa = PBXBuildFile; fileRef = CA81E1F615C70C7400EB89A6 /* FactualFacetQuery.h */; };
@@ -182,16 +200,39 @@
 		25EF20FB12B2430F006D19BA /* FactualQueryImpl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FactualQueryImpl.m; sourceTree = "<group>"; };
 		AA747D9E0F9514B9006C5449 /* FactualSDK_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FactualSDK_Prefix.pch; sourceTree = SOURCE_ROOT; };
 		AACBBE490F95108600F1A2B1 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
-		CA81E1C715C31ADE00EB89A6 /* Geocode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Geocode.h; sourceTree = "<group>"; };
-		CA81E1C815C31ADE00EB89A6 /* Geocode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Geocode.m; sourceTree = "<group>"; };
-		CA81E1CC15C31B1100EB89A6 /* FactualPoint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FactualPoint.h; sourceTree = "<group>"; };
-		CA81E1CD15C31B1100EB89A6 /* FactualPoint.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FactualPoint.m; sourceTree = "<group>"; };
-		CA81E1D015C342C800EB89A6 /* Geopulse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Geopulse.h; sourceTree = "<group>"; };
-		CA81E1D115C342C900EB89A6 /* Geopulse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Geopulse.m; sourceTree = "<group>"; };
-		CA81E1D415C348BC00EB89A6 /* UrlUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UrlUtil.h; sourceTree = "<group>"; };
-		CA81E1D515C348BD00EB89A6 /* UrlUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UrlUtil.m; sourceTree = "<group>"; };
-		CA81E1D815C3502800EB89A6 /* Resolve.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Resolve.h; sourceTree = "<group>"; };
-		CA81E1D915C3502800EB89A6 /* Resolve.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Resolve.m; sourceTree = "<group>"; };
+		CA0970B015C873DC0030EAC2 /* FactualGeopulseImpl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FactualGeopulseImpl.h; sourceTree = "<group>"; };
+		CA0970B115C873DC0030EAC2 /* FactualGeopulseImpl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FactualGeopulseImpl.m; sourceTree = "<group>"; };
+		CA0970B415C89DE90030EAC2 /* FactualResolveImpl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FactualResolveImpl.h; sourceTree = "<group>"; };
+		CA0970B515C89DE90030EAC2 /* FactualResolveImpl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FactualResolveImpl.m; sourceTree = "<group>"; };
+		CA0970B815C8A1310030EAC2 /* FactualResolveResult.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FactualResolveResult.h; sourceTree = "<group>"; };
+		CA0970B915C8A1320030EAC2 /* FactualResolveResult.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FactualResolveResult.m; sourceTree = "<group>"; };
+		CA0970BC15C8AFA80030EAC2 /* FactualFacetResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FactualFacetResponse.h; sourceTree = "<group>"; };
+		CA0970BD15C8AFA80030EAC2 /* FactualFacetResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FactualFacetResponse.m; sourceTree = "<group>"; };
+		CA0970C015C8AFC10030EAC2 /* FactualFacetResponseImpl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FactualFacetResponseImpl.h; sourceTree = "<group>"; };
+		CA0970C115C8AFC20030EAC2 /* FactualFacetResponseImpl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FactualFacetResponseImpl.m; sourceTree = "<group>"; };
+		CA0970C415C9D0D10030EAC2 /* FactualSubmit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FactualSubmit.h; sourceTree = "<group>"; };
+		CA0970C515C9D0D20030EAC2 /* FactualSubmit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FactualSubmit.m; sourceTree = "<group>"; };
+		CA0970C815C9D0EE0030EAC2 /* FactualSubmitImpl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FactualSubmitImpl.h; sourceTree = "<group>"; };
+		CA0970C915C9D0EF0030EAC2 /* FactualSubmitImpl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FactualSubmitImpl.m; sourceTree = "<group>"; };
+		CA0970CC15C9E7370030EAC2 /* FactualMetadata.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FactualMetadata.h; sourceTree = "<group>"; };
+		CA0970CD15C9E7380030EAC2 /* FactualMetadata.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FactualMetadata.m; sourceTree = "<group>"; };
+		CA0970D015CAFABC0030EAC2 /* FactualMatchQuery.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FactualMatchQuery.h; sourceTree = "<group>"; };
+		CA0970D115CAFABD0030EAC2 /* FactualMatchQuery.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FactualMatchQuery.m; sourceTree = "<group>"; };
+		CA0970D415CAFACE0030EAC2 /* FactualMatchQueryImpl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FactualMatchQueryImpl.h; sourceTree = "<group>"; };
+		CA0970D515CAFACF0030EAC2 /* FactualMatchQueryImpl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FactualMatchQueryImpl.m; sourceTree = "<group>"; };
+		CA0970DE15CB23FF0030EAC2 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = Library/Frameworks/Cocoa.framework; sourceTree = DEVELOPER_DIR; };
+		CA0970E115CB23FF0030EAC2 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
+		CA0970E215CB23FF0030EAC2 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		CA0970E315CB23FF0030EAC2 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		CA0970F615CB25A40030EAC2 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
+		CA09711215D05F070030EAC2 /* FactualMetadataImpl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FactualMetadataImpl.h; sourceTree = "<group>"; };
+		CA09711315D05F090030EAC2 /* FactualMetadataImpl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FactualMetadataImpl.m; sourceTree = "<group>"; };
+		CA81E1D015C342C800EB89A6 /* FactualGeopulse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FactualGeopulse.h; sourceTree = "<group>"; };
+		CA81E1D115C342C900EB89A6 /* FactualGeopulse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FactualGeopulse.m; sourceTree = "<group>"; };
+		CA81E1D415C348BC00EB89A6 /* FactualUrlUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FactualUrlUtil.h; sourceTree = "<group>"; };
+		CA81E1D515C348BD00EB89A6 /* FactualUrlUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FactualUrlUtil.m; sourceTree = "<group>"; };
+		CA81E1D815C3502800EB89A6 /* FactualResolve.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FactualResolve.h; sourceTree = "<group>"; };
+		CA81E1D915C3502800EB89A6 /* FactualResolve.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FactualResolve.m; sourceTree = "<group>"; };
 		CA81E1EE15C7079F00EB89A6 /* FactualFacetQueryImpl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FactualFacetQueryImpl.h; sourceTree = "<group>"; };
 		CA81E1EF15C7079F00EB89A6 /* FactualFacetQueryImpl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FactualFacetQueryImpl.m; sourceTree = "<group>"; };
 		CA81E1F615C70C7400EB89A6 /* FactualFacetQuery.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FactualFacetQuery.h; sourceTree = "<group>"; };
@@ -259,6 +300,9 @@
 				AACBBE490F95108600F1A2B1 /* Foundation.framework */,
 				CAA19F4E15B4990B002A3056 /* SenTestingKit.framework */,
 				CAA19F5015B4990B002A3056 /* UIKit.framework */,
+				CA0970DE15CB23FF0030EAC2 /* Cocoa.framework */,
+				CA0970F615CB25A40030EAC2 /* CoreFoundation.framework */,
+				CA0970E015CB23FF0030EAC2 /* Other Frameworks */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -282,6 +326,8 @@
 				25EF135012AF0BE5006D19BA /* FactualQueryResult.m */,
 				25EF135112AF0BE5006D19BA /* FactualQueryResultImpl.h */,
 				25EF135212AF0BE5006D19BA /* FactualQueryResultImpl.m */,
+				CA0970B815C8A1310030EAC2 /* FactualResolveResult.h */,
+				CA0970B915C8A1320030EAC2 /* FactualResolveResult.m */,
 				25EF135712AF0BE5006D19BA /* FactualRow.h */,
 				25EF135812AF0BE5006D19BA /* FactualRow.m */,
 				25EF135912AF0BE5006D19BA /* FactualRowImpl.h */,
@@ -298,20 +344,36 @@
 				25EF14F912AF5DA5006D19BA /* FactualFieldMetadataImpl.m */,
 				251D563214DB72B600FE265A /* NSString (Escaping).h */,
 				251D563314DB72B600FE265A /* NSString (Escaping).m */,
-				CA81E1C715C31ADE00EB89A6 /* Geocode.h */,
-				CA81E1C815C31ADE00EB89A6 /* Geocode.m */,
-				CA81E1CC15C31B1100EB89A6 /* FactualPoint.h */,
-				CA81E1CD15C31B1100EB89A6 /* FactualPoint.m */,
-				CA81E1D015C342C800EB89A6 /* Geopulse.h */,
-				CA81E1D115C342C900EB89A6 /* Geopulse.m */,
-				CA81E1D415C348BC00EB89A6 /* UrlUtil.h */,
-				CA81E1D515C348BD00EB89A6 /* UrlUtil.m */,
-				CA81E1D815C3502800EB89A6 /* Resolve.h */,
-				CA81E1D915C3502800EB89A6 /* Resolve.m */,
+				CA81E1D015C342C800EB89A6 /* FactualGeopulse.h */,
+				CA81E1D115C342C900EB89A6 /* FactualGeopulse.m */,
+				CA0970B015C873DC0030EAC2 /* FactualGeopulseImpl.h */,
+				CA0970B115C873DC0030EAC2 /* FactualGeopulseImpl.m */,
+				CA81E1D415C348BC00EB89A6 /* FactualUrlUtil.h */,
+				CA81E1D515C348BD00EB89A6 /* FactualUrlUtil.m */,
+				CA81E1D815C3502800EB89A6 /* FactualResolve.h */,
+				CA81E1D915C3502800EB89A6 /* FactualResolve.m */,
+				CA0970B415C89DE90030EAC2 /* FactualResolveImpl.h */,
+				CA0970B515C89DE90030EAC2 /* FactualResolveImpl.m */,
 				CA81E1F615C70C7400EB89A6 /* FactualFacetQuery.h */,
 				CA81E1F715C70C7500EB89A6 /* FactualFacetQuery.m */,
 				CA81E1EE15C7079F00EB89A6 /* FactualFacetQueryImpl.h */,
 				CA81E1EF15C7079F00EB89A6 /* FactualFacetQueryImpl.m */,
+				CA0970BC15C8AFA80030EAC2 /* FactualFacetResponse.h */,
+				CA0970BD15C8AFA80030EAC2 /* FactualFacetResponse.m */,
+				CA0970C015C8AFC10030EAC2 /* FactualFacetResponseImpl.h */,
+				CA0970C115C8AFC20030EAC2 /* FactualFacetResponseImpl.m */,
+				CA0970C415C9D0D10030EAC2 /* FactualSubmit.h */,
+				CA0970C515C9D0D20030EAC2 /* FactualSubmit.m */,
+				CA0970C815C9D0EE0030EAC2 /* FactualSubmitImpl.h */,
+				CA0970C915C9D0EF0030EAC2 /* FactualSubmitImpl.m */,
+				CA0970CC15C9E7370030EAC2 /* FactualMetadata.h */,
+				CA0970CD15C9E7380030EAC2 /* FactualMetadata.m */,
+				CA09711215D05F070030EAC2 /* FactualMetadataImpl.h */,
+				CA09711315D05F090030EAC2 /* FactualMetadataImpl.m */,
+				CA0970D015CAFABC0030EAC2 /* FactualMatchQuery.h */,
+				CA0970D115CAFABD0030EAC2 /* FactualMatchQuery.m */,
+				CA0970D415CAFACE0030EAC2 /* FactualMatchQueryImpl.h */,
+				CA0970D515CAFACF0030EAC2 /* FactualMatchQueryImpl.m */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -418,6 +480,16 @@
 			name = "Other Sources";
 			sourceTree = "<group>";
 		};
+		CA0970E015CB23FF0030EAC2 /* Other Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				CA0970E115CB23FF0030EAC2 /* AppKit.framework */,
+				CA0970E215CB23FF0030EAC2 /* CoreData.framework */,
+				CA0970E315CB23FF0030EAC2 /* Foundation.framework */,
+			);
+			name = "Other Frameworks";
+			sourceTree = "<group>";
+		};
 		CAA19F5315B4990B002A3056 /* FactualSDKTests */ = {
 			isa = PBXGroup;
 			children = (
@@ -468,13 +540,22 @@
 				258F599813F4866700A0C0CA /* OAuthConsumer.h in Headers */,
 				258F599C13F4A42B00A0C0CA /* Base64Transcoder.h in Headers */,
 				251D563414DB72B600FE265A /* NSString (Escaping).h in Headers */,
-				CA81E1C915C31ADE00EB89A6 /* Geocode.h in Headers */,
-				CA81E1CE15C31B1100EB89A6 /* FactualPoint.h in Headers */,
-				CA81E1D215C342C900EB89A6 /* Geopulse.h in Headers */,
-				CA81E1D615C348BD00EB89A6 /* UrlUtil.h in Headers */,
-				CA81E1DA15C3502800EB89A6 /* Resolve.h in Headers */,
+				CA81E1D215C342C900EB89A6 /* FactualGeopulse.h in Headers */,
+				CA81E1D615C348BD00EB89A6 /* FactualUrlUtil.h in Headers */,
+				CA81E1DA15C3502800EB89A6 /* FactualResolve.h in Headers */,
 				CA81E1F015C707A000EB89A6 /* FactualFacetQueryImpl.h in Headers */,
 				CA81E1F815C70C7500EB89A6 /* FactualFacetQuery.h in Headers */,
+				CA0970B215C873DD0030EAC2 /* FactualGeopulseImpl.h in Headers */,
+				CA0970B615C89DEA0030EAC2 /* FactualResolveImpl.h in Headers */,
+				CA0970BA15C8A1330030EAC2 /* FactualResolveResult.h in Headers */,
+				CA0970BE15C8AFA90030EAC2 /* FactualFacetResponse.h in Headers */,
+				CA0970C215C8AFC30030EAC2 /* FactualFacetResponseImpl.h in Headers */,
+				CA0970C615C9D0D30030EAC2 /* FactualSubmit.h in Headers */,
+				CA0970CA15C9D0F00030EAC2 /* FactualSubmitImpl.h in Headers */,
+				CA0970CE15C9E7390030EAC2 /* FactualMetadata.h in Headers */,
+				CA0970D215CAFABF0030EAC2 /* FactualMatchQuery.h in Headers */,
+				CA0970D615CAFAD00030EAC2 /* FactualMatchQueryImpl.h in Headers */,
+				CA09711415D05F0C0030EAC2 /* FactualMetadataImpl.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -614,13 +695,22 @@
 				258F599513F4866700A0C0CA /* OAToken.m in Sources */,
 				258F599B13F4A42B00A0C0CA /* Base64Transcoder.c in Sources */,
 				251D563514DB72B600FE265A /* NSString (Escaping).m in Sources */,
-				CA81E1CA15C31ADE00EB89A6 /* Geocode.m in Sources */,
-				CA81E1CF15C31B1100EB89A6 /* FactualPoint.m in Sources */,
-				CA81E1D315C342C900EB89A6 /* Geopulse.m in Sources */,
-				CA81E1D715C348BD00EB89A6 /* UrlUtil.m in Sources */,
-				CA81E1DB15C3502800EB89A6 /* Resolve.m in Sources */,
+				CA81E1D315C342C900EB89A6 /* FactualGeopulse.m in Sources */,
+				CA81E1D715C348BD00EB89A6 /* FactualUrlUtil.m in Sources */,
+				CA81E1DB15C3502800EB89A6 /* FactualResolve.m in Sources */,
 				CA81E1F115C707A000EB89A6 /* FactualFacetQueryImpl.m in Sources */,
 				CA81E1F915C70C7500EB89A6 /* FactualFacetQuery.m in Sources */,
+				CA0970B315C873DD0030EAC2 /* FactualGeopulseImpl.m in Sources */,
+				CA0970B715C89DEA0030EAC2 /* FactualResolveImpl.m in Sources */,
+				CA0970BB15C8A1330030EAC2 /* FactualResolveResult.m in Sources */,
+				CA0970BF15C8AFA90030EAC2 /* FactualFacetResponse.m in Sources */,
+				CA0970C315C8AFC30030EAC2 /* FactualFacetResponseImpl.m in Sources */,
+				CA0970C715C9D0D30030EAC2 /* FactualSubmit.m in Sources */,
+				CA0970CB15C9D0F00030EAC2 /* FactualSubmitImpl.m in Sources */,
+				CA0970CF15C9E7390030EAC2 /* FactualMetadata.m in Sources */,
+				CA0970D315CAFABF0030EAC2 /* FactualMatchQuery.m in Sources */,
+				CA0970D715CAFAD00030EAC2 /* FactualMatchQueryImpl.m in Sources */,
+				CA09711515D05F0C0030EAC2 /* FactualMetadataImpl.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

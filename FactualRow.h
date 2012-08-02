@@ -38,7 +38,7 @@
  rowId property of the row object. You can use this rowId to associate updates
  with a specific Factual Row. 
  
-*/
+ */
 
 @interface FactualRow : NSObject<NSCopying> 
 
@@ -60,13 +60,13 @@
 
 /*! @method
  @discussion Rows can be cloned
-*/
+ */
 - (id)copyWithZone:(NSZone *)zone;
 
 @end
 
 /*!@abstract Convenince methods available to a row object
-*/
+ */
 @interface FactualRow(FactualRowImplementation)
 
 /*! @method
