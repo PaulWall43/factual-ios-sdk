@@ -12,7 +12,6 @@
 #import "FactualRowMetadata.h"
 #import "FactualAPI.h"
 #import <CoreLocation/CLLocation.h>
-#import "FactualFacetResult.h"
 
 @implementation FactualSDKTests
 
@@ -20,7 +19,6 @@ FactualAPI* _apiObject;
 BOOL _finished;
 FactualQueryResult* _queryResult;
 NSDictionary* _rawResult;
-FactualFacetResult* _facetResult;
 NSString* _matchResult;
 
 double _latitude;
@@ -42,7 +40,6 @@ NSString* _secret = @"2AFaSQYCFjSsDkZKLOhpT8QE2zQRLCUxcJnMMfSa";
     
     _queryResult = nil;
     _rawResult = nil;
-    _facetResult = nil;
     _matchResult = nil;
     _apiObject = [[FactualAPI alloc] initWithAPIKey:_key secret:_secret];
 }
@@ -55,7 +52,6 @@ NSString* _secret = @"2AFaSQYCFjSsDkZKLOhpT8QE2zQRLCUxcJnMMfSa";
     
     _queryResult = nil;
     _rawResult = nil;
-    _facetResult = nil;
     _matchResult = nil;
 }
 
@@ -104,6 +100,25 @@ NSString* _secret = @"2AFaSQYCFjSsDkZKLOhpT8QE2zQRLCUxcJnMMfSa";
     [self waitForResponse];
     
     STAssertEquals(5U, [_queryResult.rows count], @"Not equal");
+}
+
+
+- (void)testFacet
+{
+    FactualQuery* query = [FactualQuery query];
+    query.maxValuesPerFacet = 20;
+    query.minCountPerFacetValue = 100;
+    
+    [query addRowFilter:[FactualRowFilter fieldName:@"country"
+                                            equalTo:@"US"]];
+    [query addSelectTerm:@"region"];
+    [query addSelectTerm:@"locality"];
+    [query addFullTextQueryTerm:@"Starbucks"];
+    query.includeRowCount = true;
+    
+    [_apiObject facetTable:@"places" optionalQueryParams:query withDelegate:self];
+    
+    [self waitForResponse];
 }
 
 - (void)testCoreExample5
@@ -320,26 +335,6 @@ NSString* _secret = @"2AFaSQYCFjSsDkZKLOhpT8QE2zQRLCUxcJnMMfSa";
     NSLog(@"MATCH RESULT: %@", _matchResult);
 }
 
-- (void)testFacet
-{
-    FactualFacetQuery* facet = [FactualFacetQuery facetQuery];
-    facet.maxValuesPerFacet = 20;
-    facet.minCountPerFacetValue = 100;
-    
-    FactualQuery* query = [FactualQuery query];
-    
-    [query addRowFilter:[FactualRowFilter fieldName:@"country"
-                                            equalTo:@"US"]];
-    [query addSelectTerm:@"region"];
-    [query addSelectTerm:@"locality"];
-    [query addFullTextQueryTerm:@"Starbucks"];
-    query.includeRowCount = true;
-    
-    [_apiObject facetTable:@"places" optionalQueryParams:query optionalFacetParams:facet withDelegate:self];
-    
-    [self waitForResponse];
-}
-
 - (void)testSchema
 {
     [_apiObject getTableSchema:@"restaurants-us" withDelegate:self];
@@ -366,8 +361,7 @@ NSString* _secret = @"2AFaSQYCFjSsDkZKLOhpT8QE2zQRLCUxcJnMMfSa";
     [self waitForResponse];
 }
 
-/*
- - (void)testFlagDuplicate
+- (void)testFlagDuplicate
  {
  FactualRowMetadata* metadata = [FactualRowMetadata metadata: @"testuser"];
  metadata.comment = @"my comment";
@@ -459,8 +453,6 @@ NSString* _secret = @"2AFaSQYCFjSsDkZKLOhpT8QE2zQRLCUxcJnMMfSa";
  [_apiObject submitRowWithId:@"f33527e0-a8b4-4808-a820-2686f18cb00c" tableId:@"2EH4Pz" withValues:values withMetadata:metadata withDelegate:self];
  [self waitForResponse];
  }
- 
- */
 
 - (void)waitForResponse
 {
@@ -488,16 +480,6 @@ NSString* _secret = @"2AFaSQYCFjSsDkZKLOhpT8QE2zQRLCUxcJnMMfSa";
 -(void) requestComplete:(FactualAPIRequest *)request receivedMatchResult:(NSString *)factualId {
     _matchResult = factualId;
     _finished = true;
-}
-
--(void) requestComplete:(FactualAPIRequest *)request receivedFacetResult:(FactualFacetResult *)result {
-    _facetResult = result;
-    _finished = true;
-    
-    for (id key in result.data) {
-        NSLog(@"KEY: %@, VALUE: %@", key, [result.data objectForKey:key]);
-    }
-    NSLog(@"TOTAL ROW COUNT: %d", result.totalRows);
 }
 
 -(void) requestComplete:(FactualAPIRequest *)request failedWithError:(NSError *)error {

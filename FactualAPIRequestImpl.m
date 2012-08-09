@@ -9,8 +9,6 @@
 #import "FactualAPI.h"
 #import "CJSONDeserializer.h"
 #import "FactualQueryResultImpl.h"
-#import "FactualFacetResultImpl.h"
-#import "FactualFacetResult.h"
 #import "FactualAPIPrivate.h"
 #import "FactualSchemaResultImpl.h"
 #import "OAMutableURLRequest.h"
@@ -52,26 +50,14 @@ static NSString* kFactualLibHeaderSDKValue = @"factual--iPhone-SDK-1.0";
 //////////////////////////////////////////////////////////////////////////////////////////////////
 // places query response handler ...  
 //////////////////////////////////////////////////////////////////////////////////////////////////
--(void) parsePlacesQueryResponse:(NSDictionary*) jsonResponse {
+-(void) parseQueryResponse:(NSDictionary*) jsonResponse {
     if (jsonResponse != nil) {
-        FactualQueryResult* queryResult = [FactualQueryResultImpl queryResultFromPlacesJSON:jsonResponse];
+        NSLog(@"THE JSON: %@", jsonResponse);
+        FactualQueryResult* queryResult = [FactualQueryResultImpl queryResultFromJSON:jsonResponse];
         
         if (queryResult != nil) {
             if ([_delegate respondsToSelector:@selector(requestComplete:receivedQueryResult:)]) {
                 [_delegate requestComplete:self receivedQueryResult:queryResult];
-            }
-            return;
-        }
-    }
-    [self generateErrorCallback:@"Unable to create Response Object from Query Response!"];
-}
-
--(void) parseFacetQueryResponse:(NSDictionary*) jsonResponse {
-    if (jsonResponse != nil) {
-        FactualFacetResultImpl* queryResult = [FactualFacetResultImpl facetResponseFromJSON:jsonResponse];
-        if (queryResult != nil) {
-            if ([_delegate respondsToSelector:@selector(requestComplete:receivedFacetResult:)]) {
-                [_delegate requestComplete:self receivedFacetResult:queryResult];
             }
             return;
         }
@@ -214,11 +200,11 @@ static NSString* kFactualLibHeaderSDKValue = @"factual--iPhone-SDK-1.0";
     // next do request specific parsing ... 
     switch (_requestType) {
         case FactualRequestType_PlacesQuery: { 
-            [self parsePlacesQueryResponse:[jsonResp objectForKey:@"response"]];
+            [self parseQueryResponse:[jsonResp objectForKey:@"response"]];
         }
             break;
         case FactualRequestType_FacetQuery: { 
-            [self parseFacetQueryResponse:[jsonResp objectForKey:@"response"]];
+            [self parseQueryResponse:[jsonResp objectForKey:@"response"]];
         }
             break;
         case FactualRequestType_RawRequest: {
@@ -226,7 +212,7 @@ static NSString* kFactualLibHeaderSDKValue = @"factual--iPhone-SDK-1.0";
         }
             break;
         case FactualRequestType_ResolveQuery: {
-            [self parsePlacesQueryResponse:[jsonResp objectForKey:@"response"]];
+            [self parseQueryResponse:[jsonResp objectForKey:@"response"]];
         }
             break;
         case FactualRequestType_MatchQuery: {

@@ -222,6 +222,16 @@ typedef enum  {
  */
 @property (nonatomic,readonly) NSMutableArray* selectTerms;
 
+/*! @property 
+ @discussion For each facet value count, the minimum number of results it must have in order to be returned in the response. Must be zero or greater. The default is 1.
+ */ 
+@property (nonatomic, assign) NSUInteger minCountPerFacetValue;
+
+/*! @property 
+ @discussion The maximum number of unique facet values that can be returned for a single field. Range is 1-250. The default is 25.
+ */ 
+@property (nonatomic, assign) NSUInteger maxValuesPerFacet;
+
 @end
 
 /*!@abstract methods supported by FactualQuery

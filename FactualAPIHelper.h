@@ -7,7 +7,6 @@
 
 #import <Foundation/Foundation.h>
 #import "FactualQuery.h"
-#import "FactualFacetQuery.h"
 
 @interface FactualAPIHelper : NSObject {
     

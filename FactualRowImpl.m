@@ -14,7 +14,7 @@
 
 @implementation FactualRowImpl
 @synthesize rowId=_rowId;
- 
+@synthesize facetName=_facetName;
 
 // internal init 
 -(id) initWithJSONArray:(NSArray*) cellValues
@@ -78,7 +78,7 @@
 }
 
 
--(id) initWithJSONObject:(NSDictionary*) cellValues { 
+-(id) initWithJSONObject:(NSMutableDictionary*) cellValues withRowId: (NSString*) rowId withFacetName: (NSString*) facetName { 
   
 
   if (self = [super init]) {
@@ -87,17 +87,8 @@
       //_columnIndex = [columnIndex retain];
     
     _jsonObject = cellValues;
-      
-
-    // see if capacity is at least at min required
-    // locate factual id 
-    NSString* factualId = [cellValues valueForKey:@"factual_id"];
-    if (factualId != nil) { 
-      _rowId = factualId;
-    }
-    else { 
-      _rowId = @"undefined";
-    }
+    _rowId = rowId;
+    _facetName = facetName;
   }
   return self;
 }
@@ -274,8 +265,8 @@
   NSMutableString* mutableString = [NSMutableString stringWithCapacity:([self valueCount] * 100)];
   
   if (_jsonObject != nil) { 
-    [mutableString  appendString:[NSString stringWithFormat:@"FactualRow rowId:%@ valueCount:%d\n",
-                                  [self rowId],[_jsonObject count]]];
+    [mutableString  appendString:[NSString stringWithFormat:@"FactualRow rowId:%@ facetName:%@ valueCount:%d\n",
+                                  [self rowId],[self facetName],[_jsonObject count]]];
     for (NSString* columnName in _jsonObject) {
       [mutableString appendString:[NSString stringWithFormat:@"\t Cell:%@ Value:%@\n",
                                    columnName,
@@ -284,8 +275,8 @@
     }
   }
   else { 
-    [mutableString  appendString:[NSString stringWithFormat:@"FactualRow rowId:%@ valueCount:%d\n",
-            [self rowId],[self valueCount]]];
+    [mutableString  appendString:[NSString stringWithFormat:@"FactualRow rowId:%@ facetName:%@ valueCount:%d\n",
+            [self rowId],[self facetName],[self valueCount]]];
     
     int valueIndex=0;
     for (;valueIndex<[self valueCount];++valueIndex) {

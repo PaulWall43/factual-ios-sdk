@@ -7,8 +7,6 @@
 
 #import "FactualQuery.h"
 #import "FactualQueryImpl.h"
-#import "FactualFacetQuery.h"
-#import "FactualFacetQueryImpl.h"
 #import "CJSONSerializer.h"
 #import "NSString (Escaping).h"
 #import "FactualUrlUtil.h"
@@ -273,7 +271,7 @@ static NSString* compoundFilterPredicateStrings[] = {
 
 @implementation FactualQuery
 
-@dynamic offset,limit,primarySortCriteria,secondarySortCriteria,rowFilters,fullTextTerms,includeRowCount,selectTerms;
+@dynamic offset,limit,primarySortCriteria,secondarySortCriteria,rowFilters,fullTextTerms,includeRowCount,selectTerms,minCountPerFacetValue,maxValuesPerFacet;
 
 +(FactualQuery*) query {
     return [[FactualQueryImplementation alloc] init];
@@ -295,6 +293,8 @@ static NSString* compoundFilterPredicateStrings[] = {
 @synthesize geoFilter=_geoFilter;
 @synthesize includeRowCount=_includeRowCount;
 @synthesize selectTerms=_selectTerms;
+@synthesize minCountPerFacetValue=_minCountPerFacetValue;
+@synthesize maxValuesPerFacet=_maxValuesPerFacet;
 
 -(id) init {
     if (self = [super init]) {
@@ -304,6 +304,8 @@ static NSString* compoundFilterPredicateStrings[] = {
         _offset = 0;
         _limit  = 0;
         _includeRowCount = false;
+        _minCountPerFacetValue = -1;
+        _maxValuesPerFacet  = -1;
     }
     return self;
 }
@@ -442,6 +444,14 @@ static NSString* compoundFilterPredicateStrings[] = {
                             [[CJSONSerializer serializer] serializeDictionary:geoDictionary error:&error] 
                                                  encoding:NSUTF8StringEncoding] stringWithPercentEscape]]];
     }
+    
+    if (_maxValuesPerFacet != -1) {
+        [array addObject:[NSString stringWithFormat:@"limit=%d", _maxValuesPerFacet]];
+    }
+    if (_minCountPerFacetValue != -1) {
+        [array addObject:[NSString stringWithFormat:@"min_count=%d", _minCountPerFacetValue]];
+    }
+    
     [FactualUrlUtil appendParams:array to:qryString];
 }
 
