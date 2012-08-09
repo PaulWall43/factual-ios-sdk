@@ -6,11 +6,11 @@
 //  Copyright (c) 2012 Facutal Inc. All rights reserved.
 //
 
-#import "FactualMetadataImpl.h"
+#import "FactualRowMetadataImpl.h"
 #import "FactualUrlUtil.h"
 #import "NSString (Escaping).h"
 
-@implementation FactualMetadataImpl
+@implementation FactualRowMetadataImpl
 
 @synthesize username=_username;
 @synthesize comment=_comment;
@@ -31,9 +31,9 @@
 }
 
 
--(id) initWithUserName: (NSString *) username {
+-(id) initWithUserName: (NSString *) user {
     if (self = [super init]) {
-        _username = username;
+        _username = user;
     }
     return self;
 }

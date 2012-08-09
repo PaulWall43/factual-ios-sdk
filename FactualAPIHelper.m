@@ -60,30 +60,6 @@
 	return qry;
 }
 
-+(NSString*) buildQueryString:(NSString*) apiKey path:(NSString*) path facetQueryParams:(FactualFacetQuery*) tableQuery{
-    NSMutableString *qry = [[NSMutableString alloc] initWithFormat:@"%@?", path];
-    
-    if (tableQuery != nil) {  
-        FactualQueryImplementation* queryImpl = (FactualQueryImplementation*)tableQuery;
-        [queryImpl generateQueryString:qry];
-    }
-    if (apiKey != nil) { 
-        [qry appendString:@"&"];
-        [qry appendString:@"KEY="];
-        [qry appendString:apiKey];
-    }
-#ifdef TARGET_IPHONE_SIMULATOR    
-    NSLog(@"Filter Query%@",qry);
-#endif  
-    // [qry deleteCharactersInRange:NSMakeRange([qry length] - 1, 1)];
-	return qry;
-}
-
-+(NSString*) buildPlacesQueryString:(NSString*) apiKey tableId:(NSString*) tableId facetParams:(FactualFacetQuery*) tableQuery{
-    NSString *qry = [[NSString alloc] initWithFormat:@"t/%@/facets", tableId];
-	return [self buildQueryString:apiKey path:qry facetQueryParams:tableQuery];
-} 
-
 //NEW API!!!
 +(NSString*) buildPlacesQueryString:(NSString*) apiKey tableId:(NSString*) tableId queryParams:(FactualQuery*) tableQuery{
     NSString *qry = [[NSString alloc] initWithFormat:@"t/%@", tableId];

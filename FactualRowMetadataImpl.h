@@ -6,9 +6,9 @@
 //  Copyright (c) 2012 Facutal Inc. All rights reserved.
 //
 
-#import "FactualMetadata.h"
+#import "FactualRowMetadata.h"
 
-@interface FactualMetadataImpl : FactualMetadata
+@interface FactualRowMetadataImpl : FactualRowMetadata
 {
     NSString* username;
     NSString* comment;

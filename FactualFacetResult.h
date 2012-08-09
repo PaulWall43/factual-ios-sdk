@@ -1,13 +1,14 @@
 //
-//  FactualFacetResult.h
+//  FactualFacetResponse.h
 //  FactualSDK
 //
-//  Created by Brandon Yoshimoto on 7/30/12.
+//  Created by Brandon Yoshimoto on 7/31/12.
 //  Copyright (c) 2012 Facutal Inc. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import <Foundation/Foundation.h>
 
 @interface FactualFacetResult : NSObject
-
+@property (nonatomic,readonly)    NSUInteger totalRows;
+@property (nonatomic,readonly)    NSDictionary* data;
 @end

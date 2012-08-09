@@ -9,22 +9,18 @@
 #import "FactualSDKTests.h"
 #import <FactualSDK/FactualAPI.h>
 #import "FactualQueryImpl.h"
-#import "FactualFacetQueryImpl.h"
-#import "FactualGeopulse.h"
-#import "FactualMatchQuery.h"
-#import "FactualResolve.h"
-#import "FactualMetadata.h"
+#import "FactualRowMetadata.h"
+#import "FactualAPI.h"
 #import <CoreLocation/CLLocation.h>
-#import "FactualFacetResponse.h"
+#import "FactualFacetResult.h"
 
 @implementation FactualSDKTests
 
 FactualAPI* _apiObject;
 BOOL _finished;
 FactualQueryResult* _queryResult;
-FactualResolveResult* _resolveResult;
 NSDictionary* _rawResult;
-FactualFacetResponse* _facetResult;
+FactualFacetResult* _facetResult;
 NSString* _matchResult;
 
 double _latitude;
@@ -32,8 +28,8 @@ double _longitude;
 double _meters;
 
 // Add your key and secret
-NSString* _key = nil;
-NSString* _secret = nil;
+NSString* _key = @"U3QbOw7bW9nxDN4TppoqQlxwnJmSISUbJ3h3pRj1";
+NSString* _secret = @"2AFaSQYCFjSsDkZKLOhpT8QE2zQRLCUxcJnMMfSa";
 
 - (void)setUp
 {
@@ -41,11 +37,10 @@ NSString* _secret = nil;
     _latitude = 34.06018;
     _longitude = -118.41835;
     _meters = 5000;
-
+    
     _finished = false;
     
     _queryResult = nil;
-    _resolveResult = nil;
     _rawResult = nil;
     _facetResult = nil;
     _matchResult = nil;
@@ -59,7 +54,6 @@ NSString* _secret = nil;
     _finished = false;
     
     _queryResult = nil;
-    _resolveResult = nil;
     _rawResult = nil;
     _facetResult = nil;
     _matchResult = nil;
@@ -290,33 +284,58 @@ NSString* _secret = nil;
 
 - (void)testResolve_ex1
 {
-    FactualResolve* queryObject = [FactualResolve resolve];
-    [queryObject addProperty:@"name" value:@"McDonalds"];
-    [queryObject addProperty:@"address" value:@"10451 Santa Monica Blvd"];
-    [queryObject addProperty:@"region" value:@"CA"];
-    [queryObject addProperty:@"postcode" value:@"90025"];
-    [_apiObject queryTable:@"places" resolveParams:queryObject withDelegate:self];
+    NSMutableDictionary* values  = [NSMutableDictionary dictionaryWithCapacity:4];
+    [values setValue:@"McDonalds" forKey:@"name"];    
+    [values setValue:@"10451 Santa Monica Blvd" forKey:@"address"];    
+    [values setValue:@"CA" forKey:@"region"];    
+    [values setValue:@"90025" forKey:@"postcode"];
+    [_apiObject resolveRow:@"places" withValues:values withDelegate:self];
     
     [self waitForResponse];
     
-    NSLog(@"Is resolved: %u, Obj: %@", [_resolveResult isResolved], [_resolveResult getResolved]);
-    
 } 
+
+
+- (void)testGeopulse
+{
+    CLLocationCoordinate2D point = {_latitude, _longitude};
+    NSMutableArray* terms = [[NSMutableArray alloc] initWithCapacity:2];
+    [terms addObject:@"commercial_density"];
+    [terms addObject:@"commercial_profile"];
+    [_apiObject queryGeopulse:point selectTerms:terms withDelegate:self];
+    [self waitForResponse];
+}
+
+- (void)testMatch
+{
+    NSMutableDictionary* values  = [NSMutableDictionary dictionaryWithCapacity:4];
+    [values setValue:@"McDonalds" forKey:@"name"];    
+    [values setValue:@"10451 Santa Monica Blvd" forKey:@"address"];    
+    [values setValue:@"CA" forKey:@"region"];    
+    [values setValue:@"90025" forKey:@"postcode"];
+    [_apiObject matchRow:@"places" withValues:values withDelegate:self];
+    
+    [self waitForResponse];
+    
+    NSLog(@"MATCH RESULT: %@", _matchResult);
+}
 
 - (void)testFacet
 {
-    FactualFacetQuery* queryObject = [FactualFacetQuery facetQuery];
-    [queryObject addRowFilter:[FactualRowFilter fieldName:@"country"
-                                                  equalTo:@"US"]];
-    [queryObject addSelectTerm:@"region"];
-    [queryObject addSelectTerm:@"locality"];
-    [queryObject addFullTextQueryTerm:@"Starbucks"];
+    FactualFacetQuery* facet = [FactualFacetQuery facetQuery];
+    facet.maxValuesPerFacet = 20;
+    facet.minCountPerFacetValue = 100;
     
-    queryObject.maxValuesPerFacet = 20;
-    queryObject.minCountPerFacetValue = 100;
-    queryObject.includeRowCount = true;
+    FactualQuery* query = [FactualQuery query];
     
-    [_apiObject queryTable:@"places" facetParams:queryObject withDelegate:self];
+    [query addRowFilter:[FactualRowFilter fieldName:@"country"
+                                            equalTo:@"US"]];
+    [query addSelectTerm:@"region"];
+    [query addSelectTerm:@"locality"];
+    [query addFullTextQueryTerm:@"Starbucks"];
+    query.includeRowCount = true;
+    
+    [_apiObject facetTable:@"places" optionalQueryParams:query optionalFacetParams:facet withDelegate:self];
     
     [self waitForResponse];
 }
@@ -328,29 +347,6 @@ NSString* _secret = nil;
     [self waitForResponse];
 }
 
-- (void)testMatch
-{
-    FactualMatchQuery* queryObject = [FactualMatchQuery match];
-    [queryObject addProperty:@"name" value:@"McDonalds"];
-    [queryObject addProperty:@"address" value:@"10451 Santa Monica Blvd"];
-    [queryObject addProperty:@"region" value:@"CA"];
-    [queryObject addProperty:@"postcode" value:@"90025"];
-    [_apiObject queryTable:@"places" matchParams:queryObject withDelegate:self];
-    
-    [self waitForResponse];
-}
-
-- (void)testGeopulse
-{
-    CLLocationCoordinate2D point;
-    point.longitude = _longitude;
-    point.latitude = _latitude;
-    FactualGeopulse* geopulse = [FactualGeopulse geopulse:point];
-    [geopulse addSelectTerm:@"commercial_density"];
-    [geopulse addSelectTerm:@"commercial_profile"];
-    [_apiObject geopulse:geopulse withDelegate:self];
-    [self waitForResponse];
-}
 
 - (void)testGeocode
 {
@@ -370,95 +366,101 @@ NSString* _secret = nil;
     [self waitForResponse];
 }
 
-- (void)testFlagDuplicate
-{
-    FactualMetadata* metadata = [FactualMetadata metadata: @"testuser"];
-    metadata.comment = @"my comment";
-    metadata.reference = @"www.mytest.com";
-    [_apiObject flagDuplicate:@"2EH4Pz" factualId: @"f33527e0-a8b4-4808-a820-2686f18cb00c" metadata: metadata withDelegate:self];
-    [self waitForResponse];
-}
-
-- (void)testFlagInaccurate
-{
-    FactualMetadata* metadata = [FactualMetadata metadata: @"testuser"];
-    metadata.comment = @"my comment";
-    metadata.reference = @"www.mytest.com";
-    [_apiObject flagInaccurate:@"2EH4Pz" factualId: @"f33527e0-a8b4-4808-a820-2686f18cb00c" metadata: metadata withDelegate:self];
-    [self waitForResponse];
-}
-
-- (void)testFlagInappropriate
-{
-    FactualMetadata* metadata = [FactualMetadata metadata: @"testuser"];
-    metadata.comment = @"my comment";
-    metadata.reference = @"www.mytest.com";
-    [_apiObject flagInappropriate:@"2EH4Pz" factualId: @"f33527e0-a8b4-4808-a820-2686f18cb00c" metadata: metadata withDelegate:self];
-    [self waitForResponse];
-}
-
-- (void)testFlagNonExistent
-{
-    FactualMetadata* metadata = [FactualMetadata metadata: @"testuser"];
-    metadata.comment = @"my comment";
-    metadata.reference = @"www.mytest.com";
-    [_apiObject flagNonExistent:@"2EH4Pz" factualId: @"f33527e0-a8b4-4808-a820-2686f18cb00c" metadata: metadata withDelegate:self];
-    [self waitForResponse];
-}
-
-- (void)testFlagSpam
-{
-    FactualMetadata* metadata = [FactualMetadata metadata: @"testuser"];
-    metadata.comment = @"my comment";
-    metadata.reference = @"www.mytest.com";
-    [_apiObject flagSpam:@"2EH4Pz" factualId: @"f33527e0-a8b4-4808-a820-2686f18cb00c" metadata: metadata withDelegate:self];
-    [self waitForResponse];
-}
-
-- (void)testFlagOther
-{
-    FactualMetadata* metadata = [FactualMetadata metadata: @"testuser"];
-    metadata.comment = @"my comment";
-    metadata.reference = @"www.mytest.com";
-    [_apiObject flagOther:@"2EH4Pz" factualId: @"f33527e0-a8b4-4808-a820-2686f18cb00c" metadata: metadata withDelegate:self];
-    [self waitForResponse];
-}
-
-- (void)testSubmitAdd
-{
-    FactualMetadata* metadata = [FactualMetadata metadata: @"testuser"];
-    metadata.comment = @"my comment";
-    metadata.reference = @"www.mytest.com";
-    
-    FactualSubmit* submit = [FactualSubmit submit];
-    [submit addProperty:@"longitude" value:@"100"];
-    [_apiObject submit:@"2EH4Pz" submitParams:submit metadata:metadata withDelegate:self];
-    [self waitForResponse];
-}
-
-- (void)testSubmitEdit
-{
-    FactualMetadata* metadata = [FactualMetadata metadata: @"testuser"];
-    metadata.comment = @"my comment";
-    metadata.reference = @"www.mytest.com";
-    
-    FactualSubmit* submit = [FactualSubmit submit];
-    [submit addProperty:@"longitude" value:@"100"];
-    [_apiObject submit:@"2EH4Pz" factualId:@"f33527e0-a8b4-4808-a820-2686f18cb00c" submitParams:submit metadata:metadata withDelegate:self];
-    [self waitForResponse];
-}
-
-- (void)testSubmitDelete
-{
-    FactualMetadata* metadata = [FactualMetadata metadata: @"testuser"];
-    metadata.comment = @"my comment";
-    metadata.reference = @"www.mytest.com";
-    
-    FactualSubmit* submit = [FactualSubmit submit];
-    [submit removeValue:@"longitude"];
-    [_apiObject submit:@"2EH4Pz" factualId:@"f33527e0-a8b4-4808-a820-2686f18cb00c" submitParams:submit metadata:metadata withDelegate:self];
-    [self waitForResponse];
-}
+/*
+ - (void)testFlagDuplicate
+ {
+ FactualRowMetadata* metadata = [FactualRowMetadata metadata: @"testuser"];
+ metadata.comment = @"my comment";
+ metadata.reference = @"www.mytest.com";
+ [_apiObject flagProblem:FactualFlagType_Duplicate tableId: @"2EH4Pz" factualId: @"f33527e0-a8b4-4808-a820-2686f18cb00c" metadata: metadata withDelegate:self];
+ [self waitForResponse];
+ }
+ 
+ - (void)testFlagInaccurate
+ {
+ FactualRowMetadata* metadata = [FactualRowMetadata metadata: @"testuser"];
+ metadata.comment = @"my comment";
+ metadata.reference = @"www.mytest.com";
+ [_apiObject flagProblem:FactualFlagType_Inaccurate tableId:@"2EH4Pz" factualId: @"f33527e0-a8b4-4808-a820-2686f18cb00c" metadata: metadata withDelegate:self];
+ [self waitForResponse];
+ }
+ 
+ - (void)testFlagInappropriate
+ {
+ FactualRowMetadata* metadata = [FactualRowMetadata metadata: @"testuser"];
+ metadata.comment = @"my comment";
+ metadata.reference = @"www.mytest.com";
+ [_apiObject flagProblem:FactualFlagType_Inappropriate tableId: @"2EH4Pz" factualId: @"f33527e0-a8b4-4808-a820-2686f18cb00c" metadata: metadata withDelegate:self];
+ [self waitForResponse];
+ }
+ 
+ - (void)testFlagNonExistent
+ {
+ FactualRowMetadata* metadata = [FactualRowMetadata metadata: @"testuser"];
+ metadata.comment = @"my comment";
+ metadata.reference = @"www.mytest.com";
+ [_apiObject flagProblem:FactualFlagType_Nonexistent tableId: @"2EH4Pz" factualId: @"f33527e0-a8b4-4808-a820-2686f18cb00c" metadata: metadata withDelegate:self];
+ [self waitForResponse];
+ }
+ 
+ - (void)testFlagSpam
+ {
+ FactualRowMetadata* metadata = [FactualRowMetadata metadata: @"testuser"];
+ metadata.comment = @"my comment";
+ metadata.reference = @"www.mytest.com";
+ [_apiObject flagProblem:FactualFlagType_Spam tableId: @"2EH4Pz" factualId: @"f33527e0-a8b4-4808-a820-2686f18cb00c" metadata: metadata withDelegate:self];
+ [self waitForResponse];
+ }
+ 
+ - (void)testFlagOther
+ {
+ FactualRowMetadata* metadata = [FactualRowMetadata metadata: @"testuser"];
+ metadata.comment = @"my comment";
+ metadata.reference = @"www.mytest.com";
+ [_apiObject flagProblem:FactualFlagType_Other tableId: @"2EH4Pz" factualId: @"f33527e0-a8b4-4808-a820-2686f18cb00c" metadata: metadata withDelegate:self];
+ [self waitForResponse];
+ }
+ 
+ - (void)testSubmitAdd
+ {
+ FactualRowMetadata* metadata = [FactualRowMetadata metadata: @"testuser"];
+ metadata.comment = @"my comment";
+ metadata.reference = @"www.mytest.com";
+ 
+ NSMutableDictionary* values  = [NSMutableDictionary dictionaryWithCapacity:4];
+ [values setValue:@"100" forKey:@"longitude"];   
+ 
+ [_apiObject submitRow:@"2EH4Pz" withValues:values withMetadata:metadata withDelegate:self];
+ [self waitForResponse];
+ }
+ 
+ - (void)testSubmitEdit
+ {
+ FactualRowMetadata* metadata = [FactualRowMetadata metadata: @"testuser"];
+ metadata.comment = @"my comment";
+ metadata.reference = @"www.mytest.com";
+ 
+ NSMutableDictionary* values  = [NSMutableDictionary dictionaryWithCapacity:4];
+ [values setValue:@"100" forKey:@"longitude"];    
+ 
+ [_apiObject submitRowWithId:@"f33527e0-a8b4-4808-a820-2686f18cb00c" tableId:@"2EH4Pz" withValues:values withMetadata:metadata withDelegate:self];
+ [self waitForResponse];
+ }
+ 
+ - (void)testSubmitDelete
+ {
+ FactualRowMetadata* metadata = [FactualRowMetadata metadata: @"testuser"];
+ metadata.comment = @"my comment";
+ metadata.reference = @"www.mytest.com";
+ 
+ NSMutableDictionary* values  = [NSMutableDictionary dictionaryWithCapacity:4];
+ [values setValue:@"null" forKey:@"longitude"];    
+ 
+ [_apiObject submitRowWithId:@"f33527e0-a8b4-4808-a820-2686f18cb00c" tableId:@"2EH4Pz" withValues:values withMetadata:metadata withDelegate:self];
+ [self waitForResponse];
+ }
+ 
+ */
 
 - (void)waitForResponse
 {
@@ -470,26 +472,17 @@ NSString* _secret = nil;
 -(void) requestComplete:(FactualAPIRequest *)request receivedRawResult:(NSDictionary *)result {
     _rawResult = result;
     _finished = true;
-     for (id key in result) {
-     NSLog(@"KEY: %@, VALUE: %@", key, [result objectForKey:key]);
-     }
+    for (id key in result) {
+        NSLog(@"KEY: %@, VALUE: %@", key, [result objectForKey:key]);
+    }
 }
 
 -(void) requestComplete:(FactualAPIRequest *)request receivedQueryResult:(FactualQueryResult *)queryResult {
     _queryResult = queryResult;
     _finished = true;
-     for (id row in queryResult.rows) {
-     NSLog(@"Row: %@", row);
-     }
-}
-
--(void) requestComplete:(FactualAPIRequest *)request receivedResolveResult:(FactualResolveResult *)result {
-    _resolveResult = result;
-    _finished = true;
-    
-     for (id row in result.rows) {
-     NSLog(@"Resolve Row: %@", row);
-     }
+    for (id row in queryResult.rows) {
+        NSLog(@"Row: %@", row);
+    }
 }
 
 -(void) requestComplete:(FactualAPIRequest *)request receivedMatchResult:(NSString *)factualId {
@@ -497,14 +490,14 @@ NSString* _secret = nil;
     _finished = true;
 }
 
--(void) requestComplete:(FactualAPIRequest *)request receivedFacetResult:(FactualFacetResponse *)result {
+-(void) requestComplete:(FactualAPIRequest *)request receivedFacetResult:(FactualFacetResult *)result {
     _facetResult = result;
     _finished = true;
     
-     for (id key in result.data) {
-     NSLog(@"KEY: %@, VALUE: %@", key, [result.data objectForKey:key]);
-     }
-     NSLog(@"TOTAL ROW COUNT: %d", result.totalRows);
+    for (id key in result.data) {
+        NSLog(@"KEY: %@, VALUE: %@", key, [result.data objectForKey:key]);
+    }
+    NSLog(@"TOTAL ROW COUNT: %d", result.totalRows);
 }
 
 -(void) requestComplete:(FactualAPIRequest *)request failedWithError:(NSError *)error {

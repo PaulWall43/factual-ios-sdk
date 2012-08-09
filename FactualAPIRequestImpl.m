@@ -9,9 +9,8 @@
 #import "FactualAPI.h"
 #import "CJSONDeserializer.h"
 #import "FactualQueryResultImpl.h"
-#import "FactualFacetResponseImpl.h"
-#import "FactualFacetResponse.h"
-#import "FactualResolveResult.h"
+#import "FactualFacetResultImpl.h"
+#import "FactualFacetResult.h"
 #import "FactualAPIPrivate.h"
 #import "FactualSchemaResultImpl.h"
 #import "OAMutableURLRequest.h"
@@ -69,24 +68,10 @@ static NSString* kFactualLibHeaderSDKValue = @"factual--iPhone-SDK-1.0";
 
 -(void) parseFacetQueryResponse:(NSDictionary*) jsonResponse {
     if (jsonResponse != nil) {
-        FactualFacetResponseImpl* queryResult = [FactualFacetResponseImpl facetResponseFromJSON:jsonResponse];
+        FactualFacetResultImpl* queryResult = [FactualFacetResultImpl facetResponseFromJSON:jsonResponse];
         if (queryResult != nil) {
             if ([_delegate respondsToSelector:@selector(requestComplete:receivedFacetResult:)]) {
                 [_delegate requestComplete:self receivedFacetResult:queryResult];
-            }
-            return;
-        }
-    }
-    [self generateErrorCallback:@"Unable to create Response Object from Query Response!"];
-}
-
--(void) parseResolveQueryResponse:(NSDictionary*) jsonResponse {
-    if (jsonResponse != nil) {
-        FactualResolveResult* queryResult = [FactualResolveResult resolveResultFromPlacesJSON:jsonResponse];
-        
-        if (queryResult != nil) {
-            if ([_delegate respondsToSelector:@selector(requestComplete:receivedResolveResult:)]) {
-                [_delegate requestComplete:self receivedResolveResult:queryResult];
             }
             return;
         }
@@ -241,7 +226,7 @@ static NSString* kFactualLibHeaderSDKValue = @"factual--iPhone-SDK-1.0";
         }
             break;
         case FactualRequestType_ResolveQuery: {
-            [self parseResolveQueryResponse:[jsonResp objectForKey:@"response"]];
+            [self parsePlacesQueryResponse:[jsonResp objectForKey:@"response"]];
         }
             break;
         case FactualRequestType_MatchQuery: {

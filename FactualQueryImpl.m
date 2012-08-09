@@ -442,7 +442,6 @@ static NSString* compoundFilterPredicateStrings[] = {
                             [[CJSONSerializer serializer] serializeDictionary:geoDictionary error:&error] 
                                                  encoding:NSUTF8StringEncoding] stringWithPercentEscape]]];
     }
-    
     [FactualUrlUtil appendParams:array to:qryString];
 }
 

@@ -8,12 +8,12 @@
 
 #import <Foundation/Foundation.h>
 
-@interface FactualMetadata : NSObject
+@interface FactualRowMetadata : NSObject
 
 /*! @method 
  @discussion Initialize metadata with a username for the person submitting the data 
  */
-+(FactualMetadata*) metadata: (NSString *) username;
++(FactualRowMetadata*) metadata: (NSString *) username;
 
 /*! @property 
  @discussion Set a user name for the person submitting the data 

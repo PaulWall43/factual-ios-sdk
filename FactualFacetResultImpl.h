@@ -1,13 +1,20 @@
 //
-//  FactualFacetResultImpl.h
+//  FactualFacetResponseImpl.h
 //  FactualSDK
 //
-//  Created by Brandon Yoshimoto on 7/30/12.
+//  Created by Brandon Yoshimoto on 7/31/12.
 //  Copyright (c) 2012 Facutal Inc. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import "FactualFacetResult.h"
 
-@interface FactualFacetResultImpl : NSObject
+@interface FactualFacetResultImpl : FactualFacetResult {
+    NSUInteger       _totalRows;
+    NSMutableDictionary* _data;
+}
+
+-(id) initWithJson:(NSDictionary *)jsonResponse;
+
++(FactualFacetResult *) facetResponseFromJSON:(NSDictionary *)jsonResponse;
 
 @end

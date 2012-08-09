@@ -8,19 +8,10 @@
 
 #import <UIKit/UIKit.h>
 #import "FactualFacetQuery.h"
-#import "FactualQueryImpl.h"
 
 @interface FactualFacetQueryImplementation : FactualFacetQuery {
     NSUInteger  _minCountPerFacetValue;
     NSUInteger  _maxValuesPerFacet;
-    NSString*   _rowId;
-    NSUInteger  _offset;
-    NSUInteger  _limit;
-    FactualSortCriteria* _primarySortCriteria;
-    FactualSortCriteria* _secondarySortCriteria;
-    NSMutableArray*    _rowFilters;
-    NSMutableArray*    _textTerms;
-    FactualGeoFilter* _geoFilter;
-    NSMutableArray*    _selectTerms;
 }
+-(void) generateQueryString:(NSMutableString*)qryString;
 @end

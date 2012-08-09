@@ -12,16 +12,9 @@
 #import "FactualAPIPrivate.h"
 #import "CJSONSerializer.h"
 #import "NSString (Escaping).h"
-#import "FactualGeopulse.h"
-#import "FactualGeopulseImpl.h"
-#import "FactualResolve.h" 
-#import "FactualResolveImpl.h" 
-#import "FactualSubmit.h" 
-#import "FactualSubmitImpl.h" 
-#import "FactualMetadata.h" 
-#import "FactualMetadataImpl.h" 
-#import "FactualMatchQuery.h" 
-#import "FactualMatchQueryImpl.h" 
+#import "FactualRowMetadata.h" 
+#import "FactualRowMetadataImpl.h" 
+#import "FactualFacetQueryImpl.h" 
 #import "FactualUrlUtil.h" 
 
 
@@ -67,6 +60,14 @@ NSString *const FactualCoreErrorDomain = @"FactualCoreErrorDomain";
     return requestObject;
 }
 
+- (FactualAPIRequest*)   queryTable:(NSString*) tableId  
+                optionalQueryParams:(FactualQuery*) queryParams
+                       withDelegate:(id<FactualAPIDelegate>) delegate { 
+    // build a query string using query object and table id
+    NSString* queryStr = [FactualAPIHelper buildPlacesQueryString:((_secret == nil) ? _apiKey: nil) tableId:tableId queryParams:queryParams];
+    return [self request:queryStr ofType: FactualRequestType_PlacesQuery requestMethod:@"GET" payload: nil withDelegate:delegate];
+}
+
 - (FactualAPIRequest*)   get:(NSString*) path  
                       params:(NSDictionary*) params
                 withDelegate:(id<FactualAPIDelegate>) delegate { 
@@ -85,11 +86,30 @@ NSString *const FactualCoreErrorDomain = @"FactualCoreErrorDomain";
     return [self sendRequest: urlStr ofType: FactualRequestType_RawRequest requestMethod:@"GET" payload: nil withDelegate: delegate];
 }
 
-- (FactualAPIRequest*)   geopulse:(FactualGeopulse*) geopulse
-                     withDelegate:(id<FactualAPIDelegate>) delegate { 
+- (FactualAPIRequest*)   queryGeopulse:(CLLocationCoordinate2D) point
+                          withDelegate:(id<FactualAPIDelegate>) delegate { 
+    return [self queryGeopulse:point selectTerms:[NSMutableArray arrayWithCapacity:0] withDelegate:delegate];
+}
+
+- (FactualAPIRequest*)   queryGeopulse:(CLLocationCoordinate2D) point
+                           selectTerms: (NSMutableArray*) selectTerms
+                          withDelegate:(id<FactualAPIDelegate>) delegate { 
     
-	NSMutableString *qry = [[NSMutableString alloc] initWithFormat:@"places/geopulse?"];
-    [(FactualGeopulseImpl*)geopulse generateQueryString:qry];
+    NSMutableArray* params = [[NSMutableArray alloc] initWithCapacity:2];
+    [params addObject:[NSString stringWithFormat:@"geo=%@", [FactualUrlUtil locationToJson: point]]];
+    if ([selectTerms count] != 0) {
+        NSMutableString* selectValues = [[NSMutableString alloc] init];
+        int termNumber=0;
+        for (NSString* term in selectTerms) {
+            if(termNumber++ != 0) 
+                [selectValues appendString:@","];
+            [selectValues appendString:term];
+        }
+        [params addObject:[NSString stringWithFormat:@"select=%@",[selectValues stringWithPercentEscape]]];
+    }
+    NSMutableString *qry = [[NSMutableString alloc] initWithFormat:@"places/geopulse?"];
+    [FactualUrlUtil appendParams:params to:qry];
+    
     return [self request:qry ofType: FactualRequestType_PlacesQuery requestMethod:@"GET" payload: nil withDelegate:delegate];
 }
 
@@ -108,38 +128,56 @@ NSString *const FactualCoreErrorDomain = @"FactualCoreErrorDomain";
     return [self request:queryString ofType: FactualRequestType_PlacesQuery requestMethod:@"GET" payload: nil withDelegate:delegate];
 }
 
-- (FactualAPIRequest*)   queryTable:(NSString*) tableId  
-                      resolveParams:(FactualResolve*) resolve
+- (FactualAPIRequest*)   resolveRow:(NSString*) tableId  
+                         withValues:(NSDictionary*) values
                        withDelegate:(id<FactualAPIDelegate>) delegate { 
     NSString *qryPath = [[NSString alloc] initWithFormat:@"%@/resolve", tableId];
 	NSMutableString *queryStr = [[NSMutableString alloc] initWithFormat:@"%@?", qryPath];
-    [(FactualResolveImpl*) resolve generateQueryString:queryStr];
+    
+    NSMutableArray* params = [[NSMutableArray alloc] initWithCapacity:1];
+    if ([values count] != 0) {
+        NSError *error = NULL;
+        NSData *serialized = [[CJSONSerializer serializer] serializeObject:values error:&error];
+        NSString *serializedStr = [[NSString alloc] initWithData: serialized encoding: NSUTF8StringEncoding];
+        [params addObject:[NSString stringWithFormat:@"values=%@", [serializedStr stringWithPercentEscape]]];
+    }
+    [FactualUrlUtil appendParams:params to:queryStr];
+    
     return [self request:queryStr ofType: FactualRequestType_ResolveQuery requestMethod:@"GET" payload: nil withDelegate:delegate];
 }
 
-- (FactualAPIRequest*)   queryTable:(NSString*) tableId  
-                        matchParams:(FactualMatchQuery*) match
-                       withDelegate:(id<FactualAPIDelegate>) delegate { 
+- (FactualAPIRequest*)   matchRow:(NSString*) tableId  
+                       withValues:(NSDictionary*) values
+                     withDelegate:(id<FactualAPIDelegate>) delegate { 
     NSString *qryPath = [[NSString alloc] initWithFormat:@"%@/match", tableId];
 	NSMutableString *queryStr = [[NSMutableString alloc] initWithFormat:@"%@?", qryPath];
-    [(FactualMatchQueryImpl*) match generateQueryString:queryStr];
+    
+    NSMutableArray* params = [[NSMutableArray alloc] initWithCapacity:1];
+    if ([values count] != 0) {
+        NSError *error = NULL;
+        NSData *serialized = [[CJSONSerializer serializer] serializeObject:values error:&error];
+        NSString *serializedStr = [[NSString alloc] initWithData: serialized encoding: NSUTF8StringEncoding];
+        [params addObject:[NSString stringWithFormat:@"values=%@", [serializedStr stringWithPercentEscape]]];
+    }
+    [FactualUrlUtil appendParams:params to:queryStr];
     return [self request:queryStr ofType: FactualRequestType_MatchQuery requestMethod:@"GET" payload: nil withDelegate:delegate];
 }
 
-- (FactualAPIRequest*)   queryTable:(NSString*) tableId  
+- (FactualAPIRequest*)   facetTable:(NSString*) tableId  
                 optionalQueryParams:(FactualQuery*) queryParams
+                optionalFacetParams:(FactualFacetQuery*) facetParams
                        withDelegate:(id<FactualAPIDelegate>) delegate { 
-    // build a query string using query object and table id
-    NSString* queryStr = [FactualAPIHelper buildPlacesQueryString:((_secret == nil) ? _apiKey: nil) tableId:tableId queryParams:queryParams];
-    return [self request:queryStr ofType: FactualRequestType_PlacesQuery requestMethod:@"GET" payload: nil withDelegate:delegate];
-}
-
-
-- (FactualAPIRequest*)   queryTable:(NSString*) tableId  
-                        facetParams:(FactualFacetQuery*) facet
-                       withDelegate:(id<FactualAPIDelegate>) delegate {
-    // build a query string using query object and table id
-    NSString* queryStr = [FactualAPIHelper buildPlacesQueryString:((_secret == nil) ? _apiKey: nil) tableId:tableId facetParams:facet];
+    NSMutableString *requestStr = [[NSMutableString alloc] init];
+    
+    NSString *queryStr = [[NSString alloc] initWithFormat:@"t/%@/facets", tableId];
+	queryStr = [FactualAPIHelper buildQueryString:(_secret == nil) ? _apiKey: nil path:queryStr queryParams:queryParams];
+    
+    [requestStr appendString:queryStr];
+    [requestStr appendString:@"&"];
+    
+    FactualFacetQueryImplementation* facetParamsImpl = (FactualFacetQueryImplementation*)facetParams;
+    [facetParamsImpl generateQueryString:requestStr];
+    
     return [self request:queryStr ofType: FactualRequestType_FacetQuery requestMethod:@"GET" payload: nil withDelegate:delegate];
 }
 
@@ -147,7 +185,7 @@ NSString *const FactualCoreErrorDomain = @"FactualCoreErrorDomain";
     return [NSString stringWithFormat:@"%@/%@", _factualHome, path];
 }
 
-- (FactualAPIRequest*)   request:(NSString*) queryStr ofType:(NSInteger)theRequestType requestMethod: (NSString*) requestMethod payload:payload withDelegate:(id<FactualAPIDelegate>) delegate { 
+- (FactualAPIRequest*)   request:(NSString*) queryStr ofType:(NSInteger)requestType requestMethod: (NSString*) requestMethod payload:payload withDelegate:(id<FactualAPIDelegate>) delegate { 
     // build url .. 
     NSString* urlStr = [self createRequestString: queryStr];
     if (_debug) {
@@ -155,7 +193,7 @@ NSString *const FactualCoreErrorDomain = @"FactualCoreErrorDomain";
         NSLog(@"Request Method: %@", requestMethod);
         NSLog(@"Payload: %@", payload);
     }
-    return [self sendRequest: urlStr ofType: theRequestType requestMethod:requestMethod payload:payload withDelegate: delegate];
+    return [self sendRequest: urlStr ofType: requestType requestMethod:requestMethod payload:payload withDelegate: delegate];
 }
 
 - (FactualAPIRequest*)   sendRequest:(NSString*) urlStr ofType:(NSInteger)theRequestType requestMethod: (NSString*) requestMethod payload:(NSString*) payload withDelegate:(id<FactualAPIDelegate>) delegate { 
@@ -171,86 +209,83 @@ NSString *const FactualCoreErrorDomain = @"FactualCoreErrorDomain";
                         requestMethod: requestMethod];
 }
 
-- (FactualAPIRequest*) submit:(NSString*) tableId
-                 submitParams: (FactualSubmit*) submit 
-                     metadata:(FactualMetadata*) metadata
-                 withDelegate:(id<FactualAPIDelegate>) delegate {
-    NSMutableString *queryStr = [[NSMutableString alloc] initWithFormat:@"t/%@/submit", tableId];
-    FactualSubmitImpl* submitImpl = (FactualSubmitImpl*)submit;
-    NSMutableString *payload = [[NSMutableString alloc] init];
-    [(FactualMetadataImpl*)metadata generateQueryString:payload];
-    [payload appendString: @"&"];
-    [submitImpl generateQueryString:payload];
-    return [self request:queryStr ofType: FactualRequestType_RawRequest requestMethod:@"POST" payload: payload withDelegate:delegate];
-}
-
-- (FactualAPIRequest*) submit:(NSString*) tableId
-                    factualId: (NSString*) factualId
-                 submitParams: (FactualSubmit*) submit
-                     metadata:(FactualMetadata*) metadata
-                 withDelegate:(id<FactualAPIDelegate>) delegate {
-    NSMutableString *queryStr = [[NSMutableString alloc] initWithFormat:@"t/%@/%@/submit", tableId, factualId];
-    FactualSubmitImpl* submitImpl = (FactualSubmitImpl*)submit;
-    NSMutableString *payload = [[NSMutableString alloc] init];
-    [(FactualMetadataImpl*)metadata generateQueryString:payload];
-    [payload appendString: @"&"];
-    [submitImpl generateQueryString:payload];
-    return [self request:queryStr ofType: FactualRequestType_RawRequest requestMethod:@"POST" payload: payload withDelegate:delegate];
-}
-
-
-- (FactualAPIRequest*) flagDuplicate:(NSString*) tableId
-                           factualId: (NSString*) factualId
-                            metadata:(FactualMetadata*) metadata
-                        withDelegate:(id<FactualAPIDelegate>) delegate {
-    return [self flagProblem: @"duplicate" tableId: tableId factualId: factualId metadata: metadata withDelegate: delegate];
-}
-
-- (FactualAPIRequest*) flagInaccurate:(NSString*) tableId
-                            factualId: (NSString*) factualId
-                             metadata:(FactualMetadata*) metadata
-                         withDelegate:(id<FactualAPIDelegate>) delegate {
-    return [self flagProblem: @"inaccurate" tableId: tableId factualId: factualId metadata: metadata withDelegate: delegate];
-}
-
-- (FactualAPIRequest*) flagInappropriate:(NSString*) tableId
-                               factualId: (NSString*) factualId
-                                metadata:(FactualMetadata*) metadata
-                            withDelegate:(id<FactualAPIDelegate>) delegate {
-    return [self flagProblem: @"inappropriate" tableId: tableId factualId: factualId metadata: metadata withDelegate: delegate];
-}
-
-- (FactualAPIRequest*) flagNonExistent:(NSString*) tableId
-                             factualId: (NSString*) factualId
-                              metadata:(FactualMetadata*) metadata
-                          withDelegate:(id<FactualAPIDelegate>) delegate {
-    return [self flagProblem: @"nonexistent" tableId: tableId factualId: factualId metadata: metadata withDelegate: delegate];
-}
-
-- (FactualAPIRequest*) flagSpam:(NSString*) tableId
-                      factualId: (NSString*) factualId
-                       metadata:(FactualMetadata*) metadata
-                   withDelegate:(id<FactualAPIDelegate>) delegate {
-    return [self flagProblem: @"spam" tableId: tableId factualId: factualId metadata: metadata withDelegate: delegate];
-}
-
-- (FactualAPIRequest*) flagOther:(NSString*) tableId
-                       factualId: (NSString*) factualId
-                        metadata:(FactualMetadata*) metadata
+- (FactualAPIRequest*) submitRow:(NSString*) tableId
+                      withValues: (NSMutableDictionary*) values 
+                    withMetadata:(FactualRowMetadata*) metadata
                     withDelegate:(id<FactualAPIDelegate>) delegate {
-    return [self flagProblem: @"other" tableId: tableId factualId: factualId metadata: metadata withDelegate: delegate];
+    NSMutableString *path = [[NSMutableString alloc] initWithFormat:@"t/%@/submit", tableId];
+    return [self submitRowInternal: path withValues:values withMetadata:metadata withDelegate:delegate];
 }
 
-- (FactualAPIRequest*) flagProblem: (NSString*) problem 
+- (FactualAPIRequest*) submitRowWithId:(NSString*) factualId
+                               tableId: (NSString*) tableId
+                            withValues: (NSMutableDictionary*) values
+                          withMetadata:(FactualRowMetadata*) metadata
+                          withDelegate:(id<FactualAPIDelegate>) delegate {
+    NSMutableString *path = [[NSMutableString alloc] initWithFormat:@"t/%@/%@/submit", tableId, factualId];
+    return [self submitRowInternal: path withValues:values withMetadata:metadata withDelegate:delegate];
+}
+
+- (FactualAPIRequest*) submitRowInternal:(NSMutableString*) path
+                              withValues: (NSMutableDictionary*) values 
+                            withMetadata:(FactualRowMetadata*) metadata
+                            withDelegate:(id<FactualAPIDelegate>) delegate {
+    NSMutableString *payload = [[NSMutableString alloc] init];
+    [(FactualRowMetadataImpl*)metadata generateQueryString:payload];
+    [payload appendString: @"&"];
+    
+    NSError *error = NULL;
+    NSData *serialized = [[CJSONSerializer serializer] serializeObject:values error:&error];
+    NSString *serializedStr = [[NSString alloc] initWithData: serialized encoding: NSUTF8StringEncoding];
+    [payload appendString:[NSString stringWithFormat:@"values=%@", [serializedStr stringWithPercentEscape]]];
+    
+    return [self request:path ofType: FactualRequestType_RawRequest requestMethod:@"POST" payload: payload withDelegate:delegate];
+}
+
+- (FactualAPIRequest*) flagProblem: (FactualFlagType) problem 
                            tableId: (NSString*) tableId
                          factualId: (NSString*) factualId
-                          metadata:(FactualMetadata*) metadata
+                          metadata:(FactualRowMetadata*) metadata
                       withDelegate:(id<FactualAPIDelegate>) delegate {
     NSMutableString *queryStr = [[NSMutableString alloc] initWithFormat:@"t/%@/%@/flag", tableId, factualId];
     NSMutableString *payload = [[NSMutableString alloc] init];
-    [(FactualMetadataImpl*)metadata generateQueryString:payload];
+    [(FactualRowMetadataImpl*)metadata generateQueryString:payload];
     [payload appendString:@"&"];
-    [payload appendString:[NSString stringWithFormat:@"problem=%@",[problem stringWithPercentEscape]]];
+    
+    NSString* problemStr = nil;
+    
+    switch (problem) {
+        case FactualFlagType_Duplicate: { 
+            problemStr = @"duplicate";
+        }
+            break;
+        case FactualFlagType_Inaccurate: { 
+            problemStr = @"inaccurate";
+        }
+            break;
+        case FactualFlagType_Inappropriate: {
+            problemStr = @"inappropriate";
+        }
+            break;
+        case FactualFlagType_Nonexistent: {
+            problemStr = @"nonexistent";
+        }
+            break;
+        case FactualFlagType_Spam: {
+            problemStr = @"spam";
+        }
+            break;         
+        case FactualFlagType_Other: {
+            problemStr = @"other";
+        }
+            break;          
+        default: {
+            [NSException raise:NSGenericException format:@"Unknown problem type: %@", problem];
+        }
+            break;
+    }
+    
+    [payload appendString:[NSString stringWithFormat:@"problem=%@",[problemStr stringWithPercentEscape]]];
     return [self request:queryStr ofType: FactualRequestType_RawRequest requestMethod:@"POST" payload: payload withDelegate:delegate];
 }
 

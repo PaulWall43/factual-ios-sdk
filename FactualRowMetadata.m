@@ -6,16 +6,16 @@
 //  Copyright (c) 2012 Facutal Inc. All rights reserved.
 //
 
-#import "FactualMetadata.h"
-#import "FactualMetadataImpl.h"
+#import "FactualRowMetadata.h"
+#import "FactualRowMetadataImpl.h"
 #import "FactualUrlUtil.h"
 #import "NSString (Escaping).h"
 
-@implementation FactualMetadata
+@implementation FactualRowMetadata
 
 @dynamic username, comment, reference;
 
-+(FactualMetadata*) metadata: (NSString *) username {
-    return [[FactualMetadataImpl alloc] initWithUserName:username];
++(FactualRowMetadata*) metadata: (NSString *) username {
+    return [[FactualRowMetadataImpl alloc] initWithUserName:username];
 }
 @end
