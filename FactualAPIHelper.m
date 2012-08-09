@@ -8,8 +8,6 @@
 #import "FactualAPIHelper.h"
 #import "CJSONSerializer.h"
 #import "FactualQueryImpl.h"
-#import "FactualFacetQueryImpl.h"
-
 
 @implementation FactualAPIHelper
 

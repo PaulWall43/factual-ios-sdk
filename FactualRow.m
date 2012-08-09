@@ -10,7 +10,7 @@
 
 @implementation FactualRow
 
-@dynamic rowId,namesAndValues;
+@dynamic rowId,namesAndValues,facetName;
 
 - (id)copyWithZone:(NSZone *)zone {
   return nil;

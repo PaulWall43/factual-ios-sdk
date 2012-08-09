@@ -14,9 +14,7 @@
 #import <Foundation/Foundation.h>
 #import "FactualAPIRequest.h"
 #import "FactualQueryResult.h"
-#import "FactualFacetResult.h"
 #import "FactualQuery.h"
-#import "FactualFacetQuery.h"
 #import "FactualRowMetadata.h"
 
 
@@ -300,11 +298,11 @@ typedef enum  {
  predicates (via FactualFilter), sort orders and row offsets and
  record limits. You can also specify additional facet request
  parameters.  Upon successful execution you will recieve facet results
- asynchronously via a call the requestComplete:receivedFacetResult:
+ asynchronously via a call the requestComplete:receivedQueryResult:
  method on the delegate. Failures will result in a call to the
  requestComplete:failedWithError: method on the delegate. Please read
- the docs on FactualFacetResult for details about the data returned as
- a result of Query.
+ the docs on FactualQueryResult for details about the data returned as
+ a result.
  
  @param tableId The name of the Factual table to query.
  
@@ -323,7 +321,6 @@ typedef enum  {
  */
 - (FactualAPIRequest*)   facetTable:(NSString*) tableId
                 optionalQueryParams:(FactualQuery*) queryParams
-                optionalFacetParams:(FactualFacetQuery*) facetParams
                        withDelegate:(id<FactualAPIDelegate>) delegate;
 
 - (FactualAPIRequest*) getTableSchema:(NSString*) tableId
@@ -426,14 +423,5 @@ result;
  */
 - (void)requestComplete:(FactualAPIRequest*) request receivedMatchResult:(NSString*) factualId;
 
-/*! @discussion This method gets called when a facet query request successfully
- completes on the server. The results of the request are passed to the caller
- in the FactualFacetResponse object.
- 
- @param request The request context object
- 
- @param result The FactualFacetResult result object
- */
-- (void)requestComplete:(FactualAPIRequest*) request receivedFacetResult:(FactualFacetResult*) result;
 
 @end

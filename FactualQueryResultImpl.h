@@ -17,12 +17,7 @@
     NSString* _tableId;
 }
 
-// initialization ... 
-+(FactualQueryResult*) queryResultFromJSON:(NSDictionary*) jsonResponse
-                                   tableId:(NSString*) tableId;
-
-
-+(FactualQueryResult *) queryResultFromPlacesJSON:(NSDictionary *)jsonResponse;
++(FactualQueryResult *) queryResultFromJSON:(NSDictionary *)jsonResponse;
 
 // internal init 
 -(id) initWithColumns:(NSArray*) columns 

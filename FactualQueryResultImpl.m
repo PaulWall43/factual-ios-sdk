@@ -11,55 +11,35 @@
 @implementation FactualQueryResultImpl
 @synthesize rows=_rows,totalRows=_totalRows,tableId=_tableId;
 
-
-+(FactualQueryResult *) queryResultFromJSON:(NSDictionary *)jsonResponse
-                                    tableId:(NSString*) tableId {
-    // ok allocate the  containers upfront ... 
-    // ok now parse json data structure ... 
-    NSArray *columns = [jsonResponse objectForKey:@"fields"];
-	NSArray *rows = [jsonResponse objectForKey:@"data"];
-    // bail if no data ... 
-    if (columns == nil && rows == nil) {
-#ifdef TARGET_IPHONE_SIMULATOR    
-        NSLog(@"fields or row data missing!");
-#endif    
-        return nil;
-    }
-    // otherwise validate rows have proper number of cells ... 
-    for (NSArray* row in rows) {
-        if ([row count] != [columns count]) {
-#ifdef TARGET_IPHONE_SIMULATOR           
-            NSLog(@"Invalid Cell Count in Row!");
-#endif       
-            return nil;
++(FactualQueryResult *) queryResultFromJSON:(NSDictionary *)jsonResponse {
+    
+	id rows = [jsonResponse objectForKey:@"data"];
+    
+    NSMutableArray *rowData = [[NSMutableArray alloc] init];
+    if([rows isKindOfClass:[NSArray class]]) {
+        NSArray* rowArray = (NSArray*) rows;
+        for (NSDictionary* rowValues in rowArray) {
+            NSString* rowId = @"undefined";
+            NSString* factualId = [rowValues valueForKey:@"factual_id"];;
+            if (factualId != nil) { 
+                rowId = factualId;
+            }
+            NSMutableDictionary* result = [[NSMutableDictionary alloc] init];
+            [result setValue: rowId forKey:@"row_id"];
+            [result setValue: rowValues forKey:@"values"];
+            [rowData addObject:result];
+        }
+    } else if ([rows isKindOfClass:[NSDictionary class]]) {
+        NSDictionary *dict = (NSDictionary *) rows;
+        for (NSString* key in dict) {
+            NSString* facetName = key;
+            NSMutableDictionary* result = [[NSMutableDictionary alloc] init];
+            [result setValue: facetName forKey:@"facet_name"];
+            [result setValue: [dict objectForKey:key] forKey:@"values"];
+            [rowData addObject:result];
         }
     }
-    // otherwise things look pretty good up to this point ... 
-    // extract total rows if available ...
-	NSNumber *theTotalRows = [jsonResponse objectForKey:@"total_rows"];
-	long totalRows = 0L;
-    if (!theTotalRows) {
-#ifdef TARGET_IPHONE_SIMULATOR        
-		NSLog(@"total_rows object missing");
-#endif    
-	}
-    else {
-        totalRows = [theTotalRows unsignedIntValue];
-    }
     
-    // ok ready to go... alloc response object and return ... 
-    FactualQueryResultImpl* objectOut 
-    = [[FactualQueryResultImpl alloc]initWithColumns:columns 
-                                                rows:rows 
-                                           totalRows:totalRows 
-                                             tableId:tableId ];
-    
-    return objectOut;
-}
-
-+(FactualQueryResult *) queryResultFromPlacesJSON:(NSDictionary *)jsonResponse {
-    
-	NSArray *rows = [jsonResponse objectForKey:@"data"];
     // bail if no data ... 
     if (rows == nil) {
 #ifdef TARGET_IPHONE_SIMULATOR        
@@ -81,7 +61,7 @@
     }
     // ok ready to go... alloc response object and return ... 
     FactualQueryResultImpl* objectOut 
-    = [[FactualQueryResultImpl alloc]initWithOnlyRows:rows 
+    = [[FactualQueryResultImpl alloc]initWithOnlyRows:rowData 
                                             totalRows:totalRows 
                                               tableId:nil ];
     
@@ -110,7 +90,7 @@
         }    
         _rows = [NSMutableArray arrayWithCapacity:[_rows count]];
         for (NSArray* rowData in theRows) {
-            [_rows addObject: [[FactualRowImpl alloc]initWithJSONArray:rowData optionalRowId:nil columnNames:_columns columnIndex:_columnToIndex copyValues:NO]];
+            [_rows addObject: [[FactualRowImpl alloc]initWithJSONArray:rowData optionalRowId:nil optionalFacetName:nil columnNames:_columns columnIndex:_columnToIndex copyValues:NO]];
         }
         
         
@@ -131,7 +111,10 @@
             // ok, now populate row data ...  
             _rows = [NSMutableArray arrayWithCapacity:[_rows count]];
             for (NSDictionary* rowData in theRows) {
-                FactualRowImpl* rowObject =[[FactualRowImpl alloc]initWithJSONObject:rowData];
+                NSString* rowId = [rowData valueForKey:@"row_id"];
+                NSString* facetName = [rowData valueForKey:@"facet_name"];
+                NSDictionary* values = [rowData valueForKey:@"values"];
+                FactualRowImpl* rowObject =[[FactualRowImpl alloc]initWithJSONObject:values withRowId:rowId withFacetName:facetName];
                 
                 [_rows addObject: rowObject];
             }

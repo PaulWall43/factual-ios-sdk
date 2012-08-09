@@ -14,7 +14,6 @@
 #import "NSString (Escaping).h"
 #import "FactualRowMetadata.h" 
 #import "FactualRowMetadataImpl.h" 
-#import "FactualFacetQueryImpl.h" 
 #import "FactualUrlUtil.h" 
 
 
@@ -165,18 +164,12 @@ NSString *const FactualCoreErrorDomain = @"FactualCoreErrorDomain";
 
 - (FactualAPIRequest*)   facetTable:(NSString*) tableId  
                 optionalQueryParams:(FactualQuery*) queryParams
-                optionalFacetParams:(FactualFacetQuery*) facetParams
                        withDelegate:(id<FactualAPIDelegate>) delegate { 
     NSMutableString *requestStr = [[NSMutableString alloc] init];
     
     NSString *queryStr = [[NSString alloc] initWithFormat:@"t/%@/facets", tableId];
 	queryStr = [FactualAPIHelper buildQueryString:(_secret == nil) ? _apiKey: nil path:queryStr queryParams:queryParams];
-    
     [requestStr appendString:queryStr];
-    [requestStr appendString:@"&"];
-    
-    FactualFacetQueryImplementation* facetParamsImpl = (FactualFacetQueryImplementation*)facetParams;
-    [facetParamsImpl generateQueryString:requestStr];
     
     return [self request:queryStr ofType: FactualRequestType_FacetQuery requestMethod:@"GET" payload: nil withDelegate:delegate];
 }

@@ -139,6 +139,8 @@ typedef enum {
     NSMutableArray*    _textTerms;
     FactualGeoFilter* _geoFilter;
     NSMutableArray*    _selectTerms;
+    NSUInteger  _minCountPerFacetValue;
+    NSUInteger  _maxValuesPerFacet;
 }
 @property(nonatomic,retain)   FactualGeoFilter* geoFilter;
 
