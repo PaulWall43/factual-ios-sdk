@@ -26,8 +26,8 @@ double _longitude;
 double _meters;
 
 // Add your key and secret
-NSString* _key = @"U3QbOw7bW9nxDN4TppoqQlxwnJmSISUbJ3h3pRj1";
-NSString* _secret = @"2AFaSQYCFjSsDkZKLOhpT8QE2zQRLCUxcJnMMfSa";
+NSString* _key = nil;
+NSString* _secret = nil;
 
 - (void)setUp
 {
