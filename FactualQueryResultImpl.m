@@ -50,13 +50,8 @@
     
 	NSNumber *theTotalRows = [jsonResponse objectForKey:@"total_row_count"];
     
-	long totalRows = 0L;
-    if (!theTotalRows) {
-#ifdef TARGET_IPHONE_SIMULATOR        
-		NSLog(@"total_rows object missing");
-#endif    
-	}
-    else {
+	long totalRows = -1L;
+    if (theTotalRows) {
         totalRows = [theTotalRows unsignedIntValue];
     }
     // ok ready to go... alloc response object and return ... 

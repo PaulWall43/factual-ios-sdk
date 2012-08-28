@@ -24,7 +24,7 @@ static NSString* simplePredicateStrings[]  = {
     @"$gte",
     @"$lte",
     @"$bw",
-    @"$search"
+    @"$search",
     @"$nbw",
     @"$blank",
 };

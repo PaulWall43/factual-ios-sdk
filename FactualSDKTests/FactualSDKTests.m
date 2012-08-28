@@ -41,7 +41,7 @@ NSString* _secret = nil;
     _queryResult = nil;
     _rawResult = nil;
     _matchResult = nil;
-    _apiObject = [[FactualAPI alloc] initWithAPIKey:_key secret:_secret];
+    _apiObject = [[FactualAPI alloc] initWithAPIKey:nil secret:nil];
 }
 
 - (void)tearDown
@@ -62,6 +62,9 @@ NSString* _secret = nil;
                                                   equalTo:@"US"]];
     [_apiObject queryTable:@"places" optionalQueryParams:queryObject withDelegate:self];
     [self waitForResponse];
+    
+    STAssertTrue([_queryResult.rows count] > 0, @"Invalid row count");
+    STAssertTrue(_queryResult.totalRows == -1, @"Invalid total rows");
 }
 
 - (void)testCoreExample2
@@ -74,6 +77,9 @@ NSString* _secret = nil;
     [_apiObject queryTable:@"places" optionalQueryParams:queryObject withDelegate:self];
     
     [self waitForResponse];
+    
+    STAssertTrue([_queryResult.rows count] > 0, @"Invalid response");
+    
 }
 
 - (void)testCoreExample3
@@ -85,6 +91,9 @@ NSString* _secret = nil;
     [_apiObject queryTable:@"places" optionalQueryParams:queryObject withDelegate:self];
     
     [self waitForResponse];
+    
+    STAssertTrue([_queryResult.rows count] > 0, @"Invalid row count");
+    
 }
 
 - (void)testCoreExample4
@@ -119,6 +128,10 @@ NSString* _secret = nil;
     [_apiObject facetTable:@"places" optionalQueryParams:query withDelegate:self];
     
     [self waitForResponse];
+    
+    STAssertTrue([_queryResult.rows count] > 0, @"Invalid row count");
+    STAssertTrue(_queryResult.totalRows > 0, @"Invalid total rows");
+    
 }
 
 - (void)testCoreExample5
@@ -136,6 +149,8 @@ NSString* _secret = nil;
     
     [self waitForResponse];
     
+    STAssertTrue([_queryResult.rows count] > 0, @"Invalid row count");
+    
 }
 
 - (void)testSort_byDistance
@@ -152,6 +167,9 @@ NSString* _secret = nil;
     [_apiObject queryTable:@"places" optionalQueryParams:queryObject withDelegate:self];
     
     [self waitForResponse];
+    
+    STAssertTrue([_queryResult.rows count] > 0, @"Invalid row count");
+    
 }
 
 - (void)testRowFilters_2beginsWith
@@ -166,6 +184,9 @@ NSString* _secret = nil;
     [_apiObject queryTable:@"places" optionalQueryParams:queryObject withDelegate:self];
     
     [self waitForResponse];
+    
+    STAssertTrue([_queryResult.rows count] > 0, @"Invalid row count");
+    
 }
 
 - (void)testIn
@@ -177,6 +198,8 @@ NSString* _secret = nil;
     [_apiObject queryTable:@"places" optionalQueryParams:queryObject withDelegate:self];
     
     [self waitForResponse];
+    
+    STAssertTrue([_queryResult.rows count] > 0, @"Invalid row count");
     
 }
 
@@ -194,6 +217,8 @@ NSString* _secret = nil;
     
     [self waitForResponse];
     
+    STAssertTrue([_queryResult.rows count] > 0, @"Invalid row count");
+    
 }
 
 - (void)testSimpleTel
@@ -204,6 +229,9 @@ NSString* _secret = nil;
     [_apiObject queryTable:@"places" optionalQueryParams:queryObject withDelegate:self];
     
     [self waitForResponse];
+    
+    STAssertTrue([_queryResult.rows count] > 0, @"Invalid row count");
+    
 }
 
 - (void)testFullTextSearch_on_a_field
@@ -214,6 +242,9 @@ NSString* _secret = nil;
     [_apiObject queryTable:@"places" optionalQueryParams:queryObject withDelegate:self];
     
     [self waitForResponse];
+    
+    STAssertTrue([_queryResult.rows count] > 0, @"Invalid row count");
+    
 }
 
 - (void)testCrosswalk_ex1
@@ -224,6 +255,9 @@ NSString* _secret = nil;
     
     [_apiObject queryTable:@"crosswalk" optionalQueryParams:queryObject withDelegate:self];
     [self waitForResponse];
+    
+    STAssertTrue([_queryResult.rows count] > 0, @"Invalid row count");
+    
 }
 
 - (void)testCrosswalk_ex2
@@ -236,6 +270,9 @@ NSString* _secret = nil;
     
     [_apiObject queryTable:@"crosswalk" optionalQueryParams:queryObject withDelegate:self];
     [self waitForResponse];
+    
+    STAssertTrue([_queryResult.rows count] > 0, @"Invalid row count");
+    
 }
 
 - (void)testCrosswalk_ex3
@@ -248,6 +285,9 @@ NSString* _secret = nil;
     
     [_apiObject queryTable:@"crosswalk" optionalQueryParams:queryObject withDelegate:self];
     [self waitForResponse];
+    
+    STAssertTrue([_queryResult.rows count] > 0, @"Invalid row count");
+    
 }
 
 - (void)testCrosswalk_limit
@@ -258,6 +298,9 @@ NSString* _secret = nil;
     queryObject.limit = 1;
     [_apiObject queryTable:@"crosswalk" optionalQueryParams:queryObject withDelegate:self];
     [self waitForResponse];
+    
+    STAssertTrue([_queryResult.rows count] > 0, @"Invalid row count");
+    
 }
 
 - (void)testMonetize
@@ -269,6 +312,9 @@ NSString* _secret = nil;
     [_apiObject monetize:queryObject withDelegate:self];
     
     [self waitForResponse];
+    
+    STAssertTrue([_queryResult.rows count] > 0, @"Invalid row count");
+    
 }
 
 - (void)testSelect
@@ -281,6 +327,9 @@ NSString* _secret = nil;
     [_apiObject queryTable:@"places" optionalQueryParams:queryObject withDelegate:self];
     
     [self waitForResponse];
+    
+    STAssertTrue([_queryResult.rows count] > 0, @"Invalid row count");
+    
 }
 
 - (void)testWorldGeographies
@@ -295,6 +344,9 @@ NSString* _secret = nil;
     [_apiObject queryTable:@"world-geographies" optionalQueryParams:queryObject withDelegate:self];
     
     [self waitForResponse];
+    
+    STAssertTrue([_queryResult.rows count] > 0, @"Invalid row count");
+    
 }
 
 - (void)testResolve_ex1
@@ -308,6 +360,8 @@ NSString* _secret = nil;
     
     [self waitForResponse];
     
+    STAssertTrue([_queryResult.rows count] > 0, @"Invalid row count");
+    
 } 
 
 
@@ -319,6 +373,9 @@ NSString* _secret = nil;
     [terms addObject:@"commercial_profile"];
     [_apiObject queryGeopulse:point selectTerms:terms withDelegate:self];
     [self waitForResponse];
+    
+    STAssertTrue([_queryResult.rows count] > 0, @"Invalid row count");
+    
 }
 
 - (void)testMatch
@@ -331,8 +388,7 @@ NSString* _secret = nil;
     [_apiObject matchRow:@"places" withValues:values withDelegate:self];
     
     [self waitForResponse];
-    
-    NSLog(@"MATCH RESULT: %@", _matchResult);
+    STAssertTrue([@"bd886f67-9d86-40c5-9217-f7bcd53cfc0e" isEqualToString:_matchResult], @"Match failed");
 }
 
 - (void)testSchema
@@ -340,6 +396,9 @@ NSString* _secret = nil;
     [_apiObject getTableSchema:@"restaurants-us" withDelegate:self];
     
     [self waitForResponse];
+    
+    STAssertTrue(_rawResult != nil, @"Invalid response");
+    
 }
 
 
@@ -350,6 +409,9 @@ NSString* _secret = nil;
     point.latitude = _latitude;
     [_apiObject reverseGeocode:point withDelegate:self];
     [self waitForResponse];
+    
+    STAssertTrue([_queryResult.rows count] > 0, @"Invalid row count");
+    
 }
 
 - (void)testRawRead
@@ -359,100 +421,128 @@ NSString* _secret = nil;
     [_apiObject get:@"t/places" params:params withDelegate: self];
     
     [self waitForResponse];
+    
+    STAssertTrue(_rawResult != nil, @"Invalid response");
+    
 }
 
 - (void)testFlagDuplicate
- {
- FactualRowMetadata* metadata = [FactualRowMetadata metadata: @"testuser"];
- metadata.comment = @"my comment";
- metadata.reference = @"www.mytest.com";
- [_apiObject flagProblem:FactualFlagType_Duplicate tableId: @"2EH4Pz" factualId: @"f33527e0-a8b4-4808-a820-2686f18cb00c" metadata: metadata withDelegate:self];
- [self waitForResponse];
- }
- 
- - (void)testFlagInaccurate
- {
- FactualRowMetadata* metadata = [FactualRowMetadata metadata: @"testuser"];
- metadata.comment = @"my comment";
- metadata.reference = @"www.mytest.com";
- [_apiObject flagProblem:FactualFlagType_Inaccurate tableId:@"2EH4Pz" factualId: @"f33527e0-a8b4-4808-a820-2686f18cb00c" metadata: metadata withDelegate:self];
- [self waitForResponse];
- }
- 
- - (void)testFlagInappropriate
- {
- FactualRowMetadata* metadata = [FactualRowMetadata metadata: @"testuser"];
- metadata.comment = @"my comment";
- metadata.reference = @"www.mytest.com";
- [_apiObject flagProblem:FactualFlagType_Inappropriate tableId: @"2EH4Pz" factualId: @"f33527e0-a8b4-4808-a820-2686f18cb00c" metadata: metadata withDelegate:self];
- [self waitForResponse];
- }
- 
- - (void)testFlagNonExistent
- {
- FactualRowMetadata* metadata = [FactualRowMetadata metadata: @"testuser"];
- metadata.comment = @"my comment";
- metadata.reference = @"www.mytest.com";
- [_apiObject flagProblem:FactualFlagType_Nonexistent tableId: @"2EH4Pz" factualId: @"f33527e0-a8b4-4808-a820-2686f18cb00c" metadata: metadata withDelegate:self];
- [self waitForResponse];
- }
- 
- - (void)testFlagSpam
- {
- FactualRowMetadata* metadata = [FactualRowMetadata metadata: @"testuser"];
- metadata.comment = @"my comment";
- metadata.reference = @"www.mytest.com";
- [_apiObject flagProblem:FactualFlagType_Spam tableId: @"2EH4Pz" factualId: @"f33527e0-a8b4-4808-a820-2686f18cb00c" metadata: metadata withDelegate:self];
- [self waitForResponse];
- }
- 
- - (void)testFlagOther
- {
- FactualRowMetadata* metadata = [FactualRowMetadata metadata: @"testuser"];
- metadata.comment = @"my comment";
- metadata.reference = @"www.mytest.com";
- [_apiObject flagProblem:FactualFlagType_Other tableId: @"2EH4Pz" factualId: @"f33527e0-a8b4-4808-a820-2686f18cb00c" metadata: metadata withDelegate:self];
- [self waitForResponse];
- }
- 
- - (void)testSubmitAdd
- {
- FactualRowMetadata* metadata = [FactualRowMetadata metadata: @"testuser"];
- metadata.comment = @"my comment";
- metadata.reference = @"www.mytest.com";
- 
- NSMutableDictionary* values  = [NSMutableDictionary dictionaryWithCapacity:4];
- [values setValue:@"100" forKey:@"longitude"];   
- 
- [_apiObject submitRow:@"2EH4Pz" withValues:values withMetadata:metadata withDelegate:self];
- [self waitForResponse];
- }
- 
- - (void)testSubmitEdit
- {
- FactualRowMetadata* metadata = [FactualRowMetadata metadata: @"testuser"];
- metadata.comment = @"my comment";
- metadata.reference = @"www.mytest.com";
- 
- NSMutableDictionary* values  = [NSMutableDictionary dictionaryWithCapacity:4];
- [values setValue:@"100" forKey:@"longitude"];    
- 
- [_apiObject submitRowWithId:@"f33527e0-a8b4-4808-a820-2686f18cb00c" tableId:@"2EH4Pz" withValues:values withMetadata:metadata withDelegate:self];
- [self waitForResponse];
- }
- 
- - (void)testSubmitDelete
- {
- FactualRowMetadata* metadata = [FactualRowMetadata metadata: @"testuser"];
- metadata.comment = @"my comment";
- metadata.reference = @"www.mytest.com";
- 
- NSMutableDictionary* values  = [NSMutableDictionary dictionaryWithCapacity:4];
- [values setValue:@"null" forKey:@"longitude"];    
- 
- [_apiObject submitRowWithId:@"f33527e0-a8b4-4808-a820-2686f18cb00c" tableId:@"2EH4Pz" withValues:values withMetadata:metadata withDelegate:self];
- [self waitForResponse];
- }
+{
+    FactualRowMetadata* metadata = [FactualRowMetadata metadata: @"testuser"];
+    metadata.comment = @"my comment";
+    metadata.reference = @"www.mytest.com";
+    [_apiObject flagProblem:FactualFlagType_Duplicate tableId: @"2EH4Pz" factualId: @"f33527e0-a8b4-4808-a820-2686f18cb00c" metadata: metadata withDelegate:self];
+    [self waitForResponse];
+    
+    STAssertTrue(_rawResult != nil, @"Invalid response");
+    
+}
+
+- (void)testFlagInaccurate
+{
+    FactualRowMetadata* metadata = [FactualRowMetadata metadata: @"testuser"];
+    metadata.comment = @"my comment";
+    metadata.reference = @"www.mytest.com";
+    [_apiObject flagProblem:FactualFlagType_Inaccurate tableId:@"2EH4Pz" factualId: @"f33527e0-a8b4-4808-a820-2686f18cb00c" metadata: metadata withDelegate:self];
+    [self waitForResponse];
+    
+    STAssertTrue(_rawResult != nil, @"Invalid response");
+}
+
+- (void)testFlagInappropriate
+{
+    FactualRowMetadata* metadata = [FactualRowMetadata metadata: @"testuser"];
+    metadata.comment = @"my comment";
+    metadata.reference = @"www.mytest.com";
+    [_apiObject flagProblem:FactualFlagType_Inappropriate tableId: @"2EH4Pz" factualId: @"f33527e0-a8b4-4808-a820-2686f18cb00c" metadata: metadata withDelegate:self];
+    [self waitForResponse];
+    
+    STAssertTrue(_rawResult != nil, @"Invalid response");
+}
+
+- (void)testFlagNonExistent
+{
+    FactualRowMetadata* metadata = [FactualRowMetadata metadata: @"testuser"];
+    metadata.comment = @"my comment";
+    metadata.reference = @"www.mytest.com";
+    [_apiObject flagProblem:FactualFlagType_Nonexistent tableId: @"2EH4Pz" factualId: @"f33527e0-a8b4-4808-a820-2686f18cb00c" metadata: metadata withDelegate:self];
+    [self waitForResponse];
+    
+    STAssertTrue(_rawResult != nil, @"Invalid response");
+    
+}
+
+- (void)testFlagSpam
+{
+    FactualRowMetadata* metadata = [FactualRowMetadata metadata: @"testuser"];
+    metadata.comment = @"my comment";
+    metadata.reference = @"www.mytest.com";
+    [_apiObject flagProblem:FactualFlagType_Spam tableId: @"2EH4Pz" factualId: @"f33527e0-a8b4-4808-a820-2686f18cb00c" metadata: metadata withDelegate:self];
+    [self waitForResponse];
+    
+    STAssertTrue(_rawResult != nil, @"Invalid response");
+    
+}
+
+- (void)testFlagOther
+{
+    FactualRowMetadata* metadata = [FactualRowMetadata metadata: @"testuser"];
+    metadata.comment = @"my comment";
+    metadata.reference = @"www.mytest.com";
+    [_apiObject flagProblem:FactualFlagType_Other tableId: @"2EH4Pz" factualId: @"f33527e0-a8b4-4808-a820-2686f18cb00c" metadata: metadata withDelegate:self];
+    [self waitForResponse];
+    
+    STAssertTrue(_rawResult != nil, @"Invalid response");
+    
+}
+
+- (void)testSubmitAdd
+{
+    FactualRowMetadata* metadata = [FactualRowMetadata metadata: @"testuser"];
+    metadata.comment = @"my comment";
+    metadata.reference = @"www.mytest.com";
+    
+    NSMutableDictionary* values  = [NSMutableDictionary dictionaryWithCapacity:4];
+    [values setValue:@"100" forKey:@"longitude"];   
+    
+    [_apiObject submitRow:@"2EH4Pz" withValues:values withMetadata:metadata withDelegate:self];
+    [self waitForResponse];
+    
+    STAssertTrue(_rawResult != nil, @"Invalid response");
+    
+}
+
+- (void)testSubmitEdit
+{
+    FactualRowMetadata* metadata = [FactualRowMetadata metadata: @"testuser"];
+    metadata.comment = @"my comment";
+    metadata.reference = @"www.mytest.com";
+    
+    NSMutableDictionary* values  = [NSMutableDictionary dictionaryWithCapacity:4];
+    [values setValue:@"100" forKey:@"longitude"];    
+    
+    [_apiObject submitRowWithId:@"f33527e0-a8b4-4808-a820-2686f18cb00c" tableId:@"2EH4Pz" withValues:values withMetadata:metadata withDelegate:self];
+    [self waitForResponse];
+    
+    STAssertTrue(_rawResult != nil, @"Invalid response");
+    
+}
+
+- (void)testSubmitDelete
+{
+    FactualRowMetadata* metadata = [FactualRowMetadata metadata: @"testuser"];
+    metadata.comment = @"my comment";
+    metadata.reference = @"www.mytest.com";
+    
+    NSMutableDictionary* values  = [NSMutableDictionary dictionaryWithCapacity:4];
+    [values setValue:@"null" forKey:@"longitude"];    
+    
+    [_apiObject submitRowWithId:@"f33527e0-a8b4-4808-a820-2686f18cb00c" tableId:@"2EH4Pz" withValues:values withMetadata:metadata withDelegate:self];
+    [self waitForResponse];
+    
+    STAssertTrue(_rawResult != nil, @"Invalid response");
+    
+}
 
 - (void)waitForResponse
 {
@@ -464,17 +554,21 @@ NSString* _secret = nil;
 -(void) requestComplete:(FactualAPIRequest *)request receivedRawResult:(NSDictionary *)result {
     _rawResult = result;
     _finished = true;
-    for (id key in result) {
-        NSLog(@"KEY: %@, VALUE: %@", key, [result objectForKey:key]);
-    }
+    /*
+     for (id key in result) {
+     NSLog(@"KEY: %@, VALUE: %@", key, [result objectForKey:key]);
+     }
+     */
 }
 
 -(void) requestComplete:(FactualAPIRequest *)request receivedQueryResult:(FactualQueryResult *)queryResult {
     _queryResult = queryResult;
     _finished = true;
-    for (id row in queryResult.rows) {
-        NSLog(@"Row: %@", row);
-    }
+    /*
+     for (id row in queryResult.rows) {
+     NSLog(@"Row: %@", row);
+     }
+     */
 }
 
 -(void) requestComplete:(FactualAPIRequest *)request receivedMatchResult:(NSString *)factualId {
