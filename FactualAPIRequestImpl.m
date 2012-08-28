@@ -52,7 +52,6 @@ static NSString* kFactualLibHeaderSDKValue = @"factual--iPhone-SDK-1.0";
 //////////////////////////////////////////////////////////////////////////////////////////////////
 -(void) parseQueryResponse:(NSDictionary*) jsonResponse {
     if (jsonResponse != nil) {
-        NSLog(@"THE JSON: %@", jsonResponse);
         FactualQueryResult* queryResult = [FactualQueryResultImpl queryResultFromJSON:jsonResponse];
         
         if (queryResult != nil) {
