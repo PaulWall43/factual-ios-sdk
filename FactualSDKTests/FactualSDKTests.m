@@ -26,8 +26,8 @@ double _longitude;
 double _meters;
 
 // Add your key and secret
-NSString* _key = nil;
-NSString* _secret = nil;
+NSString* _key = @"";
+NSString* _secret = @"";
 
 - (void)setUp
 {
@@ -41,7 +41,7 @@ NSString* _secret = nil;
     _queryResult = nil;
     _rawResult = nil;
     _matchResult = nil;
-    _apiObject = [[FactualAPI alloc] initWithAPIKey:nil secret:nil];
+    _apiObject = [[FactualAPI alloc] initWithAPIKey:_key secret:_secret];
 }
 
 - (void)tearDown
@@ -425,7 +425,7 @@ NSString* _secret = nil;
     STAssertTrue(_rawResult != nil, @"Invalid response");
     
 }
-
+/*
 - (void)testFlagDuplicate
 {
     FactualRowMetadata* metadata = [FactualRowMetadata metadata: @"testuser"];
@@ -495,7 +495,7 @@ NSString* _secret = nil;
     STAssertTrue(_rawResult != nil, @"Invalid response");
     
 }
-
+*/
 - (void)testSubmitAdd
 {
     FactualRowMetadata* metadata = [FactualRowMetadata metadata: @"testuser"];
@@ -556,7 +556,7 @@ NSString* _secret = nil;
     _finished = true;
     /*
      for (id key in result) {
-     NSLog(@"KEY: %@, VALUE: %@", key, [result objectForKey:key]);
+        NSLog(@"KEY: %@, VALUE: %@", key, [result objectForKey:key]);
      }
      */
 }
@@ -566,7 +566,7 @@ NSString* _secret = nil;
     _finished = true;
     /*
      for (id row in queryResult.rows) {
-     NSLog(@"Row: %@", row);
+        NSLog(@"Row: %@", row);
      }
      */
 }
