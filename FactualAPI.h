@@ -309,9 +309,6 @@ typedef enum  {
  @param queryParams (optional) And optional FactualQuery object to use
  to restrict the server query and the returned recordset.
  
- @param facetParams (optional) And optional FactualFacetQuery object
- used to specify addiitonal parameters related to facets.
- 
  @param delegate (optional) This is a reference to the delegate on
  which callbacks will be invoked.
  

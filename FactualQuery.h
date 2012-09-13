@@ -210,10 +210,7 @@ typedef enum  {
  */
 @property(nonatomic,readonly) NSMutableArray* fullTextTerms;
 /*! @property 
- @discussion when true, the response will include a count of the total number of rows in
- * the table that conform to the request based on included filters.
- * Requesting the row count will increase the time required to return a
- * response. The default behavior is to NOT include a row count 
+ @discussion when true, the response will include a count of the total number of rows in the table that conform to the request based on included filters.  Requesting the row count will increase the time required to return a response. The default behavior is to NOT include a row count 
  */
 @property (nonatomic, assign) BOOL includeRowCount;
 
