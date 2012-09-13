@@ -108,7 +108,7 @@
     // ok now create a serialized representation of facts ... 
     NSString* serializedFacts = [[NSString alloc] initWithData: [[CJSONSerializer serializer] serializeDictionary:facts  error:&error] encoding: NSUTF8StringEncoding];
     // and then encode them properly ... 
-    NSString* escapedFacts = (__bridge NSString*) CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault,(__bridge CFStringRef)serializedFacts,NULL,CFSTR("?=&+"),kCFStringEncodingUTF8);
+    NSString* escapedFacts = (__bridge_transfer NSString*) CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault,(__bridge CFStringRef)serializedFacts,NULL,CFSTR("?=&+"),kCFStringEncodingUTF8);
     // auto release it 
     // append to final string 
     [postBodyStr appendFormat:@"values=%@",escapedFacts];
@@ -128,12 +128,12 @@
                             rowId];
     if (source != nil) {
         [qry appendFormat:@"&source=%@",
-         ((__bridge NSString*) CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault,(__bridge CFStringRef)source,NULL,CFSTR("?=&+"),kCFStringEncodingUTF8))
+         ((__bridge_transfer NSString*) CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault,(__bridge CFStringRef)source,NULL,CFSTR("?=&+"),kCFStringEncodingUTF8))
          ];
     }
     if (comment != nil) {
         [qry appendFormat:@"&comments=%@",
-         ((__bridge NSString*) CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault,(__bridge CFStringRef)comment,NULL,CFSTR("?=&+"),kCFStringEncodingUTF8))
+         ((__bridge_transfer NSString*) CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault,(__bridge CFStringRef)comment,NULL,CFSTR("?=&+"),kCFStringEncodingUTF8))
          ];
     }
     
