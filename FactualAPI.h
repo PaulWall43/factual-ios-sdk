@@ -75,7 +75,7 @@ typedef enum  {
 /*! @property
  @discussion The base URL at which to contact Factual's API
  */
-@property (nonatomic, readonly) NSString* factualHome;
+@property (nonatomic) NSString* factualHome;
 
 @property (nonatomic) BOOL* debug;
 

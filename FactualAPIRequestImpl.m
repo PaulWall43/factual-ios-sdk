@@ -207,7 +207,7 @@ static NSString* kFactualLibHeaderSDKValue = @"factual--iPhone-SDK-1.0";
         }
             break;
         case FactualRequestType_RawRequest: {
-            [self parseRawRequestResponse:[jsonResp objectForKey:@"response"]];
+            [self parseRawRequestResponse:jsonResp];
         }
             break;
         case FactualRequestType_ResolveQuery: {
