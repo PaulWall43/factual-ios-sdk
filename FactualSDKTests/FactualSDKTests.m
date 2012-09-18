@@ -425,13 +425,13 @@ NSString* _secret = @"";
     STAssertTrue(_rawResult != nil, @"Invalid response");
     
 }
-/*
+
 - (void)testFlagDuplicate
 {
     FactualRowMetadata* metadata = [FactualRowMetadata metadata: @"testuser"];
     metadata.comment = @"my comment";
     metadata.reference = @"www.mytest.com";
-    [_apiObject flagProblem:FactualFlagType_Duplicate tableId: @"2EH4Pz" factualId: @"f33527e0-a8b4-4808-a820-2686f18cb00c" metadata: metadata withDelegate:self];
+    [_apiObject flagProblem:FactualFlagType_Duplicate tableId: @"us-sandbox" factualId: @"158294f8-3300-4841-9e49-c23d5d670d07" metadata: metadata withDelegate:self];
     [self waitForResponse];
     
     STAssertTrue(_rawResult != nil, @"Invalid response");
@@ -443,7 +443,7 @@ NSString* _secret = @"";
     FactualRowMetadata* metadata = [FactualRowMetadata metadata: @"testuser"];
     metadata.comment = @"my comment";
     metadata.reference = @"www.mytest.com";
-    [_apiObject flagProblem:FactualFlagType_Inaccurate tableId:@"2EH4Pz" factualId: @"f33527e0-a8b4-4808-a820-2686f18cb00c" metadata: metadata withDelegate:self];
+    [_apiObject flagProblem:FactualFlagType_Inaccurate tableId:@"us-sandbox" factualId: @"158294f8-3300-4841-9e49-c23d5d670d07" metadata: metadata withDelegate:self];
     [self waitForResponse];
     
     STAssertTrue(_rawResult != nil, @"Invalid response");
@@ -454,7 +454,7 @@ NSString* _secret = @"";
     FactualRowMetadata* metadata = [FactualRowMetadata metadata: @"testuser"];
     metadata.comment = @"my comment";
     metadata.reference = @"www.mytest.com";
-    [_apiObject flagProblem:FactualFlagType_Inappropriate tableId: @"2EH4Pz" factualId: @"f33527e0-a8b4-4808-a820-2686f18cb00c" metadata: metadata withDelegate:self];
+    [_apiObject flagProblem:FactualFlagType_Inappropriate tableId: @"us-sandbox" factualId: @"158294f8-3300-4841-9e49-c23d5d670d07" metadata: metadata withDelegate:self];
     [self waitForResponse];
     
     STAssertTrue(_rawResult != nil, @"Invalid response");
@@ -465,7 +465,7 @@ NSString* _secret = @"";
     FactualRowMetadata* metadata = [FactualRowMetadata metadata: @"testuser"];
     metadata.comment = @"my comment";
     metadata.reference = @"www.mytest.com";
-    [_apiObject flagProblem:FactualFlagType_Nonexistent tableId: @"2EH4Pz" factualId: @"f33527e0-a8b4-4808-a820-2686f18cb00c" metadata: metadata withDelegate:self];
+    [_apiObject flagProblem:FactualFlagType_Nonexistent tableId: @"us-sandbox" factualId: @"158294f8-3300-4841-9e49-c23d5d670d07" metadata: metadata withDelegate:self];
     [self waitForResponse];
     
     STAssertTrue(_rawResult != nil, @"Invalid response");
@@ -477,7 +477,7 @@ NSString* _secret = @"";
     FactualRowMetadata* metadata = [FactualRowMetadata metadata: @"testuser"];
     metadata.comment = @"my comment";
     metadata.reference = @"www.mytest.com";
-    [_apiObject flagProblem:FactualFlagType_Spam tableId: @"2EH4Pz" factualId: @"f33527e0-a8b4-4808-a820-2686f18cb00c" metadata: metadata withDelegate:self];
+    [_apiObject flagProblem:FactualFlagType_Spam tableId: @"us-sandbox" factualId: @"158294f8-3300-4841-9e49-c23d5d670d07" metadata: metadata withDelegate:self];
     [self waitForResponse];
     
     STAssertTrue(_rawResult != nil, @"Invalid response");
@@ -489,13 +489,13 @@ NSString* _secret = @"";
     FactualRowMetadata* metadata = [FactualRowMetadata metadata: @"testuser"];
     metadata.comment = @"my comment";
     metadata.reference = @"www.mytest.com";
-    [_apiObject flagProblem:FactualFlagType_Other tableId: @"2EH4Pz" factualId: @"f33527e0-a8b4-4808-a820-2686f18cb00c" metadata: metadata withDelegate:self];
+    [_apiObject flagProblem:FactualFlagType_Other tableId: @"us-sandbox" factualId: @"158294f8-3300-4841-9e49-c23d5d670d07" metadata: metadata withDelegate:self];
     [self waitForResponse];
     
     STAssertTrue(_rawResult != nil, @"Invalid response");
     
 }
-*/
+
 - (void)testSubmitAdd
 {
     FactualRowMetadata* metadata = [FactualRowMetadata metadata: @"testuser"];
@@ -505,7 +505,7 @@ NSString* _secret = @"";
     NSMutableDictionary* values  = [NSMutableDictionary dictionaryWithCapacity:4];
     [values setValue:@"100" forKey:@"longitude"];   
     
-    [_apiObject submitRow:@"2EH4Pz" withValues:values withMetadata:metadata withDelegate:self];
+    [_apiObject submitRow:@"us-sandbox" withValues:values withMetadata:metadata withDelegate:self];
     [self waitForResponse];
     
     STAssertTrue(_rawResult != nil, @"Invalid response");
@@ -521,7 +521,7 @@ NSString* _secret = @"";
     NSMutableDictionary* values  = [NSMutableDictionary dictionaryWithCapacity:4];
     [values setValue:@"100" forKey:@"longitude"];    
     
-    [_apiObject submitRowWithId:@"f33527e0-a8b4-4808-a820-2686f18cb00c" tableId:@"2EH4Pz" withValues:values withMetadata:metadata withDelegate:self];
+    [_apiObject submitRowWithId:@"158294f8-3300-4841-9e49-c23d5d670d07" tableId:@"us-sandbox" withValues:values withMetadata:metadata withDelegate:self];
     [self waitForResponse];
     
     STAssertTrue(_rawResult != nil, @"Invalid response");
@@ -537,7 +537,7 @@ NSString* _secret = @"";
     NSMutableDictionary* values  = [NSMutableDictionary dictionaryWithCapacity:4];
     [values setValue:@"null" forKey:@"longitude"];    
     
-    [_apiObject submitRowWithId:@"f33527e0-a8b4-4808-a820-2686f18cb00c" tableId:@"2EH4Pz" withValues:values withMetadata:metadata withDelegate:self];
+    [_apiObject submitRowWithId:@"158294f8-3300-4841-9e49-c23d5d670d07" tableId:@"us-sandbox" withValues:values withMetadata:metadata withDelegate:self];
     [self waitForResponse];
     
     STAssertTrue(_rawResult != nil, @"Invalid response");
