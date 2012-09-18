@@ -30,3 +30,5 @@ onwards but it officially supports devices running IOS 4.3 and higher.  ARC is s
 
 The SDK currently is built as a static library. IOS applications linking against the SDK must specify 
 the -all_load linker flag as documented here ( http://developer.apple.com/library/mac/#qa/qa1490/_index.html ).
+
+Note that in a later version we will be replacing the current OAuth library with a version that is compatible with other Oauth implementations to avoid conflicts.
