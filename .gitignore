@@ -1,4 +1,5 @@
-FactualSDK.xcodeproj
+FactualSDK.xcodeproj/project.xcworkspace
+FactualSDK.xcodeproj/xcuserdata
 *.DS_Store
 *.svn
 build

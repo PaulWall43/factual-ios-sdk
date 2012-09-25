@@ -31,7 +31,7 @@ static NSString* kFactualSignatureProvider = @"HMAC-SHA1";
 
 static NSString* Factual_URLEncodedString(NSString* inputString) {
   NSString *result = (__bridge_transfer NSString *)CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault,
-                                                                                           (CFStringRef)inputString,
+                                                                                           (__bridge CFStringRef)inputString,
                                                                                            NULL,
                                                                                            CFSTR("!*'();:@&=+$,/?%#[]"),
                                                                                            kCFStringEncodingUTF8);
