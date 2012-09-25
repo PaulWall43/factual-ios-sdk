@@ -25,12 +25,17 @@
  *
  */
 
+#pragma once
 #include <stdlib.h>
 #include <stdbool.h>
 
-extern size_t EstimateBas64EncodedDataSize(size_t inDataSize);
-extern size_t EstimateBas64DecodedDataSize(size_t inDataSize);
+#ifdef __cplusplus
+extern "C" {
+#endif
+  
+extern bool FactualBase64EncodeData(const void *inInputData, size_t inInputDataSize, char *outOutputData, size_t *ioOutputDataSize);
+extern bool FactualBase64DecodeData(const void *inInputData, size_t inInputDataSize, void *ioOutputData, size_t *ioOutputDataSize);
 
-extern bool Base64EncodeData(const void *inInputData, size_t inInputDataSize, char *outOutputData, size_t *ioOutputDataSize);
-extern bool Base64DecodeData(const void *inInputData, size_t inInputDataSize, void *ioOutputData, size_t *ioOutputDataSize);
-
+#ifdef __cplusplus
+}
+#endif
