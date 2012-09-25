@@ -7,7 +7,7 @@ Obtain an oauth key and secret from Factual at [https://www.factual.com/api-keys
 
 ### Distribution
 
-1.	Download the latest driver [version 1.3.0](https://github.com/downloads/Factual/factual-ios-sdk/factual-ios-sdk-v-1.3.0.tgz)
+1.	Download the latest driver [version 1.3.1](https://github.com/downloads/Factual/factual-ios-sdk/factual-ios-sdk-v-1.3.1.tgz)
 2.	Untar and add the FactualSDK.framework to your appropriate XCode project directory. Add it to the list of linked frameworks in your project. 
     
 ### Source
@@ -30,5 +30,3 @@ onwards but it officially supports devices running IOS 4.3 and higher.  ARC is s
 
 The SDK currently is built as a static library. IOS applications linking against the SDK must specify 
 the -all_load linker flag as documented here ( http://developer.apple.com/library/mac/#qa/qa1490/_index.html ).
-
-Note that in a later version we will be replacing the current OAuth library with a version that is compatible with other Oauth implementations to avoid conflicts.

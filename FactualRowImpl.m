@@ -16,68 +16,6 @@
 @synthesize rowId=_rowId;
 @synthesize facetName=_facetName;
 
-// internal init 
--(id) initWithJSONArray:(NSArray*) cellValues
-            optionalRowId:(NSString*) optionalRowId
-            columnNames:(NSArray*) columnNames
-            columnIndex:(NSDictionary*) columnIndex copyValues:(boolean_t) copyValues {
-  if (self = [super init]) {
-    // hold on to a reference to the underlying column name and index dictionaries 
-    _columns = [columnNames mutableCopy];
-    _columnIndex = [columnIndex mutableCopy];
-    
-    //if optional row is not null, then assign row id directly 
-    if (optionalRowId != nil) {
-      if (copyValues) {
-        _rowId = [optionalRowId copy];
-      }
-      else {
-        _rowId = optionalRowId;
-      }
-    }
-    // see if capacity is at least at min required
-    NSMutableArray* cells = nil;
-    if ([cellValues count] > 1) {
-      // allocate for remaining cells   
-      cells = [NSMutableArray arrayWithCapacity: ([cellValues count] -1) ];
-      int index=0;
-      for (NSObject* cellValue in cellValues) {
-        if (index++ == 0 && optionalRowId == nil) {
-          if (copyValues) {
-            _rowId = [cellValue copy];
-          }
-          else {
-            _rowId = cellValue;
-          }
-          
-        }
-        else {
-          if (copyValues) {
-            if ([cellValue isKindOfClass:[NSString class]]) {
-              [cells addObject:[[NSString alloc ]initWithString:(NSString *)cellValue]];
-            }
-            else {
-              [cells addObject:[cellValue copy]];
-            }
-            
-          }
-          else {
-            [cells addObject:cellValue];
-          }
-          
-        }
-      }
-    }
-    else {
-      cells = [NSArray array];
-      _rowId = [cellValues objectAtIndex:0];
-    }
-    _cells = cells;
-  }
-  return self;
-}
-
-
 -(id) initWithJSONObject:(NSMutableDictionary*) cellValues withRowId: (NSString*) rowId withFacetName: (NSString*) facetName { 
   
 
@@ -251,10 +189,6 @@
 
 -(NSString*)   fieldNameAtIndex:(NSUInteger) index {
   return [_columns objectAtIndex:index];
-}
-
--(id) copyWithZone:(NSZone *)zone {
-  return [[FactualRowImpl allocWithZone:zone] initWithJSONArray:_cells optionalRowId:_rowId columnNames:_columns columnIndex:_columnIndex copyValues:YES]; 
 }
 
 -(NSInteger) valueCount {

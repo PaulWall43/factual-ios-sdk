@@ -40,7 +40,7 @@
  
  */
 
-@interface FactualRow : NSObject<NSCopying> 
+@interface FactualRow : NSObject
 
 
 /*! @property 
@@ -61,12 +61,6 @@
  a different number of columns.
  */ 
 @property (nonatomic,readonly)    NSDictionary* namesAndValues;
-
-
-/*! @method
- @discussion Rows can be cloned
- */
-- (id)copyWithZone:(NSZone *)zone;
 
 @end
 

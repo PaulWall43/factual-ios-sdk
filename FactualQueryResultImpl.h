@@ -19,12 +19,6 @@
 
 +(FactualQueryResult *) queryResultFromJSON:(NSDictionary *)jsonResponse;
 
-// internal init 
--(id) initWithColumns:(NSArray*) columns 
-                 rows:(NSArray*) rows 
-            totalRows:(NSUInteger) totalRows
-              tableId:(NSString*) tableId;
-
 -(id) initWithOnlyRows:(NSArray*) rows 
              totalRows:(NSUInteger) totalRows
                tableId:(NSString*) tableId;

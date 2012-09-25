@@ -63,36 +63,6 @@
     return objectOut;
 }
 
-
-
--(id) initWithColumns:(NSArray*) theColumns 
-                 rows:(NSArray*) theRows 
-            totalRows:(NSUInteger) theTotalRows
-              tableId:(NSString*) tableId {
-    if (self = [super init]) {
-        _tableId = tableId;
-        // setup total rows 
-        _totalRows = theTotalRows;
-        // setup columns array 
-        _columns = [NSMutableArray arrayWithCapacity:([theColumns count]-1)];
-        // and dictionary 
-        _columnToIndex = [NSMutableDictionary dictionaryWithCapacity: [theColumns count]-1];
-        
-        // populate both ... 
-        for (NSUInteger i=1;i<[theColumns count];++i) {
-            [_columnToIndex setValue: [NSNumber numberWithUnsignedInt:(i-1)] forKey:[theColumns objectAtIndex:i]];
-            [((NSMutableArray*)_columns) addObject: [theColumns objectAtIndex:i]];
-        }    
-        _rows = [NSMutableArray arrayWithCapacity:[_rows count]];
-        for (NSArray* rowData in theRows) {
-            [_rows addObject: [[FactualRowImpl alloc]initWithJSONArray:rowData optionalRowId:nil optionalFacetName:nil columnNames:_columns columnIndex:_columnToIndex copyValues:NO]];
-        }
-        
-        
-    }
-    return self;
-}
-
 -(id) initWithOnlyRows:(NSArray*) theRows 
              totalRows:(NSUInteger) theTotalRows
                tableId:(NSString*) tableId {

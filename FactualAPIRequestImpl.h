@@ -22,7 +22,6 @@
     NSString*               _url;
     NSString*               _httpMethod;
     NSMutableData*          _responseText;
-    BOOL*                   _debug;
 }
 
 @property (nonatomic,readonly) NSString* url;

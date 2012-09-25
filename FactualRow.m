@@ -12,8 +12,4 @@
 
 @dynamic rowId,namesAndValues,facetName;
 
-- (id)copyWithZone:(NSZone *)zone {
-  return nil;
-}
-
 @end

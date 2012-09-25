@@ -17,9 +17,9 @@
 static long _lastRequestId = 0;
 
 static const NSTimeInterval kTimeoutInterval = 180.0;
-static NSString* kUserAgent = @"Factual-IPhoneSDK-V-1.0";
+static NSString* kUserAgent = @"Factual-IPhoneSDK-V-1.3.1";
 static NSString* kFactualLibHeader = @"X-Factual-Lib";
-static NSString* kFactualLibHeaderSDKValue = @"factual--iPhone-SDK-1.0";
+static NSString* kFactualLibHeaderSDKValue = @"Factual-IPhoneSDK-V-1.3.1";
 
 
 #pragma mark FactualOASupport
@@ -144,8 +144,8 @@ static NSString* Factual_signClearText(NSString* text, NSString* secret) {
 - (void)_generateNonce
 {
   CFUUIDRef theUUID = CFUUIDCreate(NULL);
-  CFStringRef string = CFUUIDCreateString(NULL, theUUID);
-  nonce = (__bridge_transfer NSString *)string;
+  nonce = (__bridge_transfer NSString *) CFUUIDCreateString(NULL, theUUID);
+  CFRelease(theUUID);
 }
 
 - (id) initWithURL:(NSURL *)theURL consumerKey:(NSString*)key consumerSecret:(NSString*)secret {

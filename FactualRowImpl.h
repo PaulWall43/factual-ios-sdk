@@ -19,14 +19,6 @@
   
 }
 
-// internal init 
--(id) initWithJSONArray:(NSArray*) cellValues 
-          optionalRowId:(NSString*) rowId
-      optionalFacetName:(NSString*) facetName
-            columnNames:(NSArray*) columnNames
-            columnIndex:(NSDictionary*) columnIndex
-             copyValues: (boolean_t) copyValues;
-
 -(id) initWithJSONObject:(NSDictionary*) cellValues withRowId: (NSString*) rowId withFacetName: (NSString*) facetName;
 
 -(NSString*) stringValueForName:(NSString*) fieldName;

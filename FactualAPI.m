@@ -77,7 +77,7 @@ NSString *const FactualCoreErrorDomain = @"FactualCoreErrorDomain";
     for(id key in params) {
         [qry appendString:key];
         [qry appendString:@"="];
-        NSString* escapedParamValue = (__bridge NSString*) CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault,(__bridge CFStringRef)[params objectForKey:key],NULL,CFSTR("?=&+"),kCFStringEncodingUTF8);
+        NSString* escapedParamValue = (__bridge_transfer NSString*) CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault,(__bridge CFStringRef)[params objectForKey:key],NULL,CFSTR("?=&+"),kCFStringEncodingUTF8);
         [qry appendString:escapedParamValue];
     }
     NSString* urlStr = [self createRequestString: qry];
