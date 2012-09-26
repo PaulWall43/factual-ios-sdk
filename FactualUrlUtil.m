@@ -8,7 +8,7 @@
 
 #import "FactualUrlUtil.h"
 #import "CJSONSerializer.h"
-#import "NSString (Escaping).h"
+#import "NSString(Escaping).h"
 #import <CoreLocation/CoreLocation.h>
 
 @implementation FactualUrlUtil

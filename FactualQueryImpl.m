@@ -8,7 +8,7 @@
 #import "FactualQuery.h"
 #import "FactualQueryImpl.h"
 #import "CJSONSerializer.h"
-#import "NSString (Escaping).h"
+#import "NSString(Escaping).h"
 #import "FactualUrlUtil.h"
 
 /* -----------------------------------------------------------------------------

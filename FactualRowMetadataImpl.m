@@ -8,7 +8,7 @@
 
 #import "FactualRowMetadataImpl.h"
 #import "FactualUrlUtil.h"
-#import "NSString (Escaping).h"
+#import "NSString(Escaping).h"
 
 @implementation FactualRowMetadataImpl
 

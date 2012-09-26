@@ -26,8 +26,8 @@ double _longitude;
 double _meters;
 
 // Add your key and secret
-NSString* _key = @"";
-NSString* _secret = @"";
+NSString* _key = @"U3QbOw7bW9nxDN4TppoqQlxwnJmSISUbJ3h3pRj1";
+NSString* _secret = @"2AFaSQYCFjSsDkZKLOhpT8QE2zQRLCUxcJnMMfSa";
 
 - (void)setUp
 {
@@ -139,7 +139,7 @@ NSString* _secret = @"";
     FactualQuery* queryObject = [FactualQuery query];
     
     [queryObject addRowFilter:[FactualRowFilter fieldName:@"name"
-                                                  equalTo:@"Stand"]];
+                                                  equalTo:@"Apple Store"]];
     
     CLLocationCoordinate2D coordinate = {_latitude, _longitude};
     [queryObject setGeoFilter:coordinate 
@@ -564,11 +564,9 @@ NSString* _secret = @"";
 -(void) requestComplete:(FactualAPIRequest *)request receivedQueryResult:(FactualQueryResult *)queryResult {
     _queryResult = queryResult;
     _finished = true;
-    /*
      for (id row in queryResult.rows) {
         NSLog(@"Row: %@", row);
      }
-     */
 }
 
 -(void) requestComplete:(FactualAPIRequest *)request receivedMatchResult:(NSString *)factualId {

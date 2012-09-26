@@ -7,8 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		251D563414DB72B600FE265A /* NSString (Escaping).h in Headers */ = {isa = PBXBuildFile; fileRef = 251D563214DB72B600FE265A /* NSString (Escaping).h */; };
-		251D563514DB72B600FE265A /* NSString (Escaping).m in Sources */ = {isa = PBXBuildFile; fileRef = 251D563314DB72B600FE265A /* NSString (Escaping).m */; };
+		251D563414DB72B600FE265A /* NSString(Escaping).h in Headers */ = {isa = PBXBuildFile; fileRef = 251D563214DB72B600FE265A /* NSString(Escaping).h */; };
+		251D563514DB72B600FE265A /* NSString(Escaping).m in Sources */ = {isa = PBXBuildFile; fileRef = 251D563314DB72B600FE265A /* NSString(Escaping).m */; };
 		2559158C13F39D7300EF5CDC /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AACBBE490F95108600F1A2B1 /* Foundation.framework */; };
 		2559159213F39D7300EF5CDC /* FactualSDK.m in Sources */ = {isa = PBXBuildFile; fileRef = 2559159113F39D7300EF5CDC /* FactualSDK.m */; };
 		2559159613F39E2200EF5CDC /* FactualQuery.h in Headers */ = {isa = PBXBuildFile; fileRef = 25EF20FA12B2430F006D19BA /* FactualQuery.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -66,8 +66,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		251D563214DB72B600FE265A /* NSString (Escaping).h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString (Escaping).h"; sourceTree = "<group>"; };
-		251D563314DB72B600FE265A /* NSString (Escaping).m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString (Escaping).m"; sourceTree = "<group>"; };
+		251D563214DB72B600FE265A /* NSString(Escaping).h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString(Escaping).h"; sourceTree = "<group>"; };
+		251D563314DB72B600FE265A /* NSString(Escaping).m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString(Escaping).m"; sourceTree = "<group>"; };
 		254C17C812C16A540079EA0B /* FactualQueryImpl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FactualQueryImpl.h; sourceTree = "<group>"; };
 		2559158B13F39D7300EF5CDC /* libFactualSDK.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libFactualSDK.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		2559158F13F39D7300EF5CDC /* FactualSDK-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "FactualSDK-Prefix.pch"; sourceTree = "<group>"; };
@@ -241,8 +241,8 @@
 				25EF147F12AF1C86006D19BA /* FactualFieldMetadata.m */,
 				25EF14F812AF5DA5006D19BA /* FactualFieldMetadataImpl.h */,
 				25EF14F912AF5DA5006D19BA /* FactualFieldMetadataImpl.m */,
-				251D563214DB72B600FE265A /* NSString (Escaping).h */,
-				251D563314DB72B600FE265A /* NSString (Escaping).m */,
+				251D563214DB72B600FE265A /* NSString(Escaping).h */,
+				251D563314DB72B600FE265A /* NSString(Escaping).m */,
 				CA81E1D415C348BC00EB89A6 /* FactualUrlUtil.h */,
 				CA81E1D515C348BD00EB89A6 /* FactualUrlUtil.m */,
 				CA0970CC15C9E7370030EAC2 /* FactualRowMetadata.h */,
@@ -367,7 +367,7 @@
 				2559159B13F39E2200EF5CDC /* FactualUpdateResult.h in Headers */,
 				2559159C13F39E2200EF5CDC /* FactualSchemaResult.h in Headers */,
 				2559159D13F39E2200EF5CDC /* FactualFieldMetadata.h in Headers */,
-				251D563414DB72B600FE265A /* NSString (Escaping).h in Headers */,
+				251D563414DB72B600FE265A /* NSString(Escaping).h in Headers */,
 				CA81E1D615C348BD00EB89A6 /* FactualUrlUtil.h in Headers */,
 				CA0970CE15C9E7390030EAC2 /* FactualRowMetadata.h in Headers */,
 				CA09711415D05F0C0030EAC2 /* FactualRowMetadataImpl.h in Headers */,
@@ -498,7 +498,7 @@
 				2559161813F3B39A00EF5CDC /* FactualFieldMetadata.m in Sources */,
 				2559161913F3B39A00EF5CDC /* FactualFieldMetadataImpl.m in Sources */,
 				2559159213F39D7300EF5CDC /* FactualSDK.m in Sources */,
-				251D563514DB72B600FE265A /* NSString (Escaping).m in Sources */,
+				251D563514DB72B600FE265A /* NSString(Escaping).m in Sources */,
 				CA81E1D715C348BD00EB89A6 /* FactualUrlUtil.m in Sources */,
 				CA0970CF15C9E7390030EAC2 /* FactualRowMetadata.m in Sources */,
 				CA09711515D05F0C0030EAC2 /* FactualRowMetadataImpl.m in Sources */,

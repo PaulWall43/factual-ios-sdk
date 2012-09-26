@@ -11,7 +11,7 @@
 #import "FactualAPIRequestImpl.h"
 #import "FactualAPIPrivate.h"
 #import "CJSONSerializer.h"
-#import "NSString (Escaping).h"
+#import "NSString(Escaping).h"
 #import "FactualRowMetadata.h" 
 #import "FactualRowMetadataImpl.h" 
 #import "FactualUrlUtil.h" 

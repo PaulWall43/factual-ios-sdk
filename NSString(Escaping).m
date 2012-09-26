@@ -6,7 +6,7 @@
 //  Copyright (c) 2012 Facutal Inc. All rights reserved.
 //
 
-#import "NSString (Escaping).h"
+#import "NSString(Escaping).h"
 
 @implementation NSString (Escaping)
 - (NSString*)stringWithPercentEscape {            
