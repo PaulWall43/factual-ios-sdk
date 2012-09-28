@@ -1,3 +1,6 @@
+## 1.3.2
+ * Updates to clean up warnings
+
 ## 1.3.1
  * Removed dependency on OAConsumer Library
  

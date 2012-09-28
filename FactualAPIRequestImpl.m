@@ -17,9 +17,9 @@
 static long _lastRequestId = 0;
 
 static const NSTimeInterval kTimeoutInterval = 180.0;
-static NSString* kUserAgent = @"Factual-IPhoneSDK-V-1.3.1";
+static NSString* kUserAgent = @"Factual-IPhoneSDK-V-1.3.2";
 static NSString* kFactualLibHeader = @"X-Factual-Lib";
-static NSString* kFactualLibHeaderSDKValue = @"Factual-IPhoneSDK-V-1.3.1";
+static NSString* kFactualLibHeaderSDKValue = @"Factual-IPhoneSDK-V-1.3.2";
 
 
 #pragma mark FactualOASupport
