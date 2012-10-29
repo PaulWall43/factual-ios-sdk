@@ -7,7 +7,7 @@ Obtain an oauth key and secret from Factual at [https://www.factual.com/api-keys
 
 ### Distribution
 
-1.	Download the latest driver [version 1.3.2](https://github.com/downloads/Factual/factual-ios-sdk/factual-ios-sdk-v-1.3.2.tgz)
+1.	Download the latest driver [version 1.3.3](https://github.com/downloads/Factual/factual-ios-sdk/factual-ios-sdk-v-1.3.3.tgz)
 2.	Untar and add the FactualSDK.framework to your appropriate XCode project directory. Add it to the list of linked frameworks in your project. 
     
 ### Source
@@ -23,7 +23,7 @@ Refer to the Factual IOS SDK Demo project at [https://github.com/Factual/factual
 
 ## Supported Platforms
 
-The SDK supports both armv6 and armv7 architectures. It is built to support IOS versions 3.2 and 
+The SDK supports armv6, armv7, and armv7s architectures. It is built to support IOS versions 3.2 and 
 onwards but it officially supports devices running IOS 4.3 and higher.  ARC is supported by the SDK.
 
 ## Special Considerations

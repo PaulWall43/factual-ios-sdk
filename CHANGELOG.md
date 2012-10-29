@@ -1,3 +1,6 @@
+## 1.3.3
+ * Support armv7s architecture
+
 ## 1.3.2
  * Updates to clean up warnings
 
