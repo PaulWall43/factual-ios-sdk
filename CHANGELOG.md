@@ -1,3 +1,6 @@
+## 1.3.4
+ * Added features: fetchRow, includes, includes_any, clear, request timeout
+
 ## 1.3.3
  * Support armv7s architecture
 

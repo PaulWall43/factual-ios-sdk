@@ -7,7 +7,7 @@ Obtain an oauth key and secret from Factual at [https://www.factual.com/api-keys
 
 ### Distribution
 
-1.	Download the latest driver [version 1.3.3](https://github.com/downloads/Factual/factual-ios-sdk/factual-ios-sdk-v-1.3.3.tgz)
+1.	Download the latest driver [version 1.3.4](https://github.com/Factual/factual-ios-sdk/raw/develop/downloads/factual-ios-sdk-1.3.4.tgz)
 2.	Untar and add the FactualSDK.framework to your appropriate XCode project directory. Add it to the list of linked frameworks in your project. 
     
 ### Source
