@@ -25,6 +25,7 @@ NSString *const FactualCoreErrorDomain = @"FactualCoreErrorDomain";
 @synthesize factualHome =_factualHome;
 @synthesize apiKey = _apiKey;
 @synthesize debug = _debug;
+@synthesize timeoutInterval = _timeoutInterval;
 @dynamic apiVersion;
 
 -(id) initWithAPIKey:(NSString*) apiKey secret:(NSString *)secret{
@@ -32,6 +33,7 @@ NSString *const FactualCoreErrorDomain = @"FactualCoreErrorDomain";
         _apiKey = apiKey;
         _secret = [secret copy];
         _factualHome = @"http://api.v3.factual.com";
+        _timeoutInterval = 180.0;
     }
     return self;
 }
@@ -54,7 +56,8 @@ NSString *const FactualCoreErrorDomain = @"FactualCoreErrorDomain";
                                              optionalPayload:payload
                                                  consumerKey:_apiKey
                                               consumerSecret:_secret
-                                               requestMethod: requestMethod];
+                                               requestMethod: requestMethod
+                                             timeoutInterval:_timeoutInterval];
     
     return requestObject;
 }
@@ -235,7 +238,29 @@ NSString *const FactualCoreErrorDomain = @"FactualCoreErrorDomain";
     return [self request:path ofType: FactualRequestType_RawRequest requestMethod:@"POST" payload: payload withDelegate:delegate];
 }
 
-- (FactualAPIRequest*) flagProblem: (FactualFlagType) problem 
+- (FactualAPIRequest*)    clearRowWithId:(NSMutableString*) factualId
+                                 tableId: (NSMutableString*) tableId
+                              withFields: (NSArray*) fields
+                            withMetadata:(FactualRowMetadata*) metadata
+                            withDelegate:(id<FactualAPIDelegate>) delegate {
+    NSMutableString *queryStr = [[NSMutableString alloc] initWithFormat:@"t/%@/%@/clear", tableId, factualId];
+    NSMutableString *payload = [[NSMutableString alloc] init];
+    [(FactualRowMetadataImpl*)metadata generateQueryString:payload];
+    [payload appendString:@"&"];
+    
+    NSMutableString* clearStr = [[NSMutableString alloc] init];
+    int termNumber=0;
+    for (NSString* term in fields) {
+        if(termNumber++ != 0)
+            [clearStr appendString:@","];
+        [clearStr appendString:term];
+    }
+    [payload appendString:[NSString stringWithFormat:@"fields=%@",[clearStr stringWithPercentEscape]]];
+    return [self request:queryStr ofType: FactualRequestType_RawRequest requestMethod:@"POST" payload: payload withDelegate:delegate];
+    
+}
+
+- (FactualAPIRequest*) flagProblem: (FactualFlagType) problem
                            tableId: (NSString*) tableId
                          factualId: (NSString*) factualId
                           metadata:(FactualRowMetadata*) metadata
@@ -280,6 +305,21 @@ NSString *const FactualCoreErrorDomain = @"FactualCoreErrorDomain";
     
     [payload appendString:[NSString stringWithFormat:@"problem=%@",[problemStr stringWithPercentEscape]]];
     return [self request:queryStr ofType: FactualRequestType_RawRequest requestMethod:@"POST" payload: payload withDelegate:delegate];
+}
+
+
+- (FactualAPIRequest*)   fetchRow:(NSString*) tableId
+                        factualId:(NSString*) factualId
+                     withDelegate:(id<FactualAPIDelegate>) delegate {
+    return [self fetchRow:tableId factualId:factualId only:[[NSMutableArray alloc] init] withDelegate:delegate];
+}
+
+- (FactualAPIRequest*)   fetchRow:(NSString*) tableId
+                        factualId:(NSString*) factualId
+                             only:(NSArray*) only
+                     withDelegate:(id<FactualAPIDelegate>) delegate {
+    NSString* queryStr = [FactualAPIHelper buildFetchRowQueryString:((_secret == nil) ? _apiKey: nil) tableId:tableId factualId:factualId only:only];
+    return [self request:queryStr ofType: FactualRequestType_FetchRowQuery requestMethod:@"GET" payload: nil withDelegate:delegate];
 }
 
 // schema query api

@@ -49,6 +49,7 @@
     NSString*              _apiKey;
     NSString*              _secret;
     BOOL*                  _debug;
+    NSTimeInterval         _timeoutInterval;
 }
 
 typedef enum  {
@@ -78,6 +79,8 @@ typedef enum  {
 @property (nonatomic, retain) NSString* factualHome;
 
 @property (nonatomic) BOOL* debug;
+
+@property (nonatomic) NSTimeInterval timeoutInterval;
 
 /*!
  @method
@@ -334,11 +337,27 @@ typedef enum  {
                           withMetadata:(FactualRowMetadata*) metadata
                           withDelegate:(id<FactualAPIDelegate>) delegate;
 
+- (FactualAPIRequest*)    clearRowWithId:(NSMutableString*) factualId
+                                 tableId: (NSMutableString*) tableId
+                              withFields: (NSArray*) fields
+                            withMetadata:(FactualRowMetadata*) metadata
+                            withDelegate:(id<FactualAPIDelegate>) delegate;
+
 - (FactualAPIRequest*) flagProblem: (FactualFlagType) problem
                            tableId: (NSString*) tableId
                          factualId: (NSString*) factualId
                           metadata:(FactualRowMetadata*) metadata
                       withDelegate:(id<FactualAPIDelegate>) delegate;
+
+- (FactualAPIRequest*)   fetchRow:(NSString*) tableId
+                        factualId:(NSString*) factualId
+                     withDelegate:(id<FactualAPIDelegate>) delegate;
+
+- (FactualAPIRequest*)   fetchRow:(NSString*) tableId
+                        factualId:(NSString*) factualId
+                             only:(NSArray*) only
+                     withDelegate:(id<FactualAPIDelegate>) delegate;
+
 @end
 
 

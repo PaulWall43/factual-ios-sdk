@@ -37,6 +37,11 @@
  */ 
 @property (nonatomic,readonly)    NSArray* rows;
 
+/*! @property
+ @discussion Whether or not this result is deprecated
+ */
+@property (nonatomic,readonly)    BOOL deprecated;
+
 @end
 
 /*!@abstract Additional Helper methods associated with FactualQueryResult 

@@ -19,7 +19,8 @@ typedef enum  {
     FactualRequestType_MatchQuery,
     FactualRequestType_RawRequest,
     FactualRequestType_FacetQuery,
-    FactualRequestType_FlagBadRowRequest
+    FactualRequestType_FlagBadRowRequest,
+    FactualRequestType_FetchRowQuery
 } FactualRequestType;
 
 /*!@abstract Request tracking object returned as a result of a call to the 
@@ -56,6 +57,10 @@ typedef enum  {
  */
 @property (nonatomic,readonly) NSString* tableId;
 
+/*! @property
+ @discussion the timeout interval associated with this request
+ */
+@property (nonatomic,readonly) NSTimeInterval timeoutInterval;
 
 @end
 

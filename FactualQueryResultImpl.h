@@ -15,16 +15,18 @@
     NSArray* _columns;
     NSDictionary* _columnToIndex;
     NSString* _tableId;
+    BOOL _deprecated;
 }
 
-+(FactualQueryResult *) queryResultFromJSON:(NSDictionary *)jsonResponse;
++(FactualQueryResult *) queryResultFromJSON:(NSDictionary *)jsonResponse deprecated:(BOOL) deprecated;
 
 -(id) initWithOnlyRows:(NSArray*) rows 
              totalRows:(NSUInteger) totalRows
-               tableId:(NSString*) tableId;
+               tableId:(NSString*) tableId
+            deprecated:(BOOL) deprecated;
 
 
-// get the row at the given index 
+// get the row at the given index
 -(FactualRow*) rowAtIndex:(NSInteger) index;  
 
 

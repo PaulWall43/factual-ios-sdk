@@ -26,6 +26,7 @@
                   optionalUserTokenId:(NSString*) tokenId 
                       optionalComment:(NSString*) comment;
 +(NSString*) buildSchemaQueryString:(NSString*) apiKey tableId:(NSString*) tableId;
++(NSString*) buildFetchRowQueryString:(NSString*) apiKey tableId:(NSString*) tableId factualId:(NSString*) factualId only:(NSArray*) only;
 +(NSString*) buildRateQueryString:(NSString*)apiKey 
                           tableId:(NSString*)tableId
                             rowId:(NSString*)rowId

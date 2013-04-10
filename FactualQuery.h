@@ -139,6 +139,11 @@ typedef enum  {
  */ 
 +(FactualRowFilter*) fieldName:(NSString*) fieldName notBeginsWithAnyArray:(NSArray*) values;
 
+
++(FactualRowFilter*) fieldName:(NSString*) fieldName includes:(NSString*) value;
+
++(FactualRowFilter*) fieldName:(NSString*) fieldName includesAnyArray:(NSArray*) values;
+
 /*! @method 
  @discussion construct an OR filter consisting of one or more nested filters
  followed by a nil

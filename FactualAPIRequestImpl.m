@@ -16,7 +16,6 @@
 
 static long _lastRequestId = 0;
 
-static const NSTimeInterval kTimeoutInterval = 180.0;
 static NSString* kUserAgent = @"Factual-IPhoneSDK-V-1.3.2";
 static NSString* kFactualLibHeader = @"X-Factual-Lib";
 static NSString* kFactualLibHeaderSDKValue = @"Factual-IPhoneSDK-V-1.3.2";
@@ -287,7 +286,7 @@ static NSString* Factual_URLStringWithoutQuery(NSURL* url) {
 
 @implementation FactualAPIRequestImpl
 
-@synthesize url=_url,delegate=_delegate,requestId=_requestId,requestType=_requestType,tableId=_tableId;
+@synthesize url=_url,delegate=_delegate,requestId=_requestId,requestType=_requestType,tableId=_tableId,timeoutInterval=_timeoutInterval;
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 // internal helpers ...
@@ -315,7 +314,7 @@ static NSString* Factual_URLStringWithoutQuery(NSURL* url) {
 //////////////////////////////////////////////////////////////////////////////////////////////////
 -(void) parseQueryResponse:(NSDictionary*) jsonResponse {
   if (jsonResponse != nil) {
-    FactualQueryResult* queryResult = [FactualQueryResultImpl queryResultFromJSON:jsonResponse];
+      FactualQueryResult* queryResult = [FactualQueryResultImpl queryResultFromJSON:jsonResponse deprecated:false];
     
     if (queryResult != nil) {
       if ([_delegate respondsToSelector:@selector(requestComplete:receivedQueryResult:)]) {
@@ -325,6 +324,20 @@ static NSString* Factual_URLStringWithoutQuery(NSURL* url) {
     }
   }
   [self generateErrorCallback:@"Unable to create Response Object from Query Response!"];
+}
+
+-(void) parseRowFetchResponse:(NSDictionary*) jsonResponse statusCode:(int)statusCode {
+    if (jsonResponse != nil) {
+        FactualQueryResult* queryResult = [FactualQueryResultImpl queryResultFromJSON:jsonResponse deprecated: statusCode == 301];
+        
+        if (queryResult != nil) {
+            if ([_delegate respondsToSelector:@selector(requestComplete:receivedQueryResult:)]) {
+                [_delegate requestComplete:self receivedQueryResult:queryResult];
+            }
+            return;
+        }
+    }
+    [self generateErrorCallback:@"Unable to create Response Object from Query Response!"];
 }
 
 -(void) parseMatchQueryResponse:(NSDictionary*) jsonResponse {
@@ -359,7 +372,7 @@ static NSString* Factual_URLStringWithoutQuery(NSURL* url) {
 // internal helpers
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
-
+/*
 -(NSURLConnection*) buildConnection:(NSString*) payload {
   NSMutableURLRequest* request =
   
@@ -385,12 +398,13 @@ static NSString* Factual_URLStringWithoutQuery(NSURL* url) {
   
   return [[NSURLConnection alloc] initWithRequest:request delegate:self];
 }
-
+*/
 
 
 -(NSURLConnection*) buildOAuthConnection:(NSString*) key
                           consumerSecret:(NSString*) secret
-                                 payload:(NSString*) payload requestMethod: (NSString*) requestMethod {
+                                 payload:(NSString*) payload
+                           requestMethod: (NSString*) requestMethod {
   
   
   
@@ -399,7 +413,7 @@ static NSString* Factual_URLStringWithoutQuery(NSURL* url) {
   
   
   [request setCachePolicy:NSURLRequestReloadIgnoringLocalCacheData];
-  [request setTimeoutInterval:kTimeoutInterval];
+  [request setTimeoutInterval:_timeoutInterval];
   [request setValue:kUserAgent forHTTPHeaderField:@"User-Agent"];
   [request setValue:kFactualLibHeaderSDKValue forHTTPHeaderField:kFactualLibHeader];
   
@@ -432,7 +446,7 @@ static NSString* Factual_URLStringWithoutQuery(NSURL* url) {
 
 
 
--(void) handleResponseData:(NSData*) responsePayload {
+-(void) handleResponseData:(NSData*) responsePayload statusCode:(int) statusCode {
   //NSLog(@"NSURLConnection handleResponseData:%@ URL:%@\nPayload:%@",
   //        _requestId,[_url description],[[[NSString alloc]initWithData:responsePayload encoding:NSASCIIStringEncoding] autorelease] );
   
@@ -487,6 +501,10 @@ static NSString* Factual_URLStringWithoutQuery(NSURL* url) {
       [self parseRawRequestResponse:[jsonResp objectForKey:@"response"]];
     }
       break;
+    case FactualRequestType_FetchRowQuery: {
+        [self parseRowFetchResponse:[jsonResp objectForKey:@"response"] statusCode:statusCode];
+    }
+      break;
     default: {
       [NSException raise:NSGenericException format:@"Unknown Request Type!"];
     }
@@ -501,7 +519,7 @@ static NSString* Factual_URLStringWithoutQuery(NSURL* url) {
 // init / dealloc
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
-
+/*
 -(id) initWithURL:(NSString *) theURL
       requestType:(NSInteger) theRequestType
   optionalTableId:(NSString*) tableId
@@ -524,7 +542,7 @@ static NSString* Factual_URLStringWithoutQuery(NSURL* url) {
   }
   return self;
 }
-
+*/
 -(id) initOAuthRequestWithURL:(NSString *) theURL
                   requestType:(NSInteger) theRequestType
               optionalTableId:(NSString*) tableId
@@ -533,7 +551,8 @@ static NSString* Factual_URLStringWithoutQuery(NSURL* url) {
               optionalPayload:(NSString*) payload
                   consumerKey:(NSString*) consumerKey
                consumerSecret:(NSString*) consumerSecret
-                requestMethod:(NSString*) requestMethod {
+                requestMethod:(NSString*) requestMethod
+              timeoutInterval:(NSTimeInterval) timeoutInterval {
   
   if ( self = [super init]) {
     _url = [theURL copy];
@@ -542,6 +561,8 @@ static NSString* Factual_URLStringWithoutQuery(NSURL* url) {
     _tableId  = tableId;
     _httpMethod = requestMethod;
     _responseText = nil;
+    _timeoutInterval = timeoutInterval;
+
     @synchronized(@"FactualAPIRequestImpl") {
       _requestId = [[NSNumber numberWithLong:++_lastRequestId] stringValue];
     }
@@ -571,7 +592,8 @@ static NSString* Factual_URLStringWithoutQuery(NSURL* url) {
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
   //NSLog(@"NSURLConnection:%@ URL:%@ Did Receive Response",_requestId,_url);
   _responseText = [[NSMutableData alloc] init];
-  
+  if ([response isKindOfClass: [NSHTTPURLResponse class]])
+    _statusCode = [(NSHTTPURLResponse*) response statusCode];
   if ([_delegate respondsToSelector:@selector(requestDidReceiveInitialResponse:)]) {
     [_delegate requestDidReceiveInitialResponse:self];
   }
@@ -595,7 +617,7 @@ static NSString* Factual_URLStringWithoutQuery(NSURL* url) {
 #ifdef TARGET_IPHONE_SIMULATOR
   NSLog(@"NSURLConnection:%@ URL:%@ Finished Loading",_requestId,_url);
 #endif
-  [self handleResponseData:_responseText];
+    [self handleResponseData:_responseText statusCode: _statusCode];
 }
 
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {

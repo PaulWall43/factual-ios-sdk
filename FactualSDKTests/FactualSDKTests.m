@@ -251,7 +251,7 @@ NSString* _secret = @"";
 {
     FactualQuery* queryObject = [FactualQuery query];
     [queryObject addRowFilter:[FactualRowFilter fieldName:@"factual_id"
-                                                  equalTo:@"97598010-433f-4946-8fd5-4a6dd1639d77"]];    
+                                                  equalTo:@"860fed91-3a52-44c8-af7b-8095eb943da1"]];    
     
     [_apiObject queryTable:@"crosswalk" optionalQueryParams:queryObject withDelegate:self];
     [self waitForResponse];
@@ -259,14 +259,14 @@ NSString* _secret = @"";
     STAssertTrue([_queryResult.rows count] > 0, @"Invalid row count");
     
 }
-
+ 
 - (void)testCrosswalk_ex2
 {
     FactualQuery* queryObject = [FactualQuery query];
     [queryObject addRowFilter:[FactualRowFilter fieldName:@"factual_id"
-                                                  equalTo:@"97598010-433f-4946-8fd5-4a6dd1639d77"]];    
+                                                  equalTo:@"860fed91-3a52-44c8-af7b-8095eb943da1"]];    
     [queryObject addRowFilter:[FactualRowFilter fieldName:@"namespace"
-                                                  equalTo:@"loopt"]];    
+                                                  equalTo:@"yelp"]];    
     
     [_apiObject queryTable:@"crosswalk" optionalQueryParams:queryObject withDelegate:self];
     [self waitForResponse];
@@ -294,7 +294,7 @@ NSString* _secret = @"";
 {
     FactualQuery* queryObject = [FactualQuery query];
     [queryObject addRowFilter:[FactualRowFilter fieldName:@"factual_id"
-                                                  equalTo:@"97598010-433f-4946-8fd5-4a6dd1639d77"]];    
+                                                  equalTo:@"860fed91-3a52-44c8-af7b-8095eb943da1"]];
     queryObject.limit = 1;
     [_apiObject queryTable:@"crosswalk" optionalQueryParams:queryObject withDelegate:self];
     [self waitForResponse];
@@ -369,8 +369,8 @@ NSString* _secret = @"";
 {
     CLLocationCoordinate2D point = {_latitude, _longitude};
     NSMutableArray* terms = [[NSMutableArray alloc] initWithCapacity:2];
-    [terms addObject:@"commercial_density"];
-    [terms addObject:@"commercial_profile"];
+    [terms addObject:@"area_statistics"];
+    [terms addObject:@"race_and_ethnicity"];
     [_apiObject queryGeopulse:point selectTerms:terms withDelegate:self];
     [self waitForResponse];
     
@@ -388,7 +388,7 @@ NSString* _secret = @"";
     [_apiObject matchRow:@"places" withValues:values withDelegate:self];
     
     [self waitForResponse];
-    STAssertTrue([@"bd886f67-9d86-40c5-9217-f7bcd53cfc0e" isEqualToString:_matchResult], @"Match failed");
+    STAssertTrue([@"c730d193-ba4d-4e98-8620-29c672f2f117" isEqualToString:_matchResult], @"Match failed");
 }
 
 - (void)testSchema
@@ -426,6 +426,7 @@ NSString* _secret = @"";
     
 }
 
+ /*
 - (void)testFlagDuplicate
 {
     FactualRowMetadata* metadata = [FactualRowMetadata metadata: @"testuser"];
@@ -438,7 +439,7 @@ NSString* _secret = @"";
     
 }
 
-- (void)testFlagInaccurate
+ - (void)testFlagInaccurate
 {
     FactualRowMetadata* metadata = [FactualRowMetadata metadata: @"testuser"];
     metadata.comment = @"my comment";
@@ -541,7 +542,98 @@ NSString* _secret = @"";
     [self waitForResponse];
     
     STAssertTrue(_rawResult != nil, @"Invalid response");
+ 
+}
+ 
+*/
+
+- (void)testClear
+{
+    FactualRowMetadata* metadata = [FactualRowMetadata metadata: @"testuser"];
+    metadata.comment = @"my comment";
+    metadata.reference = @"www.mytest.com";
+    NSMutableArray* clearFields = [[NSMutableArray alloc] initWithCapacity:2];
+    [clearFields addObject:@"longitude"];
+    [clearFields addObject:@"latitude"];
+    [_apiObject clearRowWithId: @"1d93c1ed-8cf3-4d58-94e0-05bbcd827cba" tableId: @"us-sandbox" withFields: clearFields withMetadata: metadata withDelegate:self];
+    [self waitForResponse];
     
+    STAssertTrue(_rawResult != nil, @"Invalid response");
+}
+
+- (void)testFetchRow1
+{
+    NSString* factualId = @"0000022c-4ab3-4f5d-8e67-6a6ff1826a93";
+    [_apiObject fetchRow:@"places" factualId:factualId withDelegate:self];
+    [self waitForResponse];
+    STAssertTrue([_queryResult.rows count] == 1, @"Row count not 1");
+    FactualRow *firstRow = [_queryResult.rows objectAtIndex:0];
+    STAssertTrue([factualId isEqualToString:[firstRow valueForName:@"factual_id"]], @"Fetch row id not equal to test factual id");
+}
+
+- (void)testFetchRow2
+{
+    NSMutableArray* onlyFields = [[NSMutableArray alloc] initWithCapacity:1];
+    [onlyFields addObject:@"name"];
+    
+    NSString* factualId = @"0000022c-4ab3-4f5d-8e67-6a6ff1826a93";
+    [_apiObject fetchRow:@"places" factualId:factualId only:onlyFields withDelegate:self];
+    [self waitForResponse];
+    STAssertTrue([_queryResult.rows count] == 1, @"Row count not 1");
+    FactualRow *firstRow = [_queryResult.rows objectAtIndex:0];
+    STAssertTrue([@"Icbm" isEqualToString:[firstRow valueForName:@"name"]], @"Fetch row id not equal to test factual id");
+}
+
+- (void)testIncludes1
+{
+    FactualQuery* queryObject = [FactualQuery query];
+    
+    [queryObject addRowFilter:[FactualRowFilter fieldName:@"category_ids"
+                                                 includes:@"10"]];
+    [_apiObject queryTable:@"places" optionalQueryParams:queryObject withDelegate:self];
+    [self waitForResponse];
+    
+    STAssertTrue([_queryResult.rows count] > 0, @"Invalid row count");
+    
+    for (FactualRow *row in _queryResult.rows) {
+        NSArray *categoryIds = [row valueForName:@"category_ids"];
+        bool found = false;
+        for (NSNumber *categoryId in categoryIds) {
+            if ([NSNumber numberWithInteger:10] == categoryId) {
+                found = true;
+                break;
+            }
+        }
+        STAssertTrue(found, @"Category filter not returning correct results");
+    }
+}
+
+- (void)testIncludes2
+{
+    NSMutableArray* categories = [[NSMutableArray alloc] initWithCapacity:2];
+    [categories addObject:[NSNumber numberWithInteger:10]];
+    [categories addObject:[NSNumber numberWithInteger:120]];
+    
+    FactualQuery* queryObject = [FactualQuery query];
+    
+    [queryObject addRowFilter:[FactualRowFilter fieldName:@"category_ids"
+                                         includesAnyArray:categories]];
+    [_apiObject queryTable:@"places" optionalQueryParams:queryObject withDelegate:self];
+    [self waitForResponse];
+    
+    STAssertTrue([_queryResult.rows count] > 0, @"Invalid row count");
+    
+    for (FactualRow *row in _queryResult.rows) {
+        NSArray *categoryIds = [row valueForName:@"category_ids"];
+        bool found = false;
+        for (NSNumber *categoryId in categoryIds) {
+            if ([categories containsObject:categoryId]) {
+                found = true;
+                break;
+            }
+        }
+        STAssertTrue(found, @"Category filter not returning correct results");
+    }
 }
 
 - (void)waitForResponse

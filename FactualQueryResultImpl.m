@@ -9,9 +9,9 @@
 #import "FactualRowImpl.h"
 
 @implementation FactualQueryResultImpl
-@synthesize rows=_rows,totalRows=_totalRows,tableId=_tableId;
+@synthesize rows=_rows,totalRows=_totalRows,tableId=_tableId,deprecated=_deprecated;
 
-+(FactualQueryResult *) queryResultFromJSON:(NSDictionary *)jsonResponse {
++(FactualQueryResult *) queryResultFromJSON:(NSDictionary *)jsonResponse deprecated:(BOOL)deprecated {
     
 	id rows = [jsonResponse objectForKey:@"data"];
     
@@ -58,14 +58,16 @@
     FactualQueryResultImpl* objectOut 
     = [[FactualQueryResultImpl alloc]initWithOnlyRows:rowData 
                                             totalRows:totalRows 
-                                              tableId:nil ];
+                                              tableId:nil
+                                           deprecated:deprecated];
     
     return objectOut;
 }
 
 -(id) initWithOnlyRows:(NSArray*) theRows 
              totalRows:(NSUInteger) theTotalRows
-               tableId:(NSString*) tableId {
+               tableId:(NSString*) tableId
+            deprecated:(BOOL) deprecated {
     if (self = [super init]) {
         
         _tableId = tableId;
@@ -84,7 +86,7 @@
                 [_rows addObject: rowObject];
             }
         }
-        
+        _deprecated = deprecated;
         
     }
     return self;

@@ -8,6 +8,8 @@
 #import "FactualAPIHelper.h"
 #import "CJSONSerializer.h"
 #import "FactualQueryImpl.h"
+#import "NSString(Escaping).h"
+#import "FactualUrlUtil.h"
 
 @implementation FactualAPIHelper
 
@@ -76,6 +78,27 @@
         [qry appendString:@"KEY="];
         [qry appendString:apiKey];
     }
+    return qry;
+}
+
++(NSString*) buildFetchRowQueryString:(NSString*) apiKey tableId:(NSString*) tableId factualId:(NSString*) factualId only:(NSArray*) only {
+    NSMutableString *qry = [[NSMutableString alloc] initWithFormat:@"t/%@/%@?", tableId, factualId];
+    NSMutableArray* paramArray = [[NSMutableArray alloc] initWithCapacity:10];
+
+    if (apiKey != nil) {
+        [paramArray addObject:[NSString stringWithFormat:@"KEY=%@",[apiKey stringWithPercentEscape]]];
+    }
+    NSMutableString* onlyStr = [[NSMutableString alloc] init];
+    if ([only count] > 0) {
+        int termNumber=0;
+        for (NSString* term in only) {
+            if(termNumber++ != 0)
+                [onlyStr appendString:@","];
+            [onlyStr appendString:term];
+        }
+        [paramArray addObject:[NSString stringWithFormat:@"select=%@",[onlyStr stringWithPercentEscape]]];
+    }
+    [FactualUrlUtil appendParams:paramArray to:qry];
     return qry;
 }
 
