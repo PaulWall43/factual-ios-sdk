@@ -109,7 +109,7 @@ NSString *const FactualCoreErrorDomain = @"FactualCoreErrorDomain";
         }
         [params addObject:[NSString stringWithFormat:@"select=%@",[selectValues stringWithPercentEscape]]];
     }
-    NSMutableString *qry = [[NSMutableString alloc] initWithFormat:@"places/geopulse?"];
+    NSMutableString *qry = [[NSMutableString alloc] initWithFormat:@"geopulse/context?"];
     [FactualUrlUtil appendParams:params to:qry];
     
     return [self request:qry ofType: FactualRequestType_PlacesQuery requestMethod:@"GET" payload: nil withDelegate:delegate];
