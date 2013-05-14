@@ -426,6 +426,24 @@ NSString* _secret = @"";
     
 }
 
+- (void)testRawReadComplex
+{
+    NSNumber* latValue = [NSNumber numberWithDouble:_latitude];
+    NSNumber* longValue = [NSNumber numberWithDouble:_longitude];
+    NSNumber* distanceValue = [NSNumber numberWithDouble:_meters];
+    NSDictionary* geo = @{@"$circle": @{@"$center":@[latValue,longValue],
+                                        @"$meters": distanceValue}};
+    NSDictionary* params = @{@"geo" : geo,
+                             @"q": @"Starbucks",
+                             @"select": @"name,address,latitude,longitude,locality,postcode",
+                             @"sort": @"$distance:asc",
+                             @"limit": @"50"
+                             };
+    [_apiObject get:@"t/restaurants" params:params withDelegate: self];
+    [self waitForResponse];
+    STAssertTrue(_rawResult != nil, @"Invalid response");
+}
+
  /*
 - (void)testFlagDuplicate
 {

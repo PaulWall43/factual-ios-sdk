@@ -77,12 +77,23 @@ NSString *const FactualCoreErrorDomain = @"FactualCoreErrorDomain";
 	NSMutableString *qry = [[NSMutableString alloc] initWithFormat:path];
     [qry appendString:@"?"];
     
+
+    NSMutableArray* paramsArray = [[NSMutableArray alloc] initWithCapacity:10];
     for(id key in params) {
-        [qry appendString:key];
-        [qry appendString:@"="];
-        NSString* escapedParamValue = (__bridge_transfer NSString*) CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault,(__bridge CFStringRef)[params objectForKey:key],NULL,CFSTR("?=&+"),kCFStringEncodingUTF8);
-        [qry appendString:escapedParamValue];
+        NSError *error = NULL;
+        NSObject *paramObj = [params objectForKey:key];
+        NSData *paramValue = nil;
+        
+        if ([paramObj isKindOfClass:[NSArray class]] || [paramObj isKindOfClass:[NSDictionary class]])
+        {
+            paramValue = [[CJSONSerializer serializer] serializeObject:paramObj error:&error];
+        } else {
+            paramValue = [[NSString stringWithFormat: @"%@", paramObj] dataUsingEncoding:NSUTF8StringEncoding];
+        }
+        NSString *serializedStr = [[NSString alloc] initWithData: paramValue encoding: NSUTF8StringEncoding];
+        [paramsArray addObject:[NSString stringWithFormat:@"%@=%@", key, [serializedStr stringWithPercentEscape]]];
     }
+    [FactualUrlUtil appendParams:paramsArray to:qry];
     NSString* urlStr = [self createRequestString: qry];
     
     return [self sendRequest: urlStr ofType: FactualRequestType_RawRequest requestMethod:@"GET" payload: nil withDelegate: delegate];
