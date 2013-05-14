@@ -1,3 +1,6 @@
+## 1.3.5
+ * Fix raw read request
+
 ## 1.3.4
  * Added features: fetchRow, includes, includes_any, clear, request timeout
 
