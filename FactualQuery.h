@@ -298,4 +298,5 @@ typedef enum  {
  */
 -(void) addSelectTerm:(NSString*) selectTerm;
 
+-(void) generateQueryString:(NSMutableString*)qryString;
 @end

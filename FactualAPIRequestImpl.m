@@ -461,7 +461,6 @@ static NSString* Factual_URLStringWithoutQuery(NSURL* url) {
   // check for errors ...
 	if (jsonResp == nil
       || error != nil
-      || [jsonResp objectForKey:@"status"] == nil
       ) {
     // call delegate here ...
     NSString *errorMessage = (error ? [error localizedDescription] : @"Unable to parse response");

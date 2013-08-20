@@ -654,6 +654,27 @@ NSString* _secret = @"";
     }
 }
 
+- (void)testMulti
+{
+    NSMutableDictionary* params = [[NSMutableDictionary alloc] init];
+    
+    FactualQuery* queryObject = [FactualQuery query];
+    [queryObject addFullTextQueryTerm:@"Fried Chicken, Los Angeles"];
+    
+    NSMutableString* query2 = [[NSMutableString alloc]init];
+    [queryObject generateQueryString:query2];
+    
+    NSString* queriesStrFormat = @"{\"query1\":\"/t/places?limit=1\", \"query2\":\"/t/places?%@\"}";
+    NSString* queriesStr = [NSString stringWithFormat:queriesStrFormat, query2];
+    [params setValue:queriesStr forKey:@"queries"];
+    [_apiObject get:@"multi" params:params withDelegate: self];
+    
+    [self waitForResponse];
+    
+    STAssertTrue(_rawResult != nil, @"Invalid response");
+    
+}
+
 - (void)waitForResponse
 {
     while (!_finished) {
@@ -664,11 +685,9 @@ NSString* _secret = @"";
 -(void) requestComplete:(FactualAPIRequest *)request receivedRawResult:(NSDictionary *)result {
     _rawResult = result;
     _finished = true;
-    /*
      for (id key in result) {
         NSLog(@"KEY: %@, VALUE: %@", key, [result objectForKey:key]);
      }
-     */
 }
 
 -(void) requestComplete:(FactualAPIRequest *)request receivedQueryResult:(FactualQueryResult *)queryResult {
