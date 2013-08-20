@@ -1,3 +1,6 @@
+## 1.3.6
+ * Add support for multi requests using raw read api
+ 
 ## 1.3.5
  * Fix raw read request
 
