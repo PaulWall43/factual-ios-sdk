@@ -216,31 +216,6 @@ typedef enum  {
 
 /*! @method
  
- @discussion Use this method to query Factual for monetize data. You
- can specify additional parameters via the FactualQuery object, such
- as predicates (via FactualFilter), sort orders and row offsets and
- record limits. Upon successful execution you will recieve query
- results asynchronously via a call the
- requestComplete:receivedQueryResult: method on the delegate. Failures
- will result in a call to the requestComplete:failedWithError: method
- on the delegate. Please read the docs on FactualQueryResult for
- details about the data returned as a result of Query.
- 
- @param queryParams (optional) And optional FactualQuery object to use
- to restrict the server query and the returned recordset.
- 
- @param delegate (optional) This is a reference to the delegate on
- which callbacks will be invoked.
- 
- @result the FactualAPIRequest object associated with this API
- request.
- 
- */
-- (FactualAPIRequest*)   monetize:(FactualQuery*) queryParams
-                     withDelegate:(id<FactualAPIDelegate>) delegate;
-
-/*! @method
- 
  @discussion Use this method to run resolve against a Factual
  table. You must specify the Factual table id and values to use in the
  resolve. Upon successful execution you will recieve query results

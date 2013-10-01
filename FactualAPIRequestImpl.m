@@ -429,10 +429,16 @@ static NSString* Factual_URLStringWithoutQuery(NSURL* url) {
   // prepare the url
   [request prepare];
   
+  _statusCode = nil;
+
   return [[NSURLConnection alloc] initWithRequest:request delegate:self];
 }
 
-
+- (NSURLRequest *)connection:(NSURLConnection *)connection willSendRequest:(NSURLRequest *)request redirectResponse:(NSURLResponse *)response {
+    NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
+    _statusCode = [httpResponse statusCode];
+    return request;
+}
 
 
 // helper to generate NSError from error response ...
@@ -591,8 +597,10 @@ static NSString* Factual_URLStringWithoutQuery(NSURL* url) {
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
   //NSLog(@"NSURLConnection:%@ URL:%@ Did Receive Response",_requestId,_url);
   _responseText = [[NSMutableData alloc] init];
-  if ([response isKindOfClass: [NSHTTPURLResponse class]])
-    _statusCode = [(NSHTTPURLResponse*) response statusCode];
+  if ([response isKindOfClass: [NSHTTPURLResponse class]]) {
+    if (_statusCode != 301)
+        _statusCode = [(NSHTTPURLResponse*) response statusCode];
+  }
   if ([_delegate respondsToSelector:@selector(requestDidReceiveInitialResponse:)]) {
     [_delegate requestDidReceiveInitialResponse:self];
   }

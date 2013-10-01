@@ -303,20 +303,6 @@ NSString* _secret = @"";
     
 }
 
-- (void)testMonetize
-{
-    FactualQuery* queryObject = [FactualQuery query];
-    [queryObject addRowFilter:[FactualRowFilter fieldName:@"place_locality"
-                                                  equalTo:@"Los Angeles"]];
-    
-    [_apiObject monetize:queryObject withDelegate:self];
-    
-    [self waitForResponse];
-    
-    STAssertTrue([_queryResult.rows count] > 0, @"Invalid row count");
-    
-}
-
 - (void)testSelect
 {
     FactualQuery* queryObject = [FactualQuery query];

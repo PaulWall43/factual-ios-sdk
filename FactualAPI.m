@@ -135,12 +135,6 @@ NSString *const FactualCoreErrorDomain = @"FactualCoreErrorDomain";
     return [self request:queryString ofType: FactualRequestType_PlacesQuery requestMethod:@"GET" payload: nil withDelegate:delegate];
 }
 
-- (FactualAPIRequest*)   monetize:(FactualQuery*) queryParams
-                     withDelegate:(id<FactualAPIDelegate>) delegate { 
-    NSString* queryString = [FactualAPIHelper buildQueryString:((_secret == nil) ? _apiKey: nil) path:@"places/monetize" queryParams:queryParams];
-    return [self request:queryString ofType: FactualRequestType_PlacesQuery requestMethod:@"GET" payload: nil withDelegate:delegate];
-}
-
 - (FactualAPIRequest*)   resolveRow:(NSString*) tableId  
                          withValues:(NSDictionary*) values
                        withDelegate:(id<FactualAPIDelegate>) delegate { 
