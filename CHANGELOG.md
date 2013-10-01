@@ -1,3 +1,7 @@
+## 1.3.7
+ * Remove monetize support
+ * Ensure redirects are indicated with fetchRow
+ 
 ## 1.3.6
  * Add support for multi requests using raw read api
  
