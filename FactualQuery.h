@@ -272,9 +272,7 @@ typedef enum  {
 
 /*! @method 
  @discussion search records by location and radius. This filter type is only 
- valid for geo-enabled tables and if specified, the returned record set is 
- sorted by distance from the specified point, so the primary and secondary 
- sort criteria query fields are ignored if a geo filter has been specified.
+ valid for geo-enabled tables.
  */
 -(void) setGeoFilter:(CLLocationCoordinate2D)location radiusInMeters:(double)radius;
 /*! @method 
