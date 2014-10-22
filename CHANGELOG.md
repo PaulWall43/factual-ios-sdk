@@ -1,3 +1,6 @@
+## 1.3.8
+ * Support 64 bit arch
+
 ## 1.3.7
  * Remove monetize support
  * Ensure redirects are indicated with fetchRow
