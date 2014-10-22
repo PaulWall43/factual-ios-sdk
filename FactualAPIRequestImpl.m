@@ -16,9 +16,9 @@
 
 static long _lastRequestId = 0;
 
-static NSString* kUserAgent = @"Factual-IPhoneSDK-V-1.3.7";
+static NSString* kUserAgent = @"Factual-IPhoneSDK-V-1.3.8";
 static NSString* kFactualLibHeader = @"X-Factual-Lib";
-static NSString* kFactualLibHeaderSDKValue = @"Factual-IPhoneSDK-V-1.3.7";
+static NSString* kFactualLibHeaderSDKValue = @"Factual-IPhoneSDK-V-1.3.8";
 
 
 #pragma mark FactualOASupport
