@@ -12,7 +12,7 @@ set -e
 # Define these to suit your nefarious purposes
                  FRAMEWORK_NAME=FactualSDK
                        LIB_NAME=libFactualSDK
-              FRAMEWORK_VERSION=1.3.8
+              FRAMEWORK_VERSION=1.3.9
                      BUILD_TYPE=Release
 
 # Where we'll put the build framework.

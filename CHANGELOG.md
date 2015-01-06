@@ -1,3 +1,6 @@
+## 1.3.9
+ * set ONLY_ACTIVE_ARCH to NO for debug
+
 ## 1.3.8
  * Support 64 bit arch
 
