@@ -108,7 +108,7 @@ NSString* _secret = @"";
     
     [self waitForResponse];
     
-    STAssertEquals(5U, [_queryResult.rows count], @"Not equal");
+    STAssertEquals((NSUInteger) 5, [_queryResult.rows count], @"Not equal");
 }
 
 
@@ -178,8 +178,8 @@ NSString* _secret = @"";
     [queryObject addRowFilter:[FactualRowFilter fieldName:@"name"
                                                beginsWith:@"McDonald's"]];
     
-    [queryObject addRowFilter:[FactualRowFilter fieldName:@"category"
-                                               beginsWith:@"Food & Beverage"]];
+    [queryObject addRowFilter:[FactualRowFilter fieldName:@"locality"
+                                               beginsWith:@"Scottsd"]];
     
     [_apiObject queryTable:@"places" optionalQueryParams:queryObject withDelegate:self];
     
@@ -251,7 +251,7 @@ NSString* _secret = @"";
 {
     FactualQuery* queryObject = [FactualQuery query];
     [queryObject addRowFilter:[FactualRowFilter fieldName:@"factual_id"
-                                                  equalTo:@"860fed91-3a52-44c8-af7b-8095eb943da1"]];    
+                                                  equalTo:@"e52c2878-3c27-43a7-bd4e-f6f124ba17b9"]];
     
     [_apiObject queryTable:@"crosswalk" optionalQueryParams:queryObject withDelegate:self];
     [self waitForResponse];
@@ -264,7 +264,7 @@ NSString* _secret = @"";
 {
     FactualQuery* queryObject = [FactualQuery query];
     [queryObject addRowFilter:[FactualRowFilter fieldName:@"factual_id"
-                                                  equalTo:@"860fed91-3a52-44c8-af7b-8095eb943da1"]];    
+                                                  equalTo:@"e52c2878-3c27-43a7-bd4e-f6f124ba17b9"]];
     [queryObject addRowFilter:[FactualRowFilter fieldName:@"namespace"
                                                   equalTo:@"yelp"]];    
     
@@ -294,7 +294,7 @@ NSString* _secret = @"";
 {
     FactualQuery* queryObject = [FactualQuery query];
     [queryObject addRowFilter:[FactualRowFilter fieldName:@"factual_id"
-                                                  equalTo:@"860fed91-3a52-44c8-af7b-8095eb943da1"]];
+                                                  equalTo:@"e52c2878-3c27-43a7-bd4e-f6f124ba17b9"]];
     queryObject.limit = 1;
     [_apiObject queryTable:@"crosswalk" optionalQueryParams:queryObject withDelegate:self];
     [self waitForResponse];
@@ -348,20 +348,6 @@ NSString* _secret = @"";
     
     STAssertTrue([_queryResult.rows count] > 0, @"Invalid row count");
     
-} 
-
-
-- (void)testGeopulse
-{
-    CLLocationCoordinate2D point = {_latitude, _longitude};
-    NSMutableArray* terms = [[NSMutableArray alloc] initWithCapacity:2];
-    [terms addObject:@"area_statistics"];
-    [terms addObject:@"race_and_ethnicity"];
-    [_apiObject queryGeopulse:point selectTerms:terms withDelegate:self];
-    [self waitForResponse];
-    
-    STAssertTrue([_queryResult.rows count] > 0, @"Invalid row count");
-    
 }
 
 - (void)testMatch
@@ -384,19 +370,6 @@ NSString* _secret = @"";
     [self waitForResponse];
     
     STAssertTrue(_rawResult != nil, @"Invalid response");
-    
-}
-
-
-- (void)testGeocode
-{
-    CLLocationCoordinate2D point;
-    point.longitude = _longitude;
-    point.latitude = _latitude;
-    [_apiObject reverseGeocode:point withDelegate:self];
-    [self waitForResponse];
-    
-    STAssertTrue([_queryResult.rows count] > 0, @"Invalid row count");
     
 }
 
@@ -551,6 +524,7 @@ NSString* _secret = @"";
  
 */
 
+/*
 - (void)testClear
 {
     FactualRowMetadata* metadata = [FactualRowMetadata metadata: @"testuser"];
@@ -564,10 +538,11 @@ NSString* _secret = @"";
     
     STAssertTrue(_rawResult != nil, @"Invalid response");
 }
-
+*/
+ 
 - (void)testFetchRow1
 {
-    NSString* factualId = @"0000022c-4ab3-4f5d-8e67-6a6ff1826a93";
+    NSString* factualId = @"e52c2878-3c27-43a7-bd4e-f6f124ba17b9";
     [_apiObject fetchRow:@"places" factualId:factualId withDelegate:self];
     [self waitForResponse];
     STAssertTrue([_queryResult.rows count] == 1, @"Row count not 1");
@@ -580,12 +555,12 @@ NSString* _secret = @"";
     NSMutableArray* onlyFields = [[NSMutableArray alloc] initWithCapacity:1];
     [onlyFields addObject:@"name"];
     
-    NSString* factualId = @"0000022c-4ab3-4f5d-8e67-6a6ff1826a93";
+    NSString* factualId = @"7e7fede0-5a17-452e-9d8a-228c49273109";
     [_apiObject fetchRow:@"places" factualId:factualId only:onlyFields withDelegate:self];
     [self waitForResponse];
     STAssertTrue([_queryResult.rows count] == 1, @"Row count not 1");
     FactualRow *firstRow = [_queryResult.rows objectAtIndex:0];
-    STAssertTrue([@"Icbm" isEqualToString:[firstRow valueForName:@"name"]], @"Fetch row id not equal to test factual id");
+    STAssertTrue([@"Starbucks Coffee" isEqualToString:[firstRow valueForName:@"name"]], @"Fetch row id not equal to test factual id");
 }
 
 - (void)testIncludes1
