@@ -50,11 +50,11 @@ Related place-specific documentation:
 * Categories: http://developer.factual.com/working-with-categories/
 * Placerank, Sorting: http://developer.factual.com/search-placerank-and-boost/
 
-```javascript
+```objc
 // Full-text search:
-factual.get('/t/places-us',{q:"century city mall", "include_count":"true"}, function (error, res) {
-  console.log("show "+ res.included_rows +"/"+ res.total_row_count +" rows:", res.data);
-});
+[queryObject addFullTextQueryTerm:@"century city mall"];
+queryObject.includeRowCount = true;
+[_apiObject queryTable:@"places-us" optionalQueryParams:queryObject withDelegate:self];
 
 // Row filters:
 //  search restaurants (http://developer.factual.com/working-with-categories/)
