@@ -96,9 +96,15 @@ FactualQuery* queryObject = [FactualQuery query];
 [_apiObject queryTable:@"places-us" optionalQueryParams:queryObject withDelegate:self];
 
 //  search for starbucks in Los Angeles or Santa Monica 
-factual.get('/t/places-us', {q:"starbucks", filters:{"$or":[{"locality":{"$eq":"los angeles"}},{"locality":{"$eq":"santa monica"}}]}}, function (error, res) {
-  console.log(res.data);
-});
+FactualQuery* queryObject = [FactualQuery query];
+[queryObject addFullTextQueryTerm:@"starbucks"];
+FactualRowFilter* orFilter = [FactualRowFilter orFilter:
+                               [FactualRowFilter fieldName:@"locality"
+                                                  equalTo:@"los angeles"],
+                               [FactualRowFilter fieldName:@"locality"
+                                                  equalTo:@"santa monica"], nil];
+[queryObject addRowFilter:orFilter];
+[_apiObject queryTable:@"places-us" optionalQueryParams:queryObject withDelegate:self];
 
 // Paging:
 //  search for starbucks in Los Angeles or Santa Monica (second page of results):
