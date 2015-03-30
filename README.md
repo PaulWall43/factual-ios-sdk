@@ -184,16 +184,22 @@ Full documentation: http://developer.factual.com/places-crosswalk/
 
 ```objc
 // Query with factual id, and only show entites from Yelp:
-factual.get('/t/crosswalk?filters={"factual_id":"3b9e2b46-4961-4a31-b90a-b5e0aed2a45e","namespace":"yelp"}', function (error, res) {
-  console.log(res.data);
-});
+FactualQuery* queryObject = [FactualQuery query];
+[queryObject addRowFilter:[FactualRowFilter fieldName:@"factual_id"
+                                              equalTo:@"3b9e2b46-4961-4a31-b90a-b5e0aed2a45e"]];
+[queryObject addRowFilter:[FactualRowFilter fieldName:@"namespace"
+                                              equalTo:@"yelp"]];
+[_apiObject queryTable:@"crosswalk" optionalQueryParams:queryObject withDelegate:self];
 ```
 
 ```objc
 // query with an entity from Foursquare:
-factual.get('/t/crosswalk?filters={"namespace":"foursquare", "namespace_id":"4ae4df6df964a520019f21e3"}', function (error, res) {
-  console.log(res.data);
-});
+FactualQuery* queryObject = [FactualQuery query];
+[queryObject addRowFilter:[FactualRowFilter fieldName:@"namespace_id"
+                                              equalTo:@"4ae4df6df964a520019f21e3"]];
+[queryObject addRowFilter:[FactualRowFilter fieldName:@"namespace"
+                                              equalTo:@"foursquare"]];
+[_apiObject queryTable:@"crosswalk" optionalQueryParams:queryObject withDelegate:self];
 ```
 
 ## World Geographies
