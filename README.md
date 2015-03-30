@@ -36,10 +36,9 @@ the -all_load linker flag as documented here ( http://developer.apple.com/librar
 Use the schema API call to determine which fields are available, the datatypes of those fields, and which operations (sorting, searching, writing, facetting) can be performed on each field.
 
 Full documentation: http://developer.factual.com/api-docs/#Schema
-```javascript
-factual.get('/t/places-us/schema', function (error, res) {
-  console.log(res.view);
-});
+```objc
+[_apiObject getTableSchema:@"places-us" withDelegate:self];
+[self waitForResponse];
 ```
 
 ## Read
