@@ -80,14 +80,20 @@ FactualQuery* queryObject = [FactualQuery query];
 
 
 //  search entertainment venues but NOT adult entertainment
-factual.get('/t/places-us', {filters:{"$and":[{category_ids:{"$includes":317}},{category_ids:{"$excludes":318}}], function (error, res) {
-  console.log(res.data);
-});
+FactualQuery* queryObject = [FactualQuery query];
+FactualRowFilter* andFilter = [FactualRowFilter andFilter:
+                               [FactualRowFilter fieldName:@"category_ids"
+                                                 includes:@"317"],
+                               [FactualRowFilter fieldName:@"category_ids"
+                                                 excludes:@"318"], nil];
+[queryObject addRowFilter:andFilter];
+[_apiObject queryTable:@"places-us" optionalQueryParams:queryObject withDelegate:self];
 
 //  search for Starbucks in Los Angeles
-factual.get('/t/places-us', {q:"starbucks", filters:{"locality":"los angeles"}}, function (error, res) {
-  console.log(res.data);
-});
+FactualQuery* queryObject = [FactualQuery query];
+[queryObject addFullTextQueryTerm:@"starbucks"];
+[queryObject addRowFilter:[FactualRowFilter fieldName:@"locality" equalTo:@"los angeles"]];
+[_apiObject queryTable:@"places-us" optionalQueryParams:queryObject withDelegate:self];
 
 //  search for starbucks in Los Angeles or Santa Monica 
 factual.get('/t/places-us', {q:"starbucks", filters:{"$or":[{"locality":{"$eq":"los angeles"}},{"locality":{"$eq":"santa monica"}}]}}, function (error, res) {
