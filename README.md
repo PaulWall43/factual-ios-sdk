@@ -161,15 +161,20 @@ Use resolve to generate a confidence-based match to an existing set of place att
 
 Full documentation: http://developer.factual.com/api-docs/#Resolve
 ```objc
-// resovle from name and address info
-factual.get('/t/places-us/resolve?values={"name":"McDonalds","address":"10451 Santa Monica Blvd","region":"CA","postcode":"90025"}', function (error, res) {
-  console.log(res.data);
-});
+// resolve from name and address info
+NSMutableDictionary* values  = [NSMutableDictionary dictionaryWithCapacity:4];
+[values setValue:@"McDonalds" forKey:@"name"];
+[values setValue:@"10451 Santa Monica Blvd" forKey:@"address"];
+[values setValue:@"CA" forKey:@"region"];
+[values setValue:@"90025" forKey:@"postcode"];
+[_apiObject resolveRow:@"t/places-us" withValues:values withDelegate:self];
 
 // resolve from name and geo location
-factual.get('/t/places-us/resolve?values={"name":"McDonalds","latitude":34.05671,"longitude":-118.42586}', function (error, res) {
-  console.log(res.data);
-});
+NSMutableDictionary* values  = [NSMutableDictionary dictionaryWithCapacity:4];
+[values setValue:@"McDonalds" forKey:@"name"];
+[values setValue:@"34.05671" forKey:@"latitude"];
+[values setValue:@"-118.42586" forKey:@"longitude"];
+[_apiObject resolveRow:@"t/places-us" withValues:values withDelegate:self];
 ```
 
 ## Crosswalk
