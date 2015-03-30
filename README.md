@@ -52,6 +52,7 @@ Related place-specific documentation:
 
 ```objc
 // Full-text search:
+FactualQuery* queryObject = [FactualQuery query];
 [queryObject addFullTextQueryTerm:@"century city mall"];
 queryObject.includeRowCount = true;
 [_apiObject queryTable:@"places-us" optionalQueryParams:queryObject withDelegate:self];
@@ -59,14 +60,21 @@ queryObject.includeRowCount = true;
 // Row filters:
 //  search restaurants (http://developer.factual.com/working-with-categories/)
 //  note that this will return all sub-categories of 347 as well.
-factual.get('/t/places-us', {filters:{category_ids:{"$includes":347}}}, function (error, res) {
-  console.log(res.data);
-});
+FactualQuery* queryObject = [FactualQuery query];
+[queryObject addRowFilter:[FactualRowFilter fieldName:@"category_ids"
+                                            includes:@"347"]];
+[_apiObject queryTable:@"places-us" optionalQueryParams:queryObject withDelegate:self];
+
 
 //  search restaurants or bars
-factual.get('/t/places-us', {filters:{category_ids:{"$includes_any":[312,347]}}}, function (error, res) {
-  console.log(res.data);
-});
+NSMutableArray* categories = [[NSMutableArray alloc] initWithCapacity:2];
+[categories addObject:[NSNumber numberWithInteger:312]];
+[categories addObject:[NSNumber numberWithInteger:347]];
+FactualQuery* queryObject = [FactualQuery query];
+[queryObject addRowFilter:[FactualRowFilter fieldName:@"category_ids"
+                                            includesAnyArray: categories]];
+[_apiObject queryTable:@"places-us" optionalQueryParams:queryObject withDelegate:self];
+
 
 //  search entertainment venues but NOT adult entertainment
 factual.get('/t/places-us', {filters:{"$and":[{category_ids:{"$includes":317}},{category_ids:{"$excludes":318}}], function (error, res) {
