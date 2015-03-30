@@ -108,9 +108,17 @@ FactualRowFilter* orFilter = [FactualRowFilter orFilter:
 
 // Paging:
 //  search for starbucks in Los Angeles or Santa Monica (second page of results):
-factual.get('/t/places-us', {q:"starbucks", filters:{"$or":[{"locality":{"$eq":"los angeles"}},{"locality":{"$eq":"santa monica"}}]}}, offset:20, limit:20, function (error, res) {
-  console.log(res.data);
-});
+FactualQuery* queryObject = [FactualQuery query];
+[queryObject addFullTextQueryTerm:@"starbucks"];
+FactualRowFilter* orFilter = [FactualRowFilter orFilter:
+                              [FactualRowFilter fieldName:@"locality"
+                                                  equalTo:@"los angeles"],
+                              [FactualRowFilter fieldName:@"locality"
+                                                  equalTo:@"santa monica"], nil];
+[queryObject addRowFilter:orFilter];
+queryObject.offset = 20;
+queryObject.limit = 20;
+[_apiObject queryTable:@"places-us" optionalQueryParams:queryObject withDelegate:self];
 
 // Geo filter:
 //  coffee near the Factual office
