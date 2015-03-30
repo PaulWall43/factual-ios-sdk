@@ -122,9 +122,12 @@ queryObject.limit = 20;
 
 // Geo filter:
 //  coffee near the Factual office
-factual.get('/t/places-us', {q:"coffee", geo:{"$circle":{"$center":[34.058583, -118.416582],"$meters":1000}}}, function (error, res) {
-  console.log(res.data);
-});
+FactualQuery* queryObject = [FactualQuery query];
+[queryObject addFullTextQueryTerm:@"coffee"];
+CLLocationCoordinate2D coordinate = {34.058583, -118.416582};
+[queryObject setGeoFilter:coordinate
+           radiusInMeters:1000];
+[_apiObject queryTable:@"places-us" optionalQueryParams:queryObject withDelegate:self];
 
 // Existence threshold:
 //  prefer precision over recall:
