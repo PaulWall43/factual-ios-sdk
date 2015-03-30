@@ -136,9 +136,7 @@ NSMutableDictionary* params = [[NSMutableDictionary alloc] init];
 [_apiObject get:@"t/places-us" params:params withDelegate: self];
 
 // Get a row by factual id:
-factual.get('/t/places-us/03c26917-5d66-4de9-96bc-b13066173c65', function (error, res) {
-  console.log(res.data[0]);
-});
+[_apiObject get:@"t/places-us/03c26917-5d66-4de9-96bc-b13066173c65" params:[[NSMutableDictionary alloc] init] withDelegate: self];
 
 ```
 
