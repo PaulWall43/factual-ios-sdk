@@ -144,18 +144,23 @@ NSMutableDictionary* params = [[NSMutableDictionary alloc] init];
 Use the facets call to get summarized counts, grouped by specified fields.
 
 Full documentation: http://developer.factual.com/api-docs/#Facets
-```javascript
+```objc
 // show top 5 cities that have more than 20 Starbucks in California
-factual.get('/t/places-us/facets', {q:"starbucks", filters:{"region":"CA"}, select:"locality", "min_count":20, limit:5}, function (error, res) {
-  console.log(res.data);
-});
+FactualQuery* query = [FactualQuery query];
+query.minCountPerFacetValue = 20;
+query.limit = 5;
+[query addRowFilter:[FactualRowFilter fieldName:@"region"
+                                        equalTo:@"CA"]];
+[query addSelectTerm:@"locality"];
+[query addFullTextQueryTerm:@"starbucks"];
+[_apiObject facetTable:@"places-us" optionalQueryParams:query withDelegate:self];
 ```
 
 ## Resolve
 Use resolve to generate a confidence-based match to an existing set of place attributes.
 
 Full documentation: http://developer.factual.com/api-docs/#Resolve
-```javascript
+```objc
 // resovle from name and address info
 factual.get('/t/places-us/resolve?values={"name":"McDonalds","address":"10451 Santa Monica Blvd","region":"CA","postcode":"90025"}', function (error, res) {
   console.log(res.data);
@@ -172,14 +177,14 @@ Crosswalk contains third party mappings between entities.
 
 Full documentation: http://developer.factual.com/places-crosswalk/
 
-```javascript
+```objc
 // Query with factual id, and only show entites from Yelp:
 factual.get('/t/crosswalk?filters={"factual_id":"3b9e2b46-4961-4a31-b90a-b5e0aed2a45e","namespace":"yelp"}', function (error, res) {
   console.log(res.data);
 });
 ```
 
-```javascript
+```objc
 // query with an entity from Foursquare:
 factual.get('/t/crosswalk?filters={"namespace":"foursquare", "namespace_id":"4ae4df6df964a520019f21e3"}', function (error, res) {
   console.log(res.data);
@@ -189,7 +194,7 @@ factual.get('/t/crosswalk?filters={"namespace":"foursquare", "namespace_id":"4ae
 ## World Geographies
 World Geographies contains administrative geographies (states, counties, countries), natural geographies (rivers, oceans, continents), and assorted geographic miscallaney.  This resource is intended to complement the Global Places and add utility to any geo-related content.
 
-```javascript
+```objc
 // find California, USA
 factual.get('/t/world-geographies?', {q:"los angeles",filters:{"$and":[{"name":{"$eq":"California"}},{"country":{"$eq":"US"}},{"placetype":{"$eq":"region"}}]},select:"contextname,factual_id"}, function (error, res) {
   console.log(res.data);
@@ -197,7 +202,7 @@ factual.get('/t/world-geographies?', {q:"los angeles",filters:{"$and":[{"name":{
 // returns 08649c86-8f76-11e1-848f-cfd5bf3ef515 as the Factual Id of "California, US"
 ```
 
-```javascript
+```objc
 // find cities and town in California (first 20 rows)
 factual.get('/t/world-geographies?', {q:"los angeles",filters:{"$and":[{"ancestors":{"$includes":"08649c86-8f76-11e1-848f-cfd5bf3ef515"}},{"country":{"$eq":"US"}},{"placetype":{"$eq":"locality"}}]},select:"contextname,factual_id"}, function (error, res) {
   console.log(res.data);
@@ -211,7 +216,7 @@ Full documentation: http://developer.factual.com/api-docs/#Submit
 
 Place-specific Write API documentation: http://developer.factual.com/write-api/
 
-```javascript
+```objc
 factual.post('/t/us-sandbox/submit', {
   values: JSON.stringify({
     name: "Factual",
@@ -238,7 +243,7 @@ Use the flag API to flag problems in existing data.
 Full documentation: http://developer.factual.com/api-docs/#Flag
 
 Flag a place that is a duplicate of another. The *preferred* entity that should persist is passed as a GET parameter.
-```javascript
+```objc
 factual.post('/t/us-sandbox/4e4a14fe-988c-4f03-a8e7-0efc806d0a7f/flag', {
   problem: "duplicate",
   preferred: "9d676355-6c74-4cf6-8c4a-03fdaaa2d66a",
@@ -249,7 +254,7 @@ factual.post('/t/us-sandbox/4e4a14fe-988c-4f03-a8e7-0efc806d0a7f/flag', {
 ```
 
 Flag a place that is closed.
-```javascript
+```objc
 factual.post('/t/us-sandbox/4e4a14fe-988c-4f03-a8e7-0efc806d0a7f/flag', {
   problem: "closed",
   user: "a_user_id",
@@ -260,7 +265,7 @@ factual.post('/t/us-sandbox/4e4a14fe-988c-4f03-a8e7-0efc806d0a7f/flag', {
 ```
 
 Flag a place that has been relocated, so that it will redirect to the new location. The *preferred* entity (the current location) is passed as a GET parameter. The old location is identified in the URL.
-```javascript
+```objc
 factual.post('/t/us-sandbox/4e4a14fe-988c-4f03-a8e7-0efc806d0a7f/flag', 
 {
   problem: "relocated",
@@ -276,7 +281,7 @@ The error object is the first argument of the callback functions, it will be nul
 
 ## Debug Mode
 To see detailed debug information at runtime, you can turn on Debug Mode:
-```javascript
+```objc
 // start debug mode
 factual.startDebug();
 
@@ -290,7 +295,7 @@ Debug Mode will output useful information about what's going on, including  the 
 
 ## Custom timeouts
 You can set the request timeout (in milliseconds):
-```javascript
+```objc
 // set the timeout as 1 second
 factual.setRequestTimeout(1000);
 // clear the custom timeout setting
