@@ -131,9 +131,9 @@ CLLocationCoordinate2D coordinate = {34.058583, -118.416582};
 
 // Existence threshold:
 //  prefer precision over recall:
-factual.get('/t/places-us', {threshold:"confident"}, function (error, res) {
-  console.log(res.data);
-});
+NSMutableDictionary* params = [[NSMutableDictionary alloc] init];
+[params setValue:@"confident" forKey:@"threshold"];
+[_apiObject get:@"t/places-us" params:params withDelegate: self];
 
 // Get a row by factual id:
 factual.get('/t/places-us/03c26917-5d66-4de9-96bc-b13066173c65', function (error, res) {
