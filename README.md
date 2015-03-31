@@ -207,17 +207,37 @@ World Geographies contains administrative geographies (states, counties, countri
 
 ```objc
 // find California, USA
-factual.get('/t/world-geographies?', {q:"los angeles",filters:{"$and":[{"name":{"$eq":"California"}},{"country":{"$eq":"US"}},{"placetype":{"$eq":"region"}}]},select:"contextname,factual_id"}, function (error, res) {
-  console.log(res.data);
-});
+FactualQuery* queryObject = [FactualQuery query];
+[queryObject addFullTextQueryTerm:@"los angeles"];
+FactualRowFilter* andFilter = [FactualRowFilter andFilter:
+                               [FactualRowFilter fieldName:@"name"
+                                                  equalTo:@"California"],
+                               [FactualRowFilter fieldName:@"country"
+                                                  equalTo:@"US"],
+                               [FactualRowFilter fieldName:@"placetype"
+                                                   equalTo:@"region"], nil];
+[queryObject addRowFilter:andFilter];
+[queryObject addSelectTerm:@"contextname"];
+[queryObject addSelectTerm:@"factual_id"];
+[_apiObject queryTable:@"world-geographies" optionalQueryParams:queryObject withDelegate:self];
 // returns 08649c86-8f76-11e1-848f-cfd5bf3ef515 as the Factual Id of "California, US"
 ```
 
 ```objc
 // find cities and town in California (first 20 rows)
-factual.get('/t/world-geographies?', {q:"los angeles",filters:{"$and":[{"ancestors":{"$includes":"08649c86-8f76-11e1-848f-cfd5bf3ef515"}},{"country":{"$eq":"US"}},{"placetype":{"$eq":"locality"}}]},select:"contextname,factual_id"}, function (error, res) {
-  console.log(res.data);
-});
+FactualQuery* queryObject = [FactualQuery query];
+[queryObject addFullTextQueryTerm:@"los angeles"];
+FactualRowFilter* andFilter = [FactualRowFilter andFilter:
+                               [FactualRowFilter fieldName:@"ancestors"
+                                                   includes:@"08649c86-8f76-11e1-848f-cfd5bf3ef515"],
+                               [FactualRowFilter fieldName:@"country"
+                                                   equalTo:@"US"],
+                               [FactualRowFilter fieldName:@"placetype"
+                                                   equalTo:@"locality"], nil];
+[queryObject addRowFilter:andFilter];
+[queryObject addSelectTerm:@"contextname"];
+[queryObject addSelectTerm:@"factual_id"];
+[_apiObject queryTable:@"world-geographies" optionalQueryParams:queryObject withDelegate:self];
 ```
 
 ## Submit
