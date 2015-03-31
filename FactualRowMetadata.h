@@ -30,4 +30,9 @@
  */
 @property (nonatomic, retain) NSString* reference;
 
+/*! @property
+ @discussion Preferred uuid
+ */
+@property (nonatomic, retain) NSString* preferred;
+
 @end

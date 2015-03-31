@@ -302,6 +302,14 @@ NSString *const FactualCoreErrorDomain = @"FactualCoreErrorDomain";
             problemStr = @"other";
         }
             break;          
+        case FactualFlagType_Closed: {
+            problemStr = @"closed";
+        }
+            break;
+        case FactualFlagType_Relocated: {
+            problemStr = @"relocated";
+        }
+            break;
         default: {
             [NSException raise:NSGenericException format:@"Unknown problem type: %@", problem];
         }

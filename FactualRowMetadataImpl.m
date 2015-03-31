@@ -15,6 +15,7 @@
 @synthesize username=_username;
 @synthesize comment=_comment;
 @synthesize reference=_reference;
+@synthesize preferred=_preferred;
 
 -(void) generateQueryString:(NSMutableString*) queryString {
     NSMutableArray* params = [[NSMutableArray alloc] initWithCapacity:2];
@@ -26,6 +27,9 @@
     }
     if (_reference != nil) {
         [params addObject:[NSString stringWithFormat:@"reference=%@", _reference]];
+    }
+    if (_preferred != nil) {
+        [params addObject:[NSString stringWithFormat:@"preferred=%@", _preferred]];
     }
     return [FactualUrlUtil appendParams:params to:queryString];
 }

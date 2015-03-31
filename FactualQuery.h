@@ -144,6 +144,10 @@ typedef enum  {
 
 +(FactualRowFilter*) fieldName:(NSString*) fieldName includesAnyArray:(NSArray*) values;
 
++(FactualRowFilter*) fieldName:(NSString*) fieldName excludes:(NSString*) value;
+
++(FactualRowFilter*) fieldName:(NSString*) fieldName excludesAnyArray:(NSArray*) values;
+
 /*! @method 
  @discussion construct an OR filter consisting of one or more nested filters
  followed by a nil

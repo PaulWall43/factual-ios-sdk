@@ -19,7 +19,8 @@ typedef enum {
     Search,
     NotBeginsWith,
     Blank,
-    Includes
+    Includes,
+    Excludes
 } SimplePredicateType;
 
 typedef enum {
@@ -27,7 +28,8 @@ typedef enum {
     NotIn,
     BeginsWithAny,
     NotBeginsWithAny,
-    IncludesAny
+    IncludesAny,
+    ExcludesAny
 } CompoundValuePredicateType;
 
 typedef enum {

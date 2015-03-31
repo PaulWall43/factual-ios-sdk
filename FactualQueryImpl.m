@@ -27,7 +27,8 @@ static NSString* simplePredicateStrings[]  = {
     @"$search",
     @"$nbw",
     @"$blank",
-    @"$includes"
+    @"$includes",
+    @"$excludes"
 };
 
 static NSString* compoundValuePredicateStrings[] = {
@@ -35,7 +36,8 @@ static NSString* compoundValuePredicateStrings[] = {
     @"$nin",
     @"$bwin",
     @"$nbwin",
-    @"$includes_any"
+    @"$includes_any",
+    @"$excludes_any"
 };
 
 static NSString* compoundFilterPredicateStrings[] = {
@@ -218,6 +220,14 @@ static NSString* compoundFilterPredicateStrings[] = {
 
 +(FactualRowFilter*) fieldName:(NSString*) fieldName includesAnyArray:(NSArray*) values {
     return [[FactualCompoundValueFilterPredicate alloc] initWithPredicateType:IncludesAny fieldName:fieldName values:values];
+}
+
++(FactualRowFilter*) fieldName:(NSString*) fieldName excludes:(NSString*) value {
+    return [[FactualSimpleValueFilterPredicate alloc] initWithPredicateType:Excludes fieldName:fieldName value:value];
+}
+
++(FactualRowFilter*) fieldName:(NSString*) fieldName excludesAnyArray:(NSArray*) values {
+    return [[FactualCompoundValueFilterPredicate alloc] initWithPredicateType:ExcludesAny fieldName:fieldName values:values];
 }
 
 +(FactualRowFilter*) orFilter:(FactualRowFilter*)rowFilter,... {

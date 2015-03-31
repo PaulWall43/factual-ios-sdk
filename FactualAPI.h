@@ -58,7 +58,9 @@ typedef enum  {
     FactualFlagType_Inappropriate,
     FactualFlagType_Nonexistent,
     FactualFlagType_Spam,
-    FactualFlagType_Other
+    FactualFlagType_Other,
+    FactualFlagType_Closed,
+    FactualFlagType_Relocated
 } FactualFlagType;
 
 

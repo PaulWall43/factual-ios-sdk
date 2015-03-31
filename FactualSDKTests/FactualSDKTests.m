@@ -55,26 +55,69 @@ NSString* _secret = @"";
     _matchResult = nil;
 }
 
-- (void)testCoreExample1
+
+- (void)testSchema
+{
+    [_apiObject getTableSchema:@"places-us" withDelegate:self];
+    
+    [self waitForResponse];
+    
+    STAssertTrue(_rawResult != nil, @"Invalid response");
+    
+}
+
+- (void)testFullTextSearch
 {
     FactualQuery* queryObject = [FactualQuery query];
-    [queryObject addRowFilter:[FactualRowFilter fieldName:@"country"
-                                                  equalTo:@"US"]];
-    [_apiObject queryTable:@"places" optionalQueryParams:queryObject withDelegate:self];
+    [queryObject addFullTextQueryTerm:@"century city mall"];
+    queryObject.includeRowCount = true;
+    [_apiObject queryTable:@"places-us" optionalQueryParams:queryObject withDelegate:self];
+    
+    [self waitForResponse];
+    
+    STAssertTrue([_queryResult.rows count] > 0, @"Invalid row count");
+    
+}
+
+- (void)testRowFiltersIncludes
+{
+    FactualQuery* queryObject = [FactualQuery query];
+    [queryObject addRowFilter:[FactualRowFilter fieldName:@"category_ids"
+                                                 includes:@"347"]];
+    [_apiObject queryTable:@"places-us" optionalQueryParams:queryObject withDelegate:self];
+
     [self waitForResponse];
     
     STAssertTrue([_queryResult.rows count] > 0, @"Invalid row count");
     STAssertTrue(_queryResult.totalRows == -1, @"Invalid total rows");
 }
 
-- (void)testCoreExample2
+- (void)testRowFiltersIncludesAny
+{
+    NSMutableArray* categories = [[NSMutableArray alloc] initWithCapacity:2];
+    [categories addObject:[NSNumber numberWithInteger:312]];
+    [categories addObject:[NSNumber numberWithInteger:347]];
+    FactualQuery* queryObject = [FactualQuery query];
+    [queryObject addRowFilter:[FactualRowFilter fieldName:@"category_ids"
+                                                includesAnyArray: categories]];
+    [_apiObject queryTable:@"places-us" optionalQueryParams:queryObject withDelegate:self];
+    
+    [self waitForResponse];
+    
+    STAssertTrue([_queryResult.rows count] > 0, @"Invalid row count");
+    STAssertTrue(_queryResult.totalRows == -1, @"Invalid total rows");
+}
+
+- (void)testRowFilterExcludes
 {
     FactualQuery* queryObject = [FactualQuery query];
-    
-    [queryObject addRowFilter:[FactualRowFilter fieldName:@"name"
-                                               beginsWith:@"Star"]];
-    
-    [_apiObject queryTable:@"places" optionalQueryParams:queryObject withDelegate:self];
+    FactualRowFilter* andFilter = [FactualRowFilter andFilter:
+                                   [FactualRowFilter fieldName:@"category_ids"
+                                                     includes:@"317"],
+                                   [FactualRowFilter fieldName:@"category_ids"
+                                                     excludes:@"318"], nil];
+    [queryObject addRowFilter:andFilter];
+    [_apiObject queryTable:@"places-us" optionalQueryParams:queryObject withDelegate:self];
     
     [self waitForResponse];
     
@@ -82,13 +125,64 @@ NSString* _secret = @"";
     
 }
 
-- (void)testCoreExample3
+- (void)testStarbucksInLosAngeles
 {
     FactualQuery* queryObject = [FactualQuery query];
+    [queryObject addFullTextQueryTerm:@"starbucks"];
+    [queryObject addRowFilter:[FactualRowFilter fieldName:@"locality" equalTo:@"los angeles"]];
+    [_apiObject queryTable:@"places-us" optionalQueryParams:queryObject withDelegate:self];
     
-    [queryObject addFullTextQueryTerm:@"Fried Chicken, Los Angeles"];
+    [self waitForResponse];
     
-    [_apiObject queryTable:@"places" optionalQueryParams:queryObject withDelegate:self];
+    STAssertTrue([_queryResult.rows count] > 0, @"Invalid response");
+}
+
+- (void)testStarbucksOrFilter
+{
+    FactualQuery* queryObject = [FactualQuery query];
+    [queryObject addFullTextQueryTerm:@"starbucks"];
+    FactualRowFilter* orFilter = [FactualRowFilter orFilter:
+                                   [FactualRowFilter fieldName:@"locality"
+                                                      equalTo:@"los angeles"],
+                                   [FactualRowFilter fieldName:@"locality"
+                                                      equalTo:@"santa monica"], nil];
+    [queryObject addRowFilter:orFilter];
+    [_apiObject queryTable:@"places-us" optionalQueryParams:queryObject withDelegate:self];
+    
+    [self waitForResponse];
+    
+    STAssertTrue([_queryResult.rows count] > 0, @"Invalid response");
+    
+}
+
+- (void)testStarbucksOrFilterSecondPage
+{
+    FactualQuery* queryObject = [FactualQuery query];
+    [queryObject addFullTextQueryTerm:@"starbucks"];
+    FactualRowFilter* orFilter = [FactualRowFilter orFilter:
+                                  [FactualRowFilter fieldName:@"locality"
+                                                      equalTo:@"los angeles"],
+                                  [FactualRowFilter fieldName:@"locality"
+                                                      equalTo:@"santa monica"], nil];
+    [queryObject addRowFilter:orFilter];
+    queryObject.offset = 20;
+    queryObject.limit = 20;
+    [_apiObject queryTable:@"places-us" optionalQueryParams:queryObject withDelegate:self];
+    
+    [self waitForResponse];
+    
+    STAssertTrue([_queryResult.rows count] > 0, @"Invalid response");
+    
+}
+
+- (void)testCoffeeNearFactual
+{
+    FactualQuery* queryObject = [FactualQuery query];
+    [queryObject addFullTextQueryTerm:@"coffee"];
+    CLLocationCoordinate2D coordinate = {34.058583, -118.416582};
+    [queryObject setGeoFilter:coordinate
+               radiusInMeters:1000];
+    [_apiObject queryTable:@"places-us" optionalQueryParams:queryObject withDelegate:self];
     
     [self waitForResponse];
     
@@ -96,36 +190,49 @@ NSString* _secret = @"";
     
 }
 
-- (void)testCoreExample4
+- (void)testExistenceConfident
 {
-    FactualQuery* queryObject = [FactualQuery query];
-    
-    [queryObject addFullTextQueryTerm:@"Fried Chicken, Los Angeles"];
-    queryObject.offset = 20;
-    queryObject.limit = 5;
-    
-    [_apiObject queryTable:@"places" optionalQueryParams:queryObject withDelegate:self];
+    NSMutableDictionary* params = [[NSMutableDictionary alloc] init];
+    [params setValue:@"confident" forKey:@"threshold"];
+    [_apiObject get:@"t/places-us" params:params withDelegate: self];
     
     [self waitForResponse];
     
-    STAssertEquals((NSUInteger) 5, [_queryResult.rows count], @"Not equal");
+    STAssertTrue(_rawResult != nil, @"Invalid response");
+    
+    NSDictionary* resp = [_rawResult objectForKey:@"response"];
+    int includedRows = [[resp objectForKey:@"included_rows"] unsignedIntValue];
+    NSLog(@"ROW COUNT: %d", includedRows);
+
+    STAssertTrue(includedRows > 0, @"Invalid row count");
+    
 }
 
+- (void)testRowByFactualId
+{
+    [_apiObject get:@"t/places-us/03c26917-5d66-4de9-96bc-b13066173c65" params:[[NSMutableDictionary alloc] init] withDelegate: self];
+    
+    [self waitForResponse];
+    
+    STAssertTrue(_rawResult != nil, @"Invalid response");
+    
+    NSDictionary* resp = [_rawResult objectForKey:@"response"];
+    int includedRows = [[resp objectForKey:@"included_rows"] unsignedIntValue];
+    NSLog(@"ROW COUNT: %d", includedRows);
+    STAssertTrue(includedRows == 1, @"Invalid row count");
+    
+}
 
 - (void)testFacet
 {
     FactualQuery* query = [FactualQuery query];
-    query.maxValuesPerFacet = 20;
-    query.minCountPerFacetValue = 100;
-    
-    [query addRowFilter:[FactualRowFilter fieldName:@"country"
-                                            equalTo:@"US"]];
-    [query addSelectTerm:@"region"];
+    query.minCountPerFacetValue = 20;
+    query.limit = 5;
+    [query addRowFilter:[FactualRowFilter fieldName:@"region"
+                                            equalTo:@"CA"]];
     [query addSelectTerm:@"locality"];
-    [query addFullTextQueryTerm:@"Starbucks"];
-    query.includeRowCount = true;
-    
-    [_apiObject facetTable:@"places" optionalQueryParams:query withDelegate:self];
+    [query addFullTextQueryTerm:@"starbucks"];
+    [_apiObject facetTable:@"places-us" optionalQueryParams:query withDelegate:self];
     
     [self waitForResponse];
     
@@ -134,199 +241,77 @@ NSString* _secret = @"";
     
 }
 
-- (void)testCoreExample5
+- (void)testResolveNameAddress
 {
-    FactualQuery* queryObject = [FactualQuery query];
-    
-    [queryObject addRowFilter:[FactualRowFilter fieldName:@"name"
-                                                  equalTo:@"Apple Store"]];
-    
-    CLLocationCoordinate2D coordinate = {_latitude, _longitude};
-    [queryObject setGeoFilter:coordinate 
-               radiusInMeters:_meters];
-    
-    [_apiObject queryTable:@"places" optionalQueryParams:queryObject withDelegate:self];
+    NSMutableDictionary* values  = [NSMutableDictionary dictionaryWithCapacity:4];
+    [values setValue:@"McDonalds" forKey:@"name"];
+    [values setValue:@"10451 Santa Monica Blvd" forKey:@"address"];
+    [values setValue:@"CA" forKey:@"region"];
+    [values setValue:@"90025" forKey:@"postcode"];
+    [_apiObject resolveRow:@"t/places-us" withValues:values withDelegate:self];
     
     [self waitForResponse];
     
-    STAssertTrue([_queryResult.rows count] > 0, @"Invalid row count");
+    //STAssertTrue([_queryResult.rows count] > 0, @"Invalid row count");
     
 }
 
-- (void)testSort_byDistance
+- (void)testResolveNameLocation
 {
-    FactualQuery* queryObject = [FactualQuery query];
-    
-    CLLocationCoordinate2D coordinate = {_latitude, _longitude};
-    [queryObject setGeoFilter:coordinate 
-               radiusInMeters:_meters];
-    
-    FactualSortCriteria* primarySort = [[FactualSortCriteria alloc] initWithFieldName:@"$distance" sortOrder:FactualSortOrder_Ascending];
-    [queryObject setPrimarySortCriteria:primarySort];
-    
-    [_apiObject queryTable:@"places" optionalQueryParams:queryObject withDelegate:self];
+    NSMutableDictionary* values  = [NSMutableDictionary dictionaryWithCapacity:4];
+    [values setValue:@"McDonalds" forKey:@"name"];
+    [values setValue:@"34.05671" forKey:@"latitude"];
+    [values setValue:@"-118.42586" forKey:@"longitude"];
+    [_apiObject resolveRow:@"t/places-us" withValues:values withDelegate:self];
     
     [self waitForResponse];
     
-    STAssertTrue([_queryResult.rows count] > 0, @"Invalid row count");
+    //STAssertTrue([_queryResult.rows count] > 0, @"Invalid row count");
     
 }
 
-- (void)testRowFilters_2beginsWith
-{
-    FactualQuery* queryObject = [FactualQuery query];
-    [queryObject addRowFilter:[FactualRowFilter fieldName:@"name"
-                                               beginsWith:@"McDonald's"]];
-    
-    [queryObject addRowFilter:[FactualRowFilter fieldName:@"locality"
-                                               beginsWith:@"Scottsd"]];
-    
-    [_apiObject queryTable:@"places" optionalQueryParams:queryObject withDelegate:self];
-    
-    [self waitForResponse];
-    
-    STAssertTrue([_queryResult.rows count] > 0, @"Invalid row count");
-    
-}
-
-- (void)testIn
-{
-    FactualQuery* queryObject = [FactualQuery query];
-    [queryObject addRowFilter:[FactualRowFilter fieldName:@"region"
-                                                       In:@"CA",@"NM",@"FL",nil]];
-    
-    [_apiObject queryTable:@"places" optionalQueryParams:queryObject withDelegate:self];
-    
-    [self waitForResponse];
-    
-    STAssertTrue([_queryResult.rows count] > 0, @"Invalid row count");
-    
-}
-
-- (void)testComplicated
-{
-    FactualQuery* queryObject = [FactualQuery query];
-    [queryObject addRowFilter:[FactualRowFilter fieldName:@"region"
-                                                       In:@"MA",@"VT",@"NH",nil]];
-    [queryObject addRowFilter:[FactualRowFilter orFilter:[FactualRowFilter fieldName:@"name"
-                                                                          beginsWith:@"Coffee"]
-                               ,[FactualRowFilter fieldName:@"name"
-                                                 beginsWith:@"Star"], nil]];
-    
-    [_apiObject queryTable:@"places" optionalQueryParams:queryObject withDelegate:self];
-    
-    [self waitForResponse];
-    
-    STAssertTrue([_queryResult.rows count] > 0, @"Invalid row count");
-    
-}
-
-- (void)testSimpleTel
-{
-    FactualQuery* queryObject = [FactualQuery query];
-    [queryObject addRowFilter:[FactualRowFilter fieldName:@"tel"
-                                               beginsWith:@"(212)"]];
-    [_apiObject queryTable:@"places" optionalQueryParams:queryObject withDelegate:self];
-    
-    [self waitForResponse];
-    
-    STAssertTrue([_queryResult.rows count] > 0, @"Invalid row count");
-    
-}
-
-- (void)testFullTextSearch_on_a_field
-{
-    FactualQuery* queryObject = [FactualQuery query];
-    [queryObject addRowFilter:[FactualRowFilter fieldName:@"name"
-                                                   search:@"Fried Chicken"]];
-    [_apiObject queryTable:@"places" optionalQueryParams:queryObject withDelegate:self];
-    
-    [self waitForResponse];
-    
-    STAssertTrue([_queryResult.rows count] > 0, @"Invalid row count");
-    
-}
-
-- (void)testCrosswalk_ex1
+- (void)testCrosswalkForYelp
 {
     FactualQuery* queryObject = [FactualQuery query];
     [queryObject addRowFilter:[FactualRowFilter fieldName:@"factual_id"
-                                                  equalTo:@"e52c2878-3c27-43a7-bd4e-f6f124ba17b9"]];
-    
-    [_apiObject queryTable:@"crosswalk" optionalQueryParams:queryObject withDelegate:self];
-    [self waitForResponse];
-    
-    STAssertTrue([_queryResult.rows count] > 0, @"Invalid row count");
-    
-}
- 
-- (void)testCrosswalk_ex2
-{
-    FactualQuery* queryObject = [FactualQuery query];
-    [queryObject addRowFilter:[FactualRowFilter fieldName:@"factual_id"
-                                                  equalTo:@"e52c2878-3c27-43a7-bd4e-f6f124ba17b9"]];
+                                                  equalTo:@"3b9e2b46-4961-4a31-b90a-b5e0aed2a45e"]];
     [queryObject addRowFilter:[FactualRowFilter fieldName:@"namespace"
-                                                  equalTo:@"yelp"]];    
-    
+                                                  equalTo:@"yelp"]];
     [_apiObject queryTable:@"crosswalk" optionalQueryParams:queryObject withDelegate:self];
+
     [self waitForResponse];
     
     STAssertTrue([_queryResult.rows count] > 0, @"Invalid row count");
-    
 }
 
-- (void)testCrosswalk_ex3
+- (void)testCrosswalkForFoursquare
 {
     FactualQuery* queryObject = [FactualQuery query];
-    [queryObject addRowFilter:[FactualRowFilter fieldName:@"namespace"
-                                                  equalTo:@"foursquare"]];    
     [queryObject addRowFilter:[FactualRowFilter fieldName:@"namespace_id"
-                                                  equalTo:@"4ae4df6df964a520019f21e3"]];    
-    
+                                                  equalTo:@"4ae4df6df964a520019f21e3"]];
+    [queryObject addRowFilter:[FactualRowFilter fieldName:@"namespace"
+                                                  equalTo:@"foursquare"]];
     [_apiObject queryTable:@"crosswalk" optionalQueryParams:queryObject withDelegate:self];
-    [self waitForResponse];
-    
-    STAssertTrue([_queryResult.rows count] > 0, @"Invalid row count");
-    
-}
-
-- (void)testCrosswalk_limit
-{
-    FactualQuery* queryObject = [FactualQuery query];
-    [queryObject addRowFilter:[FactualRowFilter fieldName:@"factual_id"
-                                                  equalTo:@"e52c2878-3c27-43a7-bd4e-f6f124ba17b9"]];
-    queryObject.limit = 1;
-    [_apiObject queryTable:@"crosswalk" optionalQueryParams:queryObject withDelegate:self];
-    [self waitForResponse];
-    
-    STAssertTrue([_queryResult.rows count] > 0, @"Invalid row count");
-    
-}
-
-- (void)testSelect
-{
-    FactualQuery* queryObject = [FactualQuery query];
-    [queryObject addRowFilter:[FactualRowFilter fieldName:@"country"
-                                                  equalTo:@"US"]];
-    [queryObject addSelectTerm:@"address"];
-    [queryObject addSelectTerm:@"country"];
-    [_apiObject queryTable:@"places" optionalQueryParams:queryObject withDelegate:self];
     
     [self waitForResponse];
     
     STAssertTrue([_queryResult.rows count] > 0, @"Invalid row count");
-    
 }
 
-- (void)testWorldGeographies
+- (void)testWorldGeographiesCaliforniaUSA
 {
     FactualQuery* queryObject = [FactualQuery query];
-    [queryObject addRowFilter:[FactualRowFilter fieldName:@"name"
-                                                  equalTo:@"philadelphia"]];
-    [queryObject addRowFilter:[FactualRowFilter fieldName:@"country"
-                                                  equalTo:@"us"]];
-    [queryObject addRowFilter:[FactualRowFilter fieldName:@"placetype"
-                                                  equalTo:@"locality"]];
+    [queryObject addFullTextQueryTerm:@"los angeles"];
+    FactualRowFilter* andFilter = [FactualRowFilter andFilter:
+                                   [FactualRowFilter fieldName:@"name"
+                                                      equalTo:@"California"],
+                                   [FactualRowFilter fieldName:@"country"
+                                                      equalTo:@"US"],
+                                   [FactualRowFilter fieldName:@"placetype"
+                                                       equalTo:@"region"], nil];
+    [queryObject addRowFilter:andFilter];
+    [queryObject addSelectTerm:@"contextname"];
+    [queryObject addSelectTerm:@"factual_id"];
     [_apiObject queryTable:@"world-geographies" optionalQueryParams:queryObject withDelegate:self];
     
     [self waitForResponse];
@@ -335,301 +320,80 @@ NSString* _secret = @"";
     
 }
 
-- (void)testResolve_ex1
+- (void)testWorldGeographiesCitiesTownsInCalifornia
 {
-    NSMutableDictionary* values  = [NSMutableDictionary dictionaryWithCapacity:4];
-    [values setValue:@"McDonalds" forKey:@"name"];    
-    [values setValue:@"10451 Santa Monica Blvd" forKey:@"address"];    
-    [values setValue:@"CA" forKey:@"region"];    
-    [values setValue:@"90025" forKey:@"postcode"];
-    [_apiObject resolveRow:@"places" withValues:values withDelegate:self];
+    FactualQuery* queryObject = [FactualQuery query];
+    [queryObject addFullTextQueryTerm:@"los angeles"];
+    FactualRowFilter* andFilter = [FactualRowFilter andFilter:
+                                   [FactualRowFilter fieldName:@"ancestors"
+                                                       includes:@"08649c86-8f76-11e1-848f-cfd5bf3ef515"],
+                                   [FactualRowFilter fieldName:@"country"
+                                                       equalTo:@"US"],
+                                   [FactualRowFilter fieldName:@"placetype"
+                                                       equalTo:@"locality"], nil];
+    [queryObject addRowFilter:andFilter];
+    [queryObject addSelectTerm:@"contextname"];
+    [queryObject addSelectTerm:@"factual_id"];
+    [_apiObject queryTable:@"world-geographies" optionalQueryParams:queryObject withDelegate:self];
     
     [self waitForResponse];
     
     STAssertTrue([_queryResult.rows count] > 0, @"Invalid row count");
-    
-}
-
-- (void)testMatch
-{
-    NSMutableDictionary* values  = [NSMutableDictionary dictionaryWithCapacity:4];
-    [values setValue:@"McDonalds" forKey:@"name"];    
-    [values setValue:@"10451 Santa Monica Blvd" forKey:@"address"];    
-    [values setValue:@"CA" forKey:@"region"];    
-    [values setValue:@"90025" forKey:@"postcode"];
-    [_apiObject matchRow:@"places" withValues:values withDelegate:self];
-    
-    [self waitForResponse];
-    STAssertTrue([@"c730d193-ba4d-4e98-8620-29c672f2f117" isEqualToString:_matchResult], @"Match failed");
-}
-
-- (void)testSchema
-{
-    [_apiObject getTableSchema:@"restaurants-us" withDelegate:self];
-    
-    [self waitForResponse];
-    
-    STAssertTrue(_rawResult != nil, @"Invalid response");
-    
-}
-
-- (void)testRawRead
-{
-    NSMutableDictionary* params = [[NSMutableDictionary alloc] init];
-    [params setValue:@"3" forKey:@"limit"];
-    [_apiObject get:@"t/places" params:params withDelegate: self];
-    
-    [self waitForResponse];
-    
-    STAssertTrue(_rawResult != nil, @"Invalid response");
-    
-}
-
-- (void)testRawReadComplex
-{
-    NSNumber* latValue = [NSNumber numberWithDouble:_latitude];
-    NSNumber* longValue = [NSNumber numberWithDouble:_longitude];
-    NSNumber* distanceValue = [NSNumber numberWithDouble:_meters];
-    NSDictionary* geo = @{@"$circle": @{@"$center":@[latValue,longValue],
-                                        @"$meters": distanceValue}};
-    NSDictionary* params = @{@"geo" : geo,
-                             @"q": @"Starbucks",
-                             @"select": @"name,address,latitude,longitude,locality,postcode",
-                             @"sort": @"$distance:asc",
-                             @"limit": @"50"
-                             };
-    [_apiObject get:@"t/restaurants" params:params withDelegate: self];
-    [self waitForResponse];
-    STAssertTrue(_rawResult != nil, @"Invalid response");
-}
-
- /*
-- (void)testFlagDuplicate
-{
-    FactualRowMetadata* metadata = [FactualRowMetadata metadata: @"testuser"];
-    metadata.comment = @"my comment";
-    metadata.reference = @"www.mytest.com";
-    [_apiObject flagProblem:FactualFlagType_Duplicate tableId: @"us-sandbox" factualId: @"158294f8-3300-4841-9e49-c23d5d670d07" metadata: metadata withDelegate:self];
-    [self waitForResponse];
-    
-    STAssertTrue(_rawResult != nil, @"Invalid response");
-    
-}
-
- - (void)testFlagInaccurate
-{
-    FactualRowMetadata* metadata = [FactualRowMetadata metadata: @"testuser"];
-    metadata.comment = @"my comment";
-    metadata.reference = @"www.mytest.com";
-    [_apiObject flagProblem:FactualFlagType_Inaccurate tableId:@"us-sandbox" factualId: @"158294f8-3300-4841-9e49-c23d5d670d07" metadata: metadata withDelegate:self];
-    [self waitForResponse];
-    
-    STAssertTrue(_rawResult != nil, @"Invalid response");
-}
-
-- (void)testFlagInappropriate
-{
-    FactualRowMetadata* metadata = [FactualRowMetadata metadata: @"testuser"];
-    metadata.comment = @"my comment";
-    metadata.reference = @"www.mytest.com";
-    [_apiObject flagProblem:FactualFlagType_Inappropriate tableId: @"us-sandbox" factualId: @"158294f8-3300-4841-9e49-c23d5d670d07" metadata: metadata withDelegate:self];
-    [self waitForResponse];
-    
-    STAssertTrue(_rawResult != nil, @"Invalid response");
-}
-
-- (void)testFlagNonExistent
-{
-    FactualRowMetadata* metadata = [FactualRowMetadata metadata: @"testuser"];
-    metadata.comment = @"my comment";
-    metadata.reference = @"www.mytest.com";
-    [_apiObject flagProblem:FactualFlagType_Nonexistent tableId: @"us-sandbox" factualId: @"158294f8-3300-4841-9e49-c23d5d670d07" metadata: metadata withDelegate:self];
-    [self waitForResponse];
-    
-    STAssertTrue(_rawResult != nil, @"Invalid response");
-    
-}
-
-- (void)testFlagSpam
-{
-    FactualRowMetadata* metadata = [FactualRowMetadata metadata: @"testuser"];
-    metadata.comment = @"my comment";
-    metadata.reference = @"www.mytest.com";
-    [_apiObject flagProblem:FactualFlagType_Spam tableId: @"us-sandbox" factualId: @"158294f8-3300-4841-9e49-c23d5d670d07" metadata: metadata withDelegate:self];
-    [self waitForResponse];
-    
-    STAssertTrue(_rawResult != nil, @"Invalid response");
-    
-}
-
-- (void)testFlagOther
-{
-    FactualRowMetadata* metadata = [FactualRowMetadata metadata: @"testuser"];
-    metadata.comment = @"my comment";
-    metadata.reference = @"www.mytest.com";
-    [_apiObject flagProblem:FactualFlagType_Other tableId: @"us-sandbox" factualId: @"158294f8-3300-4841-9e49-c23d5d670d07" metadata: metadata withDelegate:self];
-    [self waitForResponse];
-    
-    STAssertTrue(_rawResult != nil, @"Invalid response");
     
 }
 
 - (void)testSubmitAdd
 {
-    FactualRowMetadata* metadata = [FactualRowMetadata metadata: @"testuser"];
-    metadata.comment = @"my comment";
-    metadata.reference = @"www.mytest.com";
-    
-    NSMutableDictionary* values  = [NSMutableDictionary dictionaryWithCapacity:4];
-    [values setValue:@"100" forKey:@"longitude"];   
-    
+    FactualRowMetadata* metadata = [FactualRowMetadata metadata: @"a_user_id"];
+    NSMutableDictionary* values  = [NSMutableDictionary dictionaryWithCapacity:11];
+    [values setValue:@"Factual" forKey:@"name"];
+    [values setValue:@"1999 Avenue of the Stars" forKey:@"address"];
+    [values setValue:@"34th floor" forKey:@"address_extended"];
+    [values setValue:@"Los Angeles" forKey:@"locality"];
+    [values setValue:@"CA" forKey:@"region"];
+    [values setValue:@"90067" forKey:@"postcode"];
+    [values setValue:@"us" forKey:@"country"];
+    [values setValue:@"34.058743" forKey:@"latitude"];
+    [values setValue:@"-118.41694" forKey:@"longitude"];
+    [values setValue:@"[209,213]" forKey:@"category_ids"];
+    [values setValue:@"Mon 11:30am-2pm Tue-Fri 11:30am-2pm, 5:30pm-9pm Sat-Sun closed" forKey:@"hours"];
     [_apiObject submitRow:@"us-sandbox" withValues:values withMetadata:metadata withDelegate:self];
+    
     [self waitForResponse];
     
     STAssertTrue(_rawResult != nil, @"Invalid response");
     
 }
 
-- (void)testSubmitEdit
+- (void)testFlagDuplicate
 {
-    FactualRowMetadata* metadata = [FactualRowMetadata metadata: @"testuser"];
-    metadata.comment = @"my comment";
-    metadata.reference = @"www.mytest.com";
+    FactualRowMetadata* metadata = [FactualRowMetadata metadata: @"a_user_id"];
+    metadata.preferred = @"9d676355-6c74-4cf6-8c4a-03fdaaa2d66a";
+    [_apiObject flagProblem:FactualFlagType_Duplicate tableId: @"us-sandbox" factualId: @"4e4a14fe-988c-4f03-a8e7-0efc806d0a7f" metadata: metadata withDelegate:self];
+
+    [self waitForResponse];
     
-    NSMutableDictionary* values  = [NSMutableDictionary dictionaryWithCapacity:4];
-    [values setValue:@"100" forKey:@"longitude"];    
-    
-    [_apiObject submitRowWithId:@"158294f8-3300-4841-9e49-c23d5d670d07" tableId:@"us-sandbox" withValues:values withMetadata:metadata withDelegate:self];
+    STAssertTrue(_rawResult != nil, @"Invalid response");
+}
+
+- (void)testFlagClosed
+{
+    FactualRowMetadata* metadata = [FactualRowMetadata metadata: @"a_user_id"];
+    metadata.comment = @"was shut down when I went there yesterday.";
+    [_apiObject flagProblem:FactualFlagType_Closed tableId: @"us-sandbox" factualId: @"4e4a14fe-988c-4f03-a8e7-0efc806d0a7f" metadata: metadata withDelegate:self];
+
     [self waitForResponse];
     
     STAssertTrue(_rawResult != nil, @"Invalid response");
     
 }
 
-- (void)testSubmitDelete
+- (void)testFlagRelocated
 {
-    FactualRowMetadata* metadata = [FactualRowMetadata metadata: @"testuser"];
-    metadata.comment = @"my comment";
-    metadata.reference = @"www.mytest.com";
-    
-    NSMutableDictionary* values  = [NSMutableDictionary dictionaryWithCapacity:4];
-    [values setValue:@"null" forKey:@"longitude"];    
-    
-    [_apiObject submitRowWithId:@"158294f8-3300-4841-9e49-c23d5d670d07" tableId:@"us-sandbox" withValues:values withMetadata:metadata withDelegate:self];
-    [self waitForResponse];
-    
-    STAssertTrue(_rawResult != nil, @"Invalid response");
- 
-}
- 
-*/
+    FactualRowMetadata* metadata = [FactualRowMetadata metadata: @"a_user_id"];
+    metadata.preferred = @"9d676355-6c74-4cf6-8c4a-03fdaaa2d66a";
+    [_apiObject flagProblem:FactualFlagType_Relocated tableId: @"us-sandbox" factualId: @"4e4a14fe-988c-4f03-a8e7-0efc806d0a7f" metadata: metadata withDelegate:self];
 
-/*
-- (void)testClear
-{
-    FactualRowMetadata* metadata = [FactualRowMetadata metadata: @"testuser"];
-    metadata.comment = @"my comment";
-    metadata.reference = @"www.mytest.com";
-    NSMutableArray* clearFields = [[NSMutableArray alloc] initWithCapacity:2];
-    [clearFields addObject:@"longitude"];
-    [clearFields addObject:@"latitude"];
-    [_apiObject clearRowWithId: @"1d93c1ed-8cf3-4d58-94e0-05bbcd827cba" tableId: @"us-sandbox" withFields: clearFields withMetadata: metadata withDelegate:self];
-    [self waitForResponse];
-    
-    STAssertTrue(_rawResult != nil, @"Invalid response");
-}
-*/
- 
-- (void)testFetchRow1
-{
-    NSString* factualId = @"e52c2878-3c27-43a7-bd4e-f6f124ba17b9";
-    [_apiObject fetchRow:@"places" factualId:factualId withDelegate:self];
-    [self waitForResponse];
-    STAssertTrue([_queryResult.rows count] == 1, @"Row count not 1");
-    FactualRow *firstRow = [_queryResult.rows objectAtIndex:0];
-    STAssertTrue([factualId isEqualToString:[firstRow valueForName:@"factual_id"]], @"Fetch row id not equal to test factual id");
-}
-
-- (void)testFetchRow2
-{
-    NSMutableArray* onlyFields = [[NSMutableArray alloc] initWithCapacity:1];
-    [onlyFields addObject:@"name"];
-    
-    NSString* factualId = @"7e7fede0-5a17-452e-9d8a-228c49273109";
-    [_apiObject fetchRow:@"places" factualId:factualId only:onlyFields withDelegate:self];
-    [self waitForResponse];
-    STAssertTrue([_queryResult.rows count] == 1, @"Row count not 1");
-    FactualRow *firstRow = [_queryResult.rows objectAtIndex:0];
-    STAssertTrue([@"Starbucks Coffee" isEqualToString:[firstRow valueForName:@"name"]], @"Fetch row id not equal to test factual id");
-}
-
-- (void)testIncludes1
-{
-    FactualQuery* queryObject = [FactualQuery query];
-    
-    [queryObject addRowFilter:[FactualRowFilter fieldName:@"category_ids"
-                                                 includes:@"10"]];
-    [_apiObject queryTable:@"places" optionalQueryParams:queryObject withDelegate:self];
-    [self waitForResponse];
-    
-    STAssertTrue([_queryResult.rows count] > 0, @"Invalid row count");
-    
-    for (FactualRow *row in _queryResult.rows) {
-        NSArray *categoryIds = [row valueForName:@"category_ids"];
-        bool found = false;
-        for (NSNumber *categoryId in categoryIds) {
-            if ([NSNumber numberWithInteger:10] == categoryId) {
-                found = true;
-                break;
-            }
-        }
-        STAssertTrue(found, @"Category filter not returning correct results");
-    }
-}
-
-- (void)testIncludes2
-{
-    NSMutableArray* categories = [[NSMutableArray alloc] initWithCapacity:2];
-    [categories addObject:[NSNumber numberWithInteger:10]];
-    [categories addObject:[NSNumber numberWithInteger:120]];
-    
-    FactualQuery* queryObject = [FactualQuery query];
-    
-    [queryObject addRowFilter:[FactualRowFilter fieldName:@"category_ids"
-                                         includesAnyArray:categories]];
-    [_apiObject queryTable:@"places" optionalQueryParams:queryObject withDelegate:self];
-    [self waitForResponse];
-    
-    STAssertTrue([_queryResult.rows count] > 0, @"Invalid row count");
-    
-    for (FactualRow *row in _queryResult.rows) {
-        NSArray *categoryIds = [row valueForName:@"category_ids"];
-        bool found = false;
-        for (NSNumber *categoryId in categoryIds) {
-            if ([categories containsObject:categoryId]) {
-                found = true;
-                break;
-            }
-        }
-        STAssertTrue(found, @"Category filter not returning correct results");
-    }
-}
-
-- (void)testMulti
-{
-    NSMutableDictionary* params = [[NSMutableDictionary alloc] init];
-    
-    FactualQuery* queryObject = [FactualQuery query];
-    [queryObject addFullTextQueryTerm:@"Fried Chicken, Los Angeles"];
-    
-    NSMutableString* query2 = [[NSMutableString alloc]init];
-    [queryObject generateQueryString:query2];
-    
-    NSString* queriesStrFormat = @"{\"query1\":\"/t/places?limit=1\", \"query2\":\"/t/places?%@\"}";
-    NSString* queriesStr = [NSString stringWithFormat:queriesStrFormat, query2];
-    [params setValue:queriesStr forKey:@"queries"];
-    [_apiObject get:@"multi" params:params withDelegate: self];
-    
     [self waitForResponse];
     
     STAssertTrue(_rawResult != nil, @"Invalid response");
