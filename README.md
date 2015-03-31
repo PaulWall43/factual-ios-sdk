@@ -271,36 +271,24 @@ Full documentation: http://developer.factual.com/api-docs/#Flag
 
 Flag a place that is a duplicate of another. The *preferred* entity that should persist is passed as a GET parameter.
 ```objc
-factual.post('/t/us-sandbox/4e4a14fe-988c-4f03-a8e7-0efc806d0a7f/flag', {
-  problem: "duplicate",
-  preferred: "9d676355-6c74-4cf6-8c4a-03fdaaa2d66a",
-  user: "a_user_id"
-}, function (error, res) {
-  if (!error) console.log("success");
-});
+FactualRowMetadata* metadata = [FactualRowMetadata metadata: @"a_user_id"];
+metadata.preferred = @"9d676355-6c74-4cf6-8c4a-03fdaaa2d66a";
+[_apiObject flagProblem:FactualFlagType_Duplicate tableId: @"us-sandbox" factualId: @"4e4a14fe-988c-4f03-a8e7-0efc806d0a7f" metadata: metadata withDelegate:self];
+[self waitForResponse];
 ```
 
 Flag a place that is closed.
 ```objc
-factual.post('/t/us-sandbox/4e4a14fe-988c-4f03-a8e7-0efc806d0a7f/flag', {
-  problem: "closed",
-  user: "a_user_id",
-  comment: "was shut down when I went there yesterday."
-}, function (error, res) {
-  if (!error) console.log("success");
-});
+FactualRowMetadata* metadata = [FactualRowMetadata metadata: @"a_user_id"];
+metadata.comment = @"was shut down when I went there yesterday.";
+[_apiObject flagProblem:FactualFlagType_Closed tableId: @"us-sandbox" factualId: @"4e4a14fe-988c-4f03-a8e7-0efc806d0a7f" metadata: metadata withDelegate:self];
 ```
 
 Flag a place that has been relocated, so that it will redirect to the new location. The *preferred* entity (the current location) is passed as a GET parameter. The old location is identified in the URL.
 ```objc
-factual.post('/t/us-sandbox/4e4a14fe-988c-4f03-a8e7-0efc806d0a7f/flag', 
-{
-  problem: "relocated",
-  preferred: "9d676355-6c74-4cf6-8c4a-03fdaaa2d66a",
-  user: "a_user_id"
-}, function (error, res) {
-  if (!error) console.log("success");
-});
+FactualRowMetadata* metadata = [FactualRowMetadata metadata: @"a_user_id"];
+metadata.preferred = @"9d676355-6c74-4cf6-8c4a-03fdaaa2d66a";
+[_apiObject flagProblem:FactualFlagType_Relocated tableId: @"us-sandbox" factualId: @"4e4a14fe-988c-4f03-a8e7-0efc806d0a7f" metadata: metadata withDelegate:self];
 ```
 
 ## Error Handling
