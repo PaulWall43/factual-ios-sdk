@@ -248,24 +248,20 @@ Full documentation: http://developer.factual.com/api-docs/#Submit
 Place-specific Write API documentation: http://developer.factual.com/write-api/
 
 ```objc
-factual.post('/t/us-sandbox/submit', {
-  values: JSON.stringify({
-    name: "Factual",
-    address: "1999 Avenue of the Stars",
-    address_extended: "34th floor",
-    locality: "Los Angeles",
-    region: "CA",
-    postcode: "90067",
-    country: "us",
-    latitude: 34.058743,
-    longitude: -118.41694,
-    category_ids: [209,213],
-    hours: "Mon 11:30am-2pm Tue-Fri 11:30am-2pm, 5:30pm-9pm Sat-Sun closed"
-  }),
-  user: "a_user_id"
-}, function (error, res) {
-  console.log(res);
-});
+FactualRowMetadata* metadata = [FactualRowMetadata metadata: @"a_user_id"];    
+NSMutableDictionary* values  = [NSMutableDictionary dictionaryWithCapacity:11];
+[values setValue:@"Factual" forKey:@"name"];
+[values setValue:@"1999 Avenue of the Stars" forKey:@"address"];
+[values setValue:@"34th floor" forKey:@"address_extended"];
+[values setValue:@"Los Angeles" forKey:@"locality"];
+[values setValue:@"CA" forKey:@"region"];
+[values setValue:@"90067" forKey:@"postcode"];
+[values setValue:@"us" forKey:@"country"];
+[values setValue:@"34.058743" forKey:@"latitude"];
+[values setValue:@"-118.41694" forKey:@"longitude"];
+[values setValue:@"[209,213]" forKey:@"category_ids"];
+[values setValue:@"Mon 11:30am-2pm Tue-Fri 11:30am-2pm, 5:30pm-9pm Sat-Sun closed" forKey:@"hours"];
+[_apiObject submitRow:@"us-sandbox" withValues:values withMetadata:metadata withDelegate:self];
 ```
 
 ## Flag
