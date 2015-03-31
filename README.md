@@ -314,12 +314,12 @@ The error object is the first argument of the callback functions, it will be nul
 To see detailed debug information at runtime, you can turn on Debug Mode:
 ```objc
 // start debug mode
-factual.startDebug();
+_apiObject.debug = true;
 
 // run your querie(s)
 
 // stop debug mode
-factual.stopDebug();
+_apiObject.debug = false;
 ```
 Debug Mode will output useful information about what's going on, including  the request sent to Factual and the response from Factual, outputting to stdout and stderr.
 
@@ -328,9 +328,9 @@ Debug Mode will output useful information about what's going on, including  the 
 You can set the request timeout (in milliseconds):
 ```objc
 // set the timeout as 1 second
-factual.setRequestTimeout(1000);
-// clear the custom timeout setting
-factual.setRequestTimeout();
+_apiObject.timeoutInterval = 1;
+// clear the custom timeout setting (by setting it to the default value)
+_apiObject.timeoutInterval = 180;
 ```
 You will get [Error: socket hang up] for custom timeout errors.
 
